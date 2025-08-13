@@ -3,21 +3,36 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { ecologiService } from "./services/ecologi";
 import { insertHabitSchema, insertHabitCompletionSchema } from "@shared/schema";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  const DEFAULT_USER_ID = "default-user"; // For demo purposes
+  // Setup authentication
+  await setupAuth(app);
 
-  // Get user stats and habits
-  app.get("/api/dashboard", async (req, res) => {
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const user = await storage.getUser(DEFAULT_USER_ID);
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Get user stats and habits (protected route)
+  app.get("/api/dashboard", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      const habits = await storage.getHabitsByUserId(DEFAULT_USER_ID);
-      const todayCompletions = await storage.getTodayCompletions(DEFAULT_USER_ID);
+      const habits = await storage.getHabitsByUserId(userId);
+      const todayCompletions = await storage.getTodayCompletions(userId);
       
       // Calculate weekly progress
       const weekStart = new Date();
@@ -27,7 +42,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const weekEnd = new Date();
       weekEnd.setHours(23, 59, 59, 999);
       
-      const weekCompletions = await storage.getCompletionsByDateRange(DEFAULT_USER_ID, weekStart, weekEnd);
+      const weekCompletions = await storage.getCompletionsByDateRange(userId, weekStart, weekEnd);
       
       // Group completions by date
       const weeklyProgress = [];
@@ -70,12 +85,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create new habit
-  app.post("/api/habits", async (req, res) => {
+  // Create new habit (protected route)
+  app.post("/api/habits", isAuthenticated, async (req: any, res) => {
     try {
+      const userId = req.user.claims.sub;
       const validatedData = insertHabitSchema.parse({
         ...req.body,
-        userId: DEFAULT_USER_ID,
+        userId,
       });
       
       const habit = await storage.createHabit(validatedData);
@@ -89,10 +105,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Complete/uncomplete habit
-  app.post("/api/habits/:habitId/toggle", async (req, res) => {
+  // Complete/uncomplete habit (protected route)
+  app.post("/api/habits/:habitId/toggle", isAuthenticated, async (req: any, res) => {
     try {
       const { habitId } = req.params;
+      const userId = req.user.claims.sub;
       const habit = await storage.getHabit(habitId);
       
       if (!habit) {
@@ -100,7 +117,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check if already completed today
-      const todayCompletions = await storage.getTodayCompletions(DEFAULT_USER_ID);
+      const todayCompletions = await storage.getTodayCompletions(userId);
       const existingCompletion = todayCompletions.find(c => c.habitId === habitId);
 
       if (existingCompletion) {
@@ -116,7 +133,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Complete the habit
         const completion = await storage.createHabitCompletion({
           habitId,
-          userId: DEFAULT_USER_ID,
+          userId,
         });
 
         // Update habit streak and trees earned
@@ -142,10 +159,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             completion.ecoloiTreeId = ecologiTreeId;
             
             // Update user's tree count
-            const user = await storage.getUser(DEFAULT_USER_ID);
+            const user = await storage.getUser(userId);
             if (user) {
               await storage.updateUserStats(
-                DEFAULT_USER_ID,
+                userId,
                 user.treesPlanted + 1,
                 user.currentStreak + 1,
                 Math.max(user.longestStreak, user.currentStreak + 1)
@@ -171,8 +188,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get habit history
-  app.get("/api/habits/:habitId/history", async (req, res) => {
+  // Get habit history (protected route)
+  app.get("/api/habits/:habitId/history", isAuthenticated, async (req, res) => {
     try {
       const { habitId } = req.params;
       const completions = await storage.getHabitCompletions(habitId);
@@ -183,8 +200,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Delete habit
-  app.delete("/api/habits/:habitId", async (req, res) => {
+  // Delete habit (protected route)
+  app.delete("/api/habits/:habitId", isAuthenticated, async (req, res) => {
     try {
       const { habitId } = req.params;
       const deleted = await storage.deleteHabit(habitId);

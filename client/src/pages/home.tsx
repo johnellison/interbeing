@@ -113,6 +113,16 @@ export default function Home() {
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => window.location.href = "/api/logout"}
+                className="text-sm hover:bg-forest-secondary/20 transition-colors"
+                data-testid="button-logout"
+              >
+                Sign Out
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
                 className="p-2 rounded-organic hover:bg-forest-secondary/20 transition-colors"
                 data-testid="button-settings"
               >

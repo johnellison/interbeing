@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Habit, type InsertHabit, type HabitCompletion, type InsertHabitCompletion, users, habits, habitCompletions } from "@shared/schema";
+import { type User, type InsertUser, type UpsertUser, type Habit, type InsertHabit, type HabitCompletion, type InsertHabitCompletion, users, habits, habitCompletions } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, gte, lte } from "drizzle-orm";
 
@@ -7,6 +7,7 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  upsertUser(user: UpsertUser): Promise<User>;
   updateUserStats(userId: string, treesPlanted: number, currentStreak: number, longestStreak: number): Promise<User | undefined>;
 
   // Habit methods
@@ -32,92 +33,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   private async initializeDefaultData() {
-    try {
-      // Check if default user exists
-      const existingUser = await this.getUser("default-user");
-      if (!existingUser) {
-        // Create default user
-        const defaultUser: User = {
-          id: "default-user",
-          username: "demo",
-          password: "password",
-          treesPlanted: 127,
-          currentStreak: 14,
-          longestStreak: 32,
-          createdAt: new Date(),
-        };
-
-        await db.insert(users).values(defaultUser).onConflictDoNothing();
-
-        // Create some default habits
-        const defaultHabits: Habit[] = [
-          {
-            id: "habit-1",
-            userId: "default-user",
-            name: "Morning Meditation",
-            description: "10 minutes of mindfulness",
-            icon: "leaf",
-            category: "wellness",
-            isActive: true,
-            streak: 7,
-            treesEarned: 7,
-            createdAt: new Date(),
-          },
-          {
-            id: "habit-2",
-            userId: "default-user",
-            name: "Read 30 Pages",
-            description: "Daily reading habit",
-            icon: "book-open",
-            category: "learning",
-            isActive: true,
-            streak: 3,
-            treesEarned: 3,
-            createdAt: new Date(),
-          },
-          {
-            id: "habit-3",
-            userId: "default-user",
-            name: "Morning Workout",
-            description: "30 minutes exercise",
-            icon: "dumbbell",
-            category: "fitness",
-            isActive: true,
-            streak: 14,
-            treesEarned: 14,
-            createdAt: new Date(),
-          },
-          {
-            id: "habit-4",
-            userId: "default-user",
-            name: "Drink 8 Glasses Water",
-            description: "Stay hydrated throughout the day",
-            icon: "tint",
-            category: "wellness",
-            isActive: true,
-            streak: 5,
-            treesEarned: 5,
-            createdAt: new Date(),
-          },
-          {
-            id: "habit-5",
-            userId: "default-user",
-            name: "Gratitude Journal",
-            description: "Write 3 things I'm grateful for",
-            icon: "heart",
-            category: "wellness",
-            isActive: true,
-            streak: 9,
-            treesEarned: 9,
-            createdAt: new Date(),
-          },
-        ];
-
-        await db.insert(habits).values(defaultHabits).onConflictDoNothing();
-      }
-    } catch (error) {
-      console.error("Error initializing default data:", error);
-    }
+    // No longer needed - users will be created via Replit Auth
+    // This method kept empty for compatibility but can be removed later
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -134,6 +51,21 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db
       .insert(users)
       .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async upsertUser(userData: UpsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(userData)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userData,
+          updatedAt: new Date(),
+        },
+      })
       .returning();
     return user;
   }

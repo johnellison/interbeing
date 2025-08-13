@@ -27,14 +27,17 @@ Preferred communication style: Simple, everyday language.
 
 ### Data Storage Solutions
 - **Database**: PostgreSQL with Drizzle ORM for type-safe database operations
-- **Schema**: Three main entities - users, habits, and habit completions with proper foreign key relationships
-- **Development Storage**: In-memory storage implementation for development and testing
+- **Schema**: Four main entities - sessions (for auth), users, habits, and habit completions with proper foreign key relationships
+- **Production Storage**: Full database implementation replacing previous in-memory storage
 - **Migrations**: Drizzle Kit for database schema migrations and management
+- **Session Storage**: PostgreSQL-backed session store for authentication persistence
 
 ### Authentication and Authorization
-- **Current State**: Basic user identification with default user system for demo purposes
-- **Architecture**: Ready for session-based or token-based authentication implementation
-- **User Management**: User model with tracking for trees planted, streaks, and habit statistics
+- **Authentication System**: Replit OpenID Connect integration with session-based authentication
+- **User Management**: Database-backed user storage with automatic account creation via Replit Auth
+- **Session Management**: PostgreSQL session storage with automatic token refresh
+- **Authorization**: Protected API routes using isAuthenticated middleware
+- **User Model**: Updated for Replit Auth with email, firstName, lastName, and profileImageUrl fields
 
 ### Component Architecture
 - **Design System**: Comprehensive UI component library with consistent theming
