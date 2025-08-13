@@ -103,7 +103,11 @@
   }
 
   .habit-checkbox.incomplete {
-    @apply border-muted-foreground border-opacity-30 hover:border-forest-success hover:bg-forest-success/10;
+    @apply border-muted-foreground border-opacity-30 hover:border-forest-success;
+  }
+  
+  .habit-checkbox.incomplete:hover {
+    background-color: hsl(120 61% 34% / 0.1);
   }
 
   .celebration-animation {
