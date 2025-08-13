@@ -11,9 +11,14 @@ import ProgressSidebar from "@/components/progress-sidebar";
 interface DashboardData {
   user: {
     id: string;
-    treesPlanted: number;
     currentStreak: number;
     longestStreak: number;
+    totalImpact: {
+      treesPlanted: number;
+      wasteRemoved: number;
+      carbonCaptured: number;
+      moneyDonated: number;
+    };
   };
   habits: Array<{
     id: string;
@@ -104,11 +109,29 @@ export default function Home() {
               </h1>
             </div>
             
-            <div className="hidden md:flex items-center space-x-6">
+            <div className="hidden md:flex items-center space-x-4">
               <div className="flex items-center space-x-2 bg-forest-secondary/20 px-3 py-1 rounded-organic">
-                <span className="text-2xl">🌳</span>
-                <span className="text-sm font-medium" data-testid="trees-planted-counter">
-                  {dashboardData.user.treesPlanted} trees planted
+                <span className="text-lg">🌳</span>
+                <span className="text-xs font-medium" data-testid="trees-planted-counter">
+                  {dashboardData.user.totalImpact.treesPlanted}
+                </span>
+              </div>
+              <div className="flex items-center space-x-2 bg-blue-500/20 px-3 py-1 rounded-organic">
+                <span className="text-lg">🌊</span>
+                <span className="text-xs font-medium text-blue-700" data-testid="waste-removed-counter">
+                  {dashboardData.user.totalImpact.wasteRemoved}lb
+                </span>
+              </div>
+              <div className="flex items-center space-x-2 bg-gray-500/20 px-3 py-1 rounded-organic">
+                <span className="text-lg">💨</span>
+                <span className="text-xs font-medium text-gray-700" data-testid="carbon-captured-counter">
+                  {dashboardData.user.totalImpact.carbonCaptured}lb
+                </span>
+              </div>
+              <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-1 rounded-organic">
+                <span className="text-lg">💰</span>
+                <span className="text-xs font-medium text-green-700" data-testid="money-donated-counter">
+                  ${(dashboardData.user.totalImpact.moneyDonated / 100).toFixed(2)}
                 </span>
               </div>
               
@@ -148,7 +171,7 @@ export default function Home() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Environmental Impact Dashboard */}
         <ImpactDashboard 
-          treesPlanted={dashboardData.user.treesPlanted}
+          totalImpact={dashboardData.user.totalImpact}
           currentStreak={dashboardData.user.currentStreak}
           longestStreak={dashboardData.user.longestStreak}
           todayCompletions={dashboardData.todayCompletions}

@@ -1,7 +1,12 @@
-import { Network, Flame, CheckCircle } from "lucide-react";
+import { TreePine, Flame, CheckCircle } from "lucide-react";
 
 interface ImpactDashboardProps {
-  treesPlanted: number;
+  totalImpact: {
+    treesPlanted: number;
+    wasteRemoved: number;
+    carbonCaptured: number;
+    moneyDonated: number;
+  };
   currentStreak: number;
   longestStreak: number;
   todayCompletions: number;
@@ -9,7 +14,7 @@ interface ImpactDashboardProps {
 }
 
 export default function ImpactDashboard({ 
-  treesPlanted, 
+  totalImpact, 
   currentStreak, 
   longestStreak,
   todayCompletions, 
@@ -20,25 +25,57 @@ export default function ImpactDashboard({
   return (
     <section className="mb-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Total Trees Planted */}
-        <div className="forest-card p-6" data-testid="card-trees-planted">
+        {/* Environmental Impact Summary */}
+        <div className="forest-card p-6" data-testid="card-environmental-impact">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
               <div className="p-3 bg-forest-success/20 rounded-organic">
-                <Network className="h-8 w-8 text-forest-success" />
+                <TreePine className="h-8 w-8 text-forest-success" />
               </div>
               <div>
-                <h3 className="font-semibold text-forest-text">Trees Planted</h3>
-                <p className="text-sm text-forest-text/70">Total Environmental Impact</p>
+                <h3 className="font-semibold text-forest-text">Environmental Impact</h3>
+                <p className="text-sm text-forest-text/70">1ClickImpact Actions</p>
               </div>
             </div>
           </div>
-          <p className="text-3xl font-bold text-forest-success" data-testid="text-total-trees">
-            {treesPlanted}
-          </p>
-          <p className="text-sm text-forest-text/70 mt-2">
-            +{Math.floor(treesPlanted * 0.05) || 1} this week
-          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center space-x-2">
+              <span className="text-lg">🌳</span>
+              <div>
+                <p className="text-lg font-bold text-forest-success" data-testid="text-total-trees">
+                  {totalImpact.treesPlanted}
+                </p>
+                <p className="text-xs text-forest-text/70">trees planted</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-lg">🌊</span>
+              <div>
+                <p className="text-lg font-bold text-blue-600" data-testid="text-total-waste">
+                  {totalImpact.wasteRemoved}lb
+                </p>
+                <p className="text-xs text-forest-text/70">waste removed</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-lg">💨</span>
+              <div>
+                <p className="text-lg font-bold text-gray-600" data-testid="text-total-carbon">
+                  {totalImpact.carbonCaptured}lb
+                </p>
+                <p className="text-xs text-forest-text/70">CO₂ captured</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-lg">💰</span>
+              <div>
+                <p className="text-lg font-bold text-green-600" data-testid="text-total-donated">
+                  ${(totalImpact.moneyDonated / 100).toFixed(2)}
+                </p>
+                <p className="text-xs text-forest-text/70">donated</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Habit Streak */}

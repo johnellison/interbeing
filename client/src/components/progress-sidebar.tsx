@@ -64,12 +64,12 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
 
       {/* Environmental Impact Summary */}
       <div className="forest-card p-6" data-testid="card-environmental-impact">
-        <h3 className="text-lg font-semibold text-forest-text mb-4">Environmental Impact</h3>
+        <h3 className="text-lg font-semibold text-forest-text mb-4">Impact Actions</h3>
         
         {/* Environmental Impact Image */}
         <img 
-          src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=200" 
-          alt="Lush forest representing environmental impact" 
+          src="https://images.unsplash.com/photo-1569163139394-de44cb6ff663?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200" 
+          alt="Environmental conservation representing multiple impact actions" 
           className="rounded-organic w-full h-32 object-cover mb-4"
           data-testid="img-environmental-impact"
         />
@@ -78,37 +78,47 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <span className="text-forest-success">🌳</span>
-              <span className="text-sm text-forest-text">Trees this month</span>
+              <span className="text-sm text-forest-text">Trees planted</span>
             </div>
-            <span className="font-semibold text-forest-success" data-testid="text-monthly-trees">
-              {monthlyTrees}
-            </span>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="text-forest-accent">🍃</span>
-              <span className="text-sm text-forest-text">CO2 offset (kg)</span>
-            </div>
-            <span className="font-semibold text-forest-accent" data-testid="text-co2-offset">
-              {Math.round(co2Offset)}
-            </span>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="text-blue-500">🌍</span>
-              <span className="text-sm text-forest-text">Forest areas</span>
-            </div>
-            <span className="font-semibold text-blue-500" data-testid="text-forest-areas">
+            <span className="font-semibold text-forest-success" data-testid="text-sidebar-trees">
               Global
+            </span>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-blue-500">🌊</span>
+              <span className="text-sm text-forest-text">Ocean cleanup</span>
+            </div>
+            <span className="font-semibold text-blue-500" data-testid="text-sidebar-ocean">
+              Active
+            </span>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-gray-500">💨</span>
+              <span className="text-sm text-forest-text">Carbon capture</span>
+            </div>
+            <span className="font-semibold text-gray-500" data-testid="text-sidebar-carbon">
+              Direct Air
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-green-600">💰</span>
+              <span className="text-sm text-forest-text">Donations</span>
+            </div>
+            <span className="font-semibold text-green-600" data-testid="text-sidebar-donations">
+              Verified NGOs
             </span>
           </div>
         </div>
 
         <div className="mt-4 pt-4 border-t border-forest-secondary/20">
           <p className="text-xs text-forest-text/70">
-            🌍 Your habits are making a real environmental impact through Ecologi's reforestation projects worldwide.
+            🌍 Your habits create real environmental impact through 1ClickImpact's verified partners and transparent tracking.
           </p>
         </div>
       </div>

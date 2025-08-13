@@ -67,8 +67,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Calculate total impact by action type
+      const totalImpact = habits.reduce((acc, habit) => {
+        const amount = habit.totalImpactEarned || 0;
+        switch (habit.impactAction) {
+          case 'plant_tree':
+            acc.treesPlanted += amount;
+            break;
+          case 'clean_ocean':
+            acc.wasteRemoved += amount;
+            break;
+          case 'capture_carbon':
+            acc.carbonCaptured += amount;
+            break;
+          case 'donate_money':
+            acc.moneyDonated += amount;
+            break;
+        }
+        return acc;
+      }, { treesPlanted: 0, wasteRemoved: 0, carbonCaptured: 0, moneyDonated: 0 });
+
       res.json({
-        user,
+        user: {
+          ...user,
+          totalImpact,
+          currentStreak: user.currentStreak,
+          longestStreak: user.longestStreak,
+        },
         habits: habits.map(habit => ({
           ...habit,
           completedToday: todayCompletions.some(c => c.habitId === habit.id),
@@ -76,8 +101,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         todayCompletions: todayCompletions.length,
         totalHabits: habits.length,
         weeklyProgress,
-        monthlyTrees: Math.floor(user.treesPlanted * 0.1), // Approximate monthly trees
-        co2Offset: user.treesPlanted * 2.2, // Approximate kg CO2
+        monthlyTrees: Math.floor(totalImpact.treesPlanted * 0.3),
+        co2Offset: totalImpact.carbonCaptured + (totalImpact.treesPlanted * 22),
       });
     } catch (error) {
       console.error("Dashboard error:", error);
