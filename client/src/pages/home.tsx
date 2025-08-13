@@ -22,7 +22,9 @@ interface DashboardData {
     icon: string;
     category: string;
     streak: number;
-    treesEarned: number;
+    impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+    impactAmount: number;
+    totalImpactEarned: number;
     completedToday: boolean;
   }>;
   todayCompletions: number;
@@ -50,8 +52,8 @@ export default function Home() {
     queryKey: ["/api/dashboard"],
   });
 
-  const handleHabitComplete = (habitName: string, streak: number, newTreeCount: number) => {
-    setCelebrationData({ habitName, streak, newTreeCount });
+  const handleHabitComplete = (habitName: string, streak: number, newImpactCount: number) => {
+    setCelebrationData({ habitName, streak, newTreeCount: newImpactCount });
     setShowTreeCelebration(true);
     refetch(); // Refresh dashboard data
   };

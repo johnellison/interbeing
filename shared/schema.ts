@@ -36,7 +36,11 @@ export const habits = pgTable("habits", {
   category: text("category").notNull().default("wellness"),
   isActive: boolean("is_active").notNull().default(true),
   streak: integer("streak").notNull().default(0),
-  treesEarned: integer("trees_earned").notNull().default(0),
+  impactAction: text("impact_action", { 
+    enum: ["plant_tree", "clean_ocean", "capture_carbon", "donate_money"] 
+  }).notNull().default("plant_tree"),
+  impactAmount: integer("impact_amount").notNull().default(1),
+  totalImpactEarned: integer("total_impact_earned").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -45,8 +49,10 @@ export const habitCompletions = pgTable("habit_completions", {
   habitId: varchar("habit_id").notNull().references(() => habits.id),
   userId: varchar("user_id").notNull().references(() => users.id),
   completedAt: timestamp("completed_at").defaultNow().notNull(),
-  treePlanted: boolean("tree_planted").notNull().default(false),
-  ecoloiTreeId: text("ecologi_tree_id"), // Track Ecologi tree purchase ID
+  impactCreated: boolean("impact_created").notNull().default(false),
+  impactId: text("impact_id"), // Track 1ClickImpact action ID
+  impactAction: text("impact_action"),
+  impactAmount: integer("impact_amount"),
 });
 
 export const insertUserSchema = createInsertSchema(users).omit({
@@ -69,15 +75,17 @@ export const upsertUserSchema = createInsertSchema(users).omit({
 export const insertHabitSchema = createInsertSchema(habits).omit({
   id: true,
   streak: true,
-  treesEarned: true,
+  totalImpactEarned: true,
   createdAt: true,
 });
 
 export const insertHabitCompletionSchema = createInsertSchema(habitCompletions).omit({
   id: true,
   completedAt: true,
-  treePlanted: true,
-  ecoloiTreeId: true,
+  impactCreated: true,
+  impactId: true,
+  impactAction: true,
+  impactAmount: true,
 });
 
 export type User = typeof users.$inferSelect;

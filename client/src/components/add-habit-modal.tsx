@@ -39,6 +39,8 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
     description: "",
     category: "wellness",
     icon: "leaf",
+    impactAction: "plant_tree" as 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money',
+    impactAmount: 1,
   });
   const [selectedIcon, setSelectedIcon] = useState("leaf");
 
@@ -52,7 +54,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
         title: "Habit Created!",
         description: "Your new habit has been added successfully.",
       });
-      setFormData({ name: "", description: "", category: "wellness", icon: "leaf" });
+      setFormData({ name: "", description: "", category: "wellness", icon: "leaf", impactAction: "plant_tree", impactAmount: 1 });
       setSelectedIcon("leaf");
       onHabitAdded();
     },
@@ -79,7 +81,10 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => ({ 
+      ...prev, 
+      [field]: field === 'impactAmount' ? parseInt(value) || 1 : value 
+    }));
   };
 
   if (!isOpen) return null;
@@ -166,6 +171,44 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
                 </Button>
               ))}
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-forest-text mb-2">
+              Environmental Impact Action
+            </label>
+            <Select value={formData.impactAction} onValueChange={(value: any) => handleInputChange("impactAction", value)}>
+              <SelectTrigger className="rounded-organic" data-testid="select-impact-action">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="plant_tree">🌳 Plant Trees</SelectItem>
+                <SelectItem value="clean_ocean">🌊 Clean Ocean</SelectItem>
+                <SelectItem value="capture_carbon">💨 Capture Carbon</SelectItem>
+                <SelectItem value="donate_money">💰 Donate Money</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-forest-text mb-2">
+              Impact Amount Per Completion
+            </label>
+            <Input
+              type="number"
+              min="1"
+              value={formData.impactAmount}
+              onChange={(e) => handleInputChange("impactAmount", e.target.value)}
+              placeholder="1"
+              className="rounded-organic"
+              data-testid="input-impact-amount"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              {formData.impactAction === 'plant_tree' && 'Number of trees to plant'}
+              {formData.impactAction === 'clean_ocean' && 'Pounds of ocean waste to remove'}
+              {formData.impactAction === 'capture_carbon' && 'Pounds of CO₂ to capture'}
+              {formData.impactAction === 'donate_money' && 'Cents to donate (e.g., 100 = $1.00)'}
+            </p>
           </div>
 
           <div className="flex space-x-3 pt-4">

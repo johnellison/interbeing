@@ -159,6 +159,15 @@ export class DatabaseStorage implements IStorage {
     const result = await db.delete(habitCompletions).where(eq(habitCompletions.id, id));
     return (result.rowCount ?? 0) > 0;
   }
+
+  async updateHabitCompletion(id: string, updates: Partial<HabitCompletion>): Promise<boolean> {
+    const [updated] = await db
+      .update(habitCompletions)
+      .set(updates)
+      .where(eq(habitCompletions.id, id))
+      .returning();
+    return !!updated;
+  }
 }
 
 export const storage = new DatabaseStorage();

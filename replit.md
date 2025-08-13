@@ -1,8 +1,8 @@
-# EcoHabits - Habit Tracking with Environmental Impact
+# Interbeing - Multi-Impact Habit Tracker
 
 ## Overview
 
-EcoHabits is a full-stack web application that combines personal habit tracking with environmental impact visualization. Users can create and track daily habits while earning virtual trees for completed actions, creating a gamified experience that connects personal growth with environmental awareness. The application features a clean, nature-inspired interface built with modern React components and a robust Express.js backend.
+Interbeing is a full-stack web application that combines personal habit tracking with real environmental impact actions. Users can create and track daily habits while triggering authentic environmental impact through the 1ClickImpact API - including tree planting, ocean cleanup, carbon capture, and charitable donations. Each habit can be customized with specific impact actions and amounts, creating a powerful connection between personal growth and environmental responsibility. The application features a clean, nature-inspired interface built with modern React components and a robust Express.js backend with full user authentication.
 
 ## User Preferences
 
@@ -53,10 +53,12 @@ Preferred communication style: Simple, everyday language.
 - **Connection Pooling**: Built-in connection management for serverless environments
 
 #### Third-Party APIs
-- **Ecologi API**: Tree planting service integration for real environmental impact
-  - Supports both test and production tree planting
-  - Tracks individual tree planting transactions
-  - Requires ECOLOGI_API_TOKEN environment variable
+- **1ClickImpact API**: Multi-action environmental impact service integration
+  - Supports four impact actions: plant_tree, clean_ocean, capture_carbon, donate_money
+  - Each habit can be configured with specific impact type and amount
+  - Tracks individual impact transactions with unique IDs
+  - Requires ONE_CLICK_IMPACT_API_KEY environment variable
+  - Server-side integration keeps API keys secure
 
 #### UI and Component Libraries
 - **Radix UI**: Comprehensive set of low-level UI primitives for accessibility

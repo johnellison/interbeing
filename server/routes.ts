@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { ecologiService } from "./services/ecologi";
+import { oneClickImpactService } from "./services/oneClickImpactService";
 import { insertHabitSchema, insertHabitCompletionSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { z } from "zod";
@@ -136,50 +136,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
           userId,
         });
 
-        // Update habit streak and trees earned
+        // Update habit streak and impact earned
         const newStreak = habit.streak + 1;
-        const newTreesEarned = habit.treesEarned + 1;
+        const newTotalImpactEarned = habit.totalImpactEarned + habit.impactAmount;
         await storage.updateHabit(habitId, { 
           streak: newStreak, 
-          treesEarned: newTreesEarned 
+          totalImpactEarned: newTotalImpactEarned 
         });
 
-        // Plant tree via Ecologi API
-        let treePlanted = false;
-        let ecologiTreeId = null;
+        // Create impact via 1ClickImpact API
+        let impactCreated = false;
+        let impactId = null;
         
         try {
-          const treeResult = await ecologiService.plantTree(`${habit.name} completion - Streak: ${newStreak}`);
-          if (treeResult) {
-            treePlanted = true;
-            ecologiTreeId = treeResult.treeUrl;
+          const impactResult = await oneClickImpactService.createImpact({
+            action: habit.impactAction as any,
+            amount: habit.impactAmount,
+          }, `${habit.name} completion - Streak: ${newStreak}`);
+          
+          if (impactResult.success) {
+            impactCreated = true;
+            impactId = impactResult.impact_id;
             
             // Update completion record
-            completion.treePlanted = true;
-            completion.ecoloiTreeId = ecologiTreeId;
+            await storage.updateHabitCompletion(completion.id, {
+              impactCreated: true,
+              impactId: impactId,
+              impactAction: habit.impactAction,
+              impactAmount: habit.impactAmount,
+            });
             
-            // Update user's tree count
+            // Update user's impact stats (for trees planted specifically)
             const user = await storage.getUser(userId);
-            if (user) {
+            if (user && habit.impactAction === 'plant_tree') {
               await storage.updateUserStats(
                 userId,
-                user.treesPlanted + 1,
+                user.treesPlanted + habit.impactAmount,
                 user.currentStreak + 1,
                 Math.max(user.longestStreak, user.currentStreak + 1)
               );
             }
           }
-        } catch (treeError) {
-          console.error("Failed to plant tree:", treeError);
+        } catch (impactError) {
+          console.error("Failed to create impact:", impactError);
           // Continue without failing the habit completion
         }
 
         res.json({ 
           completed: true, 
-          treePlanted,
-          ecologiTreeId,
+          impactCreated,
+          impactId,
+          impactAction: habit.impactAction,
+          impactAmount: habit.impactAmount,
           streak: newStreak,
-          message: treePlanted ? "Habit completed and tree planted!" : "Habit completed (tree planting failed)"
+          message: impactCreated ? `Habit completed and ${habit.impactAction.replace('_', ' ')} impact created!` : "Habit completed (impact creation failed)"
         });
       }
     } catch (error) {
@@ -214,6 +224,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Delete habit error:", error);
       res.status(500).json({ message: "Failed to delete habit" });
+    }
+  });
+
+  // Get available impact types
+  app.get("/api/impact-types", async (req, res) => {
+    try {
+      const impactTypes = await oneClickImpactService.getImpactTypes();
+      res.json(impactTypes);
+    } catch (error) {
+      console.error("Get impact types error:", error);
+      res.status(500).json({ message: "Failed to get impact types" });
     }
   });
 

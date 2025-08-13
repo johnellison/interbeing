@@ -33,6 +33,26 @@ const categoryColors = {
   social: "bg-yellow-100 text-yellow-800",
 } as const;
 
+const getImpactUnit = (action: string) => {
+  switch (action) {
+    case 'plant_tree': return 'trees';
+    case 'clean_ocean': return 'lbs of waste';
+    case 'capture_carbon': return 'lbs CO₂';
+    case 'donate_money': return 'cents USD';
+    default: return 'units';
+  }
+};
+
+const getImpactEmoji = (action: string) => {
+  switch (action) {
+    case 'plant_tree': return '🌳';
+    case 'clean_ocean': return '🌊';
+    case 'capture_carbon': return '💨';
+    case 'donate_money': return '💰';
+    default: return '🌍';
+  }
+};
+
 interface HabitCardProps {
   habit: {
     id: string;
@@ -41,10 +61,12 @@ interface HabitCardProps {
     icon: string;
     category: string;
     streak: number;
-    treesEarned: number;
+    impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+    impactAmount: number;
+    totalImpactEarned: number;
     completedToday: boolean;
   };
-  onComplete: (habitName: string, streak: number, newTreeCount: number) => void;
+  onComplete: (habitName: string, streak: number, newImpactCount: number) => void;
   onRefresh: () => void;
 }
 
@@ -65,11 +87,13 @@ export default function HabitCard({ habit, onComplete, onRefresh }: HabitCardPro
       setIsOptimisticComplete(!isOptimisticComplete);
     },
     onSuccess: (data) => {
-      if (data.completed && data.treePlanted) {
-        onComplete(habit.name, data.streak, data.streak);
+      if (data.completed && data.impactCreated) {
+        onComplete(habit.name, data.streak, habit.totalImpactEarned + habit.impactAmount);
+        const impactTypeText = data.impactAction.replace('_', ' ');
+        const unitText = getImpactUnit(data.impactAction);
         toast({
-          title: "🌳 Tree Planted!",
-          description: `Completed "${habit.name}" and planted a tree!`,
+          title: "🌍 Impact Created!",
+          description: `Completed "${habit.name}" and created ${data.impactAmount} ${unitText} ${impactTypeText} impact!`,
         });
       } else if (data.completed) {
         toast({
@@ -137,8 +161,11 @@ export default function HabitCard({ habit, onComplete, onRefresh }: HabitCardPro
               <p className="text-sm font-medium text-forest-accent" data-testid={`text-habit-streak-${habit.id}`}>
                 🔥 {habit.streak} day streak
               </p>
-              <p className="text-xs text-forest-text/70" data-testid={`text-habit-trees-${habit.id}`}>
-                {isOptimisticComplete ? "🌳 Tree planted!" : "🌱 Ready to plant!"}
+              <p className="text-xs text-forest-text/70" data-testid={`text-habit-impact-${habit.id}`}>
+                {getImpactEmoji(habit.impactAction)} {habit.totalImpactEarned} {getImpactUnit(habit.impactAction)} earned
+              </p>
+              <p className="text-xs text-forest-accent/80">
+                +{habit.impactAmount} {getImpactUnit(habit.impactAction)} per completion
               </p>
             </div>
           </div>
