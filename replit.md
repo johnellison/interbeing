@@ -8,6 +8,17 @@ Interbeing is a full-stack web application that combines personal habit tracking
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes
+
+**January 13, 2025**: Successfully refactored from Ecologi single-action (tree planting) to 1ClickImpact multi-action system:
+- Replaced Ecologi API integration with 1ClickImpact API
+- Added support for four impact types: plant_tree, clean_ocean, capture_carbon, donate_money  
+- Updated database schema with new impact tracking fields (impact_action, impact_amount, total_impact_earned)
+- Enhanced habit creation form with impact action selection and amount configuration
+- Updated habit cards and dashboard to display multi-impact information
+- Implemented server-side API integration with secure credential storage
+- Updated landing page to reflect expanded environmental impact scope
+
 ## System Architecture
 
 ### Frontend Architecture
