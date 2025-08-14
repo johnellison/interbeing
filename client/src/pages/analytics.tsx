@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Area, AreaChart } from "recharts";
 import { Calendar, TreePine, Waves, Factory, Heart, MapPin, TrendingUp, Target } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { getEmojiForIcon } from "@/lib/iconMapping";
 // Using a simple world map component instead of react-leaflet due to version conflicts
 
 interface HabitAnalytics {
@@ -278,7 +279,9 @@ export default function Analytics() {
                   habitsList.map((habit: any) => (
                     <div key={habit.id} className="flex items-center justify-between p-4 border border-forest-secondary/20 rounded-lg" data-testid={`habit-card-${habit.id}`}>
                     <div className="flex items-center space-x-4">
-                      <div className="text-2xl">{habit.icon}</div>
+                      <div className="text-2xl">
+                        {getEmojiForIcon(habit.icon)}
+                      </div>
                       <div>
                         <h3 className="font-semibold text-forest-text">{habit.name}</h3>
                         <p className="text-sm text-forest-text/70">{habit.category}</p>
