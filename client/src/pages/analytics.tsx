@@ -134,12 +134,12 @@ export default function Analytics() {
     enabled: !!user,
   });
 
-  const { data: habits } = useQuery({
+  const { data: habits, isLoading: habitsLoading } = useQuery({
     queryKey: ["/api/habits"],
     enabled: !!user,
   });
 
-  if (isLoading) {
+  if (isLoading || habitsLoading) {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse space-y-6">
@@ -156,7 +156,8 @@ export default function Analytics() {
 
   // Generate mock data if analytics not available
   const mockProgressData = generateProgressData();
-  const categoryData = generateCategoryData(habits || []);
+  const habitsList = Array.isArray(habits) ? habits : analytics?.habits || [];
+  const categoryData = generateCategoryData(habitsList);
   
   const impactSummary = analytics?.impactSummary || {
     totalTrees: 127,
@@ -269,8 +270,13 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
-                {(habits || []).map((habit: any) => (
-                  <div key={habit.id} className="flex items-center justify-between p-4 border border-forest-secondary/20 rounded-lg" data-testid={`habit-card-${habit.id}`}>
+                {habitsList.length === 0 ? (
+                  <div className="text-center py-8 text-forest-text/60">
+                    <p>No habits found. Create your first habit to start tracking your impact!</p>
+                  </div>
+                ) : (
+                  habitsList.map((habit: any) => (
+                    <div key={habit.id} className="flex items-center justify-between p-4 border border-forest-secondary/20 rounded-lg" data-testid={`habit-card-${habit.id}`}>
                     <div className="flex items-center space-x-4">
                       <div className="text-2xl">{habit.icon}</div>
                       <div>
@@ -291,8 +297,9 @@ export default function Analytics() {
                         {habit.impactAction.replace('_', ' ')}
                       </Badge>
                     </div>
-                  </div>
-                ))}
+                    </div>
+                  ))
+                )}
               </div>
             </CardContent>
           </Card>
