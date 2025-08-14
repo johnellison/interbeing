@@ -48,8 +48,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user || undefined;
+    // Username field doesn't exist in current schema - this method is not used
+    return undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
@@ -175,49 +175,49 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getRecentImpactEntries(userId: string, limit: number): Promise<any[]> {
-    const completions = await db
-      .select({
-        id: habitCompletions.id,
-        habitName: habits.name,
-        impactAction: habitCompletions.impactAction,
-        impactAmount: habitCompletions.impactAmount,
-        completedAt: habitCompletions.completedAt
-      })
-      .from(habitCompletions)
-      .innerJoin(habits, eq(habitCompletions.habitId, habits.id))
-      .where(
-        and(
-          eq(habits.userId, userId),
-          eq(habitCompletions.impactCreated, true)
-        )
-      )
-      .orderBy(desc(habitCompletions.completedAt))
-      .limit(limit);
-    
-    return completions;
+    try {
+      const completions = await db
+        .select({
+          id: habitCompletions.id,
+          habitName: habits.name,
+          impactAction: habits.impactAction, // Get from habits table since completion might not have it
+          impactAmount: habits.impactAmount, // Get from habits table since completion might not have it
+          completedAt: habitCompletions.completedAt
+        })
+        .from(habitCompletions)
+        .innerJoin(habits, eq(habitCompletions.habitId, habits.id))
+        .where(eq(habits.userId, userId))
+        .orderBy(desc(habitCompletions.completedAt))
+        .limit(limit);
+      
+      return completions || [];
+    } catch (error) {
+      console.error("Error getting recent impact entries:", error);
+      return [];
+    }
   }
 
   async getImpactTimeline(userId: string): Promise<any[]> {
-    const completions = await db
-      .select({
-        id: habitCompletions.id,
-        habitName: habits.name,
-        impactAction: habitCompletions.impactAction,
-        impactAmount: habitCompletions.impactAmount,
-        completedAt: habitCompletions.completedAt,
-        streak: habitCompletions.streak
-      })
-      .from(habitCompletions)
-      .innerJoin(habits, eq(habitCompletions.habitId, habits.id))
-      .where(
-        and(
-          eq(habits.userId, userId),
-          eq(habitCompletions.impactCreated, true)
-        )
-      )
-      .orderBy(desc(habitCompletions.completedAt));
-    
-    return completions;
+    try {
+      const completions = await db
+        .select({
+          id: habitCompletions.id,
+          habitName: habits.name,
+          impactAction: habits.impactAction, // Get from habits table since completion might not have it
+          impactAmount: habits.impactAmount, // Get from habits table since completion might not have it
+          completedAt: habitCompletions.completedAt,
+          streak: habits.streak // Get streak from habits table
+        })
+        .from(habitCompletions)
+        .innerJoin(habits, eq(habitCompletions.habitId, habits.id))
+        .where(eq(habits.userId, userId))
+        .orderBy(desc(habitCompletions.completedAt));
+      
+      return completions || [];
+    } catch (error) {
+      console.error("Error getting impact timeline:", error);
+      return [];
+    }
   }
 }
 

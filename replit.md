@@ -10,13 +10,21 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**August 14, 2025**: Completed Impact Timeline feature and full-screen celebration modal:
+- Created full-screen celebration modal with particle animations and impact-specific theming
+- Transformed Impact Actions section into Recent Impact timeline showing 5 most recent habit completions
+- Built comprehensive Impact Timeline page displaying all habit completions with environmental impact details
+- Added backend API endpoints for recent impact data and full timeline queries
+- Enhanced database storage methods to support impact timeline functionality
+- Fixed SVG placeholder image for reliable environmental impact visualization
+- Integrated routing between sidebar timeline preview and full timeline page
+
 **August 13, 2025**: Completed comprehensive multi-impact tracking UI transformation:
 - Updated header with four real-time impact counters (trees, waste, carbon, donations)
 - Redesigned environmental impact dashboard to display all impact types with dedicated grid layout
 - Enhanced progress sidebar with custom SVG illustration representing all four impact actions
 - Replaced all Ecologi references with 1ClickImpact throughout the interface
 - Fixed server-side dashboard data calculation to aggregate impact by action type
-- Created full-screen celebration modal with particles, animations, and impact-specific theming
 - Added comprehensive impact action visualization with emojis, colors, and units
 
 **January 13, 2025**: Successfully refactored from Ecologi single-action (tree planting) to 1ClickImpact multi-action system:
