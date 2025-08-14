@@ -169,6 +169,7 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
           <Button
             variant="ghost"
             className="w-full justify-start p-3 hover:bg-forest-bg rounded-organic transition-colors"
+            onClick={() => { window.location.href = "/analytics"; }}
             data-testid="button-view-habits"
           >
             <BarChart3 className="h-4 w-4 mr-3 text-forest-primary" />
@@ -178,6 +179,7 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
           <Button
             variant="ghost"
             className="w-full justify-start p-3 hover:bg-forest-bg rounded-organic transition-colors"
+            onClick={() => { window.location.href = "/analytics"; }}
             data-testid="button-progress-report"
           >
             <TrendingUp className="h-4 w-4 mr-3 text-forest-accent" />
@@ -187,6 +189,7 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
           <Button
             variant="ghost"
             className="w-full justify-start p-3 hover:bg-forest-bg rounded-organic transition-colors"
+            onClick={() => { window.location.href = "/analytics"; }}
             data-testid="button-impact-map"
           >
             <MapPin className="h-4 w-4 mr-3 text-forest-success" />

@@ -287,6 +287,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Analytics data
+  app.get('/api/analytics', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const habits = await storage.getHabitsByUserId(userId);
+      const completions = await storage.getHabitCompletionsByUserId(userId);
+      
+      // Calculate impact summary
+      const impactSummary = {
+        totalTrees: 0,
+        totalOceanCleaned: 0,
+        totalCarbonCaptured: 0,
+        totalDonated: 0
+      };
+      
+      habits.forEach(habit => {
+        switch (habit.impactAction) {
+          case 'plant_tree':
+            impactSummary.totalTrees += habit.totalImpactEarned;
+            break;
+          case 'clean_ocean':
+            impactSummary.totalOceanCleaned += habit.totalImpactEarned;
+            break;
+          case 'capture_carbon':
+            impactSummary.totalCarbonCaptured += habit.totalImpactEarned;
+            break;
+          case 'donate_money':
+            impactSummary.totalDonated += habit.totalImpactEarned;
+            break;
+        }
+      });
+
+      res.json({
+        habits,
+        impactSummary,
+        totalCompletions: completions.length
+      });
+    } catch (error) {
+      console.error("Get analytics error:", error);
+      res.status(500).json({ message: "Failed to get analytics data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
