@@ -10,6 +10,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**August 13, 2025**: Completed comprehensive multi-impact tracking UI transformation:
+- Updated header with four real-time impact counters (trees, waste, carbon, donations)
+- Redesigned environmental impact dashboard to display all impact types with dedicated grid layout
+- Enhanced progress sidebar with custom SVG illustration representing all four impact actions
+- Replaced all Ecologi references with 1ClickImpact throughout the interface
+- Fixed server-side dashboard data calculation to aggregate impact by action type
+- Created full-screen celebration modal with particles, animations, and impact-specific theming
+- Added comprehensive impact action visualization with emojis, colors, and units
+
 **January 13, 2025**: Successfully refactored from Ecologi single-action (tree planting) to 1ClickImpact multi-action system:
 - Replaced Ecologi API integration with 1ClickImpact API
 - Added support for four impact types: plant_tree, clean_ocean, capture_carbon, donate_money  

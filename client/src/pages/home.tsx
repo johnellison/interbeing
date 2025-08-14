@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import ImpactDashboard from "@/components/impact-dashboard";
 import HabitCard from "@/components/habit-card";
 import AddHabitModal from "@/components/add-habit-modal";
-import TreeCelebration from "@/components/tree-celebration";
+import ImpactCelebration from "@/components/impact-celebration";
 import ProgressSidebar from "@/components/progress-sidebar";
 
 interface DashboardData {
@@ -46,25 +46,26 @@ interface DashboardData {
 
 export default function Home() {
   const [isAddHabitModalOpen, setIsAddHabitModalOpen] = useState(false);
-  const [showTreeCelebration, setShowTreeCelebration] = useState(false);
+  const [showImpactCelebration, setShowImpactCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{
     habitName: string;
     streak: number;
-    newTreeCount: number;
+    impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+    impactAmount: number;
   } | null>(null);
 
   const { data: dashboardData, isLoading, refetch } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
   });
 
-  const handleHabitComplete = (habitName: string, streak: number, newImpactCount: number) => {
-    setCelebrationData({ habitName, streak, newTreeCount: newImpactCount });
-    setShowTreeCelebration(true);
+  const handleHabitComplete = (habitName: string, streak: number, impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money', impactAmount: number) => {
+    setCelebrationData({ habitName, streak, impactAction, impactAmount });
+    setShowImpactCelebration(true);
     refetch(); // Refresh dashboard data
   };
 
   const handleCloseCelebration = () => {
-    setShowTreeCelebration(false);
+    setShowImpactCelebration(false);
     setCelebrationData(null);
   };
 
@@ -241,8 +242,8 @@ export default function Home() {
         onHabitAdded={handleHabitAdded}
       />
 
-      <TreeCelebration
-        isOpen={showTreeCelebration}
+      <ImpactCelebration
+        isOpen={showImpactCelebration}
         onClose={handleCloseCelebration}
         data={celebrationData}
       />
