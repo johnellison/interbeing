@@ -1,6 +1,6 @@
 import { type User, type InsertUser, type UpsertUser, type Habit, type InsertHabit, type HabitCompletion, type InsertHabitCompletion, users, habits, habitCompletions } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, gte, lte } from "drizzle-orm";
+import { eq, and, gte, lte, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -25,6 +25,10 @@ export interface IStorage {
   createHabitCompletion(completion: InsertHabitCompletion): Promise<HabitCompletion>;
   updateHabitCompletion(id: string, updates: Partial<HabitCompletion>): Promise<HabitCompletion | undefined>;
   deleteHabitCompletion(id: string): Promise<boolean>;
+
+  // Impact timeline methods
+  getRecentImpactEntries(userId: string, limit: number): Promise<any[]>;
+  getImpactTimeline(userId: string): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -168,6 +172,52 @@ export class DatabaseStorage implements IStorage {
       .where(eq(habitCompletions.id, id))
       .returning();
     return updated;
+  }
+
+  async getRecentImpactEntries(userId: string, limit: number): Promise<any[]> {
+    const completions = await db
+      .select({
+        id: habitCompletions.id,
+        habitName: habits.name,
+        impactAction: habitCompletions.impactAction,
+        impactAmount: habitCompletions.impactAmount,
+        completedAt: habitCompletions.completedAt
+      })
+      .from(habitCompletions)
+      .innerJoin(habits, eq(habitCompletions.habitId, habits.id))
+      .where(
+        and(
+          eq(habits.userId, userId),
+          eq(habitCompletions.impactCreated, true)
+        )
+      )
+      .orderBy(desc(habitCompletions.completedAt))
+      .limit(limit);
+    
+    return completions;
+  }
+
+  async getImpactTimeline(userId: string): Promise<any[]> {
+    const completions = await db
+      .select({
+        id: habitCompletions.id,
+        habitName: habits.name,
+        impactAction: habitCompletions.impactAction,
+        impactAmount: habitCompletions.impactAmount,
+        completedAt: habitCompletions.completedAt,
+        streak: habitCompletions.streak
+      })
+      .from(habitCompletions)
+      .innerJoin(habits, eq(habitCompletions.habitId, habits.id))
+      .where(
+        and(
+          eq(habits.userId, userId),
+          eq(habitCompletions.impactCreated, true)
+        )
+      )
+      .orderBy(desc(habitCompletions.completedAt));
+    
+    return completions;
   }
 }
 

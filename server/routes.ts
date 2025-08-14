@@ -263,6 +263,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get recent impact entries (protected route)
+  app.get("/api/recent-impact", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.user as any).claims.sub;
+      const recentImpact = await storage.getRecentImpactEntries(userId, 5);
+      res.json(recentImpact);
+    } catch (error) {
+      console.error("Get recent impact error:", error);
+      res.status(500).json({ message: "Failed to get recent impact" });
+    }
+  });
+
+  // Get full impact timeline (protected route)
+  app.get("/api/impact-timeline", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.user as any).claims.sub;
+      const timeline = await storage.getImpactTimeline(userId);
+      res.json(timeline);
+    } catch (error) {
+      console.error("Get impact timeline error:", error);
+      res.status(500).json({ message: "Failed to get impact timeline" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
