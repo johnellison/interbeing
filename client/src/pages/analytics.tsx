@@ -164,14 +164,14 @@ export default function Analytics() {
     totalTrees: 127,
     totalOceanCleaned: 45,
     totalCarbonCaptured: 23,
-    totalDonated: 12400
+    totalDonated: 124.00  // Show in dollars
   };
 
   const impactTypeData = [
     { name: 'Trees Planted', value: impactSummary.totalTrees, color: '#22c55e', icon: '🌳' },
     { name: 'Ocean Cleaned (lbs)', value: impactSummary.totalOceanCleaned, color: '#3b82f6', icon: '🌊' },
     { name: 'Carbon Captured (lbs)', value: impactSummary.totalCarbonCaptured, color: '#8b5cf6', icon: '🏭' },
-    { name: 'Donated (cents)', value: impactSummary.totalDonated, color: '#f59e0b', icon: '💧' },
+    { name: 'Donated ($)', value: impactSummary.totalDonated, color: '#f59e0b', icon: '💧' },
   ];
 
   return (
@@ -193,7 +193,7 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-forest-text" data-testid={`metric-${item.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                {item.value.toLocaleString()}
+                {item.name.includes('Donated') ? `$${item.value.toFixed(2)}` : item.value.toLocaleString()}
               </div>
               <p className="text-xs text-forest-text/50 mt-1">
                 Total generated
@@ -253,7 +253,14 @@ export default function Analytics() {
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="name" angle={-45} textAnchor="end" height={80} />
                     <YAxis />
-                    <Tooltip />
+                    <Tooltip 
+                      formatter={(value: any, name: string) => {
+                        if (name === 'value' && (impactTypeData.find(item => item.value === value)?.name.includes('Donated'))) {
+                          return [`$${value.toFixed(2)}`, 'Amount'];
+                        }
+                        return [value, 'Amount'];
+                      }}
+                    />
                     <Bar dataKey="value" fill="#22c55e" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -293,7 +300,9 @@ export default function Analytics() {
                         <div className="text-xs text-forest-text/70">Current Streak</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-forest-primary">{habit.totalImpactEarned}</div>
+                        <div className="text-lg font-bold text-forest-primary">
+                          {habit.impactAction === 'donate_money' ? `$${habit.totalImpactEarned.toFixed(2)}` : habit.totalImpactEarned}
+                        </div>
                         <div className="text-xs text-forest-text/70">Total Impact</div>
                       </div>
                       <Badge variant="outline" className="capitalize">

@@ -81,7 +81,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             acc.carbonCaptured += amount;
             break;
           case 'donate_money':
-            acc.moneyDonated += amount;
+            acc.moneyDonated += amount * 100; // Convert dollars to cents for storage
             break;
         }
         return acc;
@@ -314,7 +314,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             impactSummary.totalCarbonCaptured += habit.totalImpactEarned;
             break;
           case 'donate_money':
-            impactSummary.totalDonated += habit.totalImpactEarned;
+            impactSummary.totalDonated += habit.totalImpactEarned; // Already in dollars
             break;
         }
       });
