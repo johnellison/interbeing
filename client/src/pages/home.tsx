@@ -54,14 +54,21 @@ export default function Home() {
     streak: number;
     impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
     impactAmount: number;
+    projectInfo?: {
+      name: string;
+      description: string;
+      location: string;
+      imageUrl?: string;
+      registryLink?: string;
+    };
   } | null>(null);
 
   const { data: dashboardData, isLoading, refetch } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
   });
 
-  const handleHabitComplete = (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number) => {
-    setCelebrationData({ habitName, streak, impactAction, impactAmount });
+  const handleHabitComplete = (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any) => {
+    setCelebrationData({ habitName, streak, impactAction, impactAmount, projectInfo });
     setShowImpactCelebration(true);
     refetch(); // Refresh dashboard data
   };

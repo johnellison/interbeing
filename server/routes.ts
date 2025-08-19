@@ -220,6 +220,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Continue without failing the habit completion
         }
 
+        // Fetch project information for the celebration modal
+        let projectInfo = null;
+        if (impactCreated) {
+          try {
+            const projects = await greensparkService.getProjectsByType(habit.impactAction);
+            if (projects.length > 0) {
+              const project = projects[0]; // Use the first (most relevant) project
+              projectInfo = {
+                name: project.name,
+                description: project.description,
+                location: project.countries?.length > 0 ? project.countries[0] : 'Global',
+                imageUrl: project.imageUrl,
+                registryLink: project.link
+              };
+            }
+          } catch (projectError) {
+            console.error("Failed to fetch project info:", projectError);
+          }
+        }
+
         res.json({ 
           completed: true, 
           impactCreated,
@@ -227,6 +247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactAction: habit.impactAction,
           impactAmount: habit.impactAmount,
           streak: newStreak,
+          projectInfo,
           message: impactCreated ? `Habit completed and ${habit.impactAction.replace('_', ' ')} impact created!` : "Habit completed (impact creation failed)"
         });
       }
@@ -332,7 +353,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       apiKeyPrefix: process.env.GREENSPARK_API_KEY ? process.env.GREENSPARK_API_KEY.substring(0, 8) + '...' : 'not configured',
       sdkVersion: '1.4.0',
       baseUrl: 'https://demo.getgreenspark.com',
-      tests: []
+      tests: [] as any[]
     };
 
     // Test 1: Basic API connection
@@ -455,7 +476,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Using real project data for ${impactType}: ${realProject.name}`);
           // Extract real location from API project
           const realLocation = realProject.location || (realProject.countries && realProject.countries[0]) || `${templateRegion}, ${templateCountry}`;
-          const [region, country] = realLocation.includes(',') ? realLocation.split(',').map(s => s.trim()) : [realLocation, realLocation];
+          const [region, country] = realLocation.includes(',') ? realLocation.split(',').map((s: string) => s.trim()) : [realLocation, realLocation];
           
           return {
             projectName: realProject.name || fallbackName,

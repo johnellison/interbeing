@@ -70,7 +70,7 @@ interface HabitCardProps {
     totalImpactEarned: number;
     completedToday: boolean;
   };
-  onComplete: (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number) => void;
+  onComplete: (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any) => void;
   onRefresh: () => void;
 }
 
@@ -92,7 +92,7 @@ export default function HabitCard({ habit, onComplete, onRefresh }: HabitCardPro
     },
     onSuccess: (data) => {
       if (data.completed && data.impactCreated) {
-        onComplete(habit.name, data.streak, habit.impactAction, habit.impactAmount);
+        onComplete(habit.name, data.streak, habit.impactAction, habit.impactAmount, data.projectInfo);
         const impactTypeText = data.impactAction.replace('_', ' ');
         const unitText = getImpactUnit(data.impactAction);
         toast({

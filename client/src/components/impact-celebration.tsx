@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { X, Sparkles } from "lucide-react";
+import { X, Sparkles, MapPin, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocation } from "wouter";
 
 interface ImpactCelebrationProps {
   isOpen: boolean;
@@ -10,6 +11,13 @@ interface ImpactCelebrationProps {
     streak: number;
     impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
     impactAmount: number;
+    projectInfo?: {
+      name: string;
+      description: string;
+      location: string;
+      imageUrl?: string;
+      registryLink?: string;
+    };
   } | null;
 }
 
@@ -80,9 +88,20 @@ interface Particle {
   size: number;
 }
 
+// Emotion feedback options
+const emotions = [
+  { emoji: '😞', label: 'Sad', value: 1 },
+  { emoji: '😐', label: 'Neutral', value: 2 },  
+  { emoji: '🙂', label: 'Happy', value: 3 },
+  { emoji: '😊', label: 'Joyful', value: 4 },
+  { emoji: '🤩', label: 'Ecstatic', value: 5 }
+];
+
 export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCelebrationProps) {
   const [particles, setParticles] = useState<Particle[]>([]);
   const [animationPhase, setAnimationPhase] = useState<'enter' | 'celebrate' | 'exit'>('enter');
+  const [selectedEmotion, setSelectedEmotion] = useState<number | null>(null);
+  const [location, setLocation] = useLocation();
 
   useEffect(() => {
     if (isOpen && data) {
@@ -143,7 +162,36 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
     setTimeout(() => {
       onClose();
       setAnimationPhase('enter');
+      setSelectedEmotion(null); // Reset emotion selection
     }, 300);
+  };
+
+  const handleViewImpact = () => {
+    setLocation('/analytics?tab=impact-map');
+    handleClose();
+  };
+
+  const handleEmotionSelect = async (emotionValue: number) => {
+    setSelectedEmotion(emotionValue);
+    
+    // Store emotion feedback (you could send this to your backend)
+    try {
+      // Optional: Store emotion feedback in backend
+      // await fetch('/api/emotion-feedback', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({
+      //     habitName: data?.habitName,
+      //     impactAction: data?.impactAction,
+      //     emotion: emotionValue,
+      //     timestamp: new Date().toISOString()
+      //   })
+      // });
+      
+      console.log(`Emotion feedback recorded: ${emotionValue} for ${data?.habitName}`);
+    } catch (error) {
+      console.error('Failed to store emotion feedback:', error);
+    }
   };
 
   if (!isOpen || !data) return null;
@@ -260,14 +308,75 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             </div>
           </div>
 
-          {/* Call to action */}
-          <div className="text-center">
-            <p className="text-sm text-gray-600 mb-4">
-              Keep building habits that matter. Every action creates real impact!
-            </p>
+          {/* Project Information */}
+          {data?.projectInfo && (
+            <div className="bg-white/80 rounded-2xl p-4 mb-6 text-left">
+              <div className="flex items-start space-x-3">
+                {data.projectInfo.imageUrl && (
+                  <img 
+                    src={data.projectInfo.imageUrl} 
+                    alt={data.projectInfo.name}
+                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2" data-testid="text-project-name">
+                    {data.projectInfo.name}
+                  </h3>
+                  <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                    {data.projectInfo.description}
+                  </p>
+                  <div className="flex items-center text-xs text-gray-500">
+                    <MapPin className="w-3 h-3 mr-1" />
+                    <span>{data.projectInfo.location}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* How do you feel? */}
+          <div className="mb-6">
+            <p className="text-sm text-gray-700 mb-3 font-medium">How do you feel?</p>
+            <div className="flex justify-center space-x-3">
+              {emotions.map((emotion) => (
+                <button
+                  key={emotion.value}
+                  onClick={() => handleEmotionSelect(emotion.value)}
+                  className={`text-2xl p-2 rounded-full transition-all duration-200 hover:scale-110 ${
+                    selectedEmotion === emotion.value 
+                      ? 'bg-white/90 shadow-lg ring-2 ring-forest-primary' 
+                      : 'hover:bg-white/60'
+                  }`}
+                  title={emotion.label}
+                  data-testid={`button-emotion-${emotion.value}`}
+                >
+                  {emotion.emoji}
+                </button>
+              ))}
+            </div>
+            {selectedEmotion && (
+              <p className="text-xs text-green-600 mt-2 opacity-75">
+                Thank you for sharing how this made you feel!
+              </p>
+            )}
+          </div>
+
+          {/* Action buttons */}
+          <div className="space-y-3">
+            <Button
+              onClick={handleViewImpact}
+              variant="outline"
+              className="w-full bg-white/70 hover:bg-white/90 border-forest-primary/30"
+              data-testid="button-view-impact"
+            >
+              <MapPin className="w-4 h-4 mr-2" />
+              View Impact on Map
+            </Button>
+            
             <Button
               onClick={handleClose}
-              className="bg-forest-primary text-white px-8 py-3 rounded-full hover:bg-forest-primary/90 transition-colors"
+              className="w-full bg-forest-primary text-white hover:bg-forest-primary/90 transition-colors"
               data-testid="button-continue-journey"
             >
               Continue Your Journey
