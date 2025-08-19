@@ -208,26 +208,43 @@ class GreensparkService {
       console.log(`Successfully fetched ${projects.length} real projects from Greenspark API`);
       console.log('Sample project structure:', JSON.stringify(projects[0], null, 2));
       
-      // Filter projects by category or return a sample of different types
+      // Enhanced keyword matching with more specific terms
       const typeKeywords = {
-        'plant_tree': ['tree', 'forest', 'reforest'],
-        'rescue_plastic': ['plastic', 'ocean', 'marine'],
-        'offset_carbon': ['carbon', 'emission', 'climate'],
-        'plant_kelp': ['kelp', 'marine', 'seaweed'],
-        'provide_water': ['water', 'well', 'clean'],
-        'sponsor_bees': ['bee', 'pollinator', 'biodiversity']
+        'plant_tree': ['tree', 'forest', 'reforest', 'wildfire', 'oregon', 'american forests'],
+        'rescue_plastic': ['plastic', 'waste', 'ocean cleanup', 'bottle', 'recycling'],
+        'offset_carbon': ['carbon', 'emission', 'climate', 'sequestration', 'co2'],
+        'plant_kelp': ['kelp', 'seaweed', 'marine ecosystem', 'coastal'],
+        'provide_water': ['water', 'well', 'clean water', 'drinking', 'basin'],
+        'sponsor_bees': ['bee', 'pollinator', 'hive', 'earthlungs', 'biodiversity', 'bee-hive']
       };
       
       const keywords = typeKeywords[impactType as keyof typeof typeKeywords] || [];
       
-      // Filter by matching project names/descriptions with better logic to ensure uniqueness
+      // Filter by matching project names/descriptions with enhanced matching
       let filteredProjects = [];
       if (keywords.length > 0) {
-        // First try to find projects matching keywords
+        // First try to find projects matching specific keywords
         filteredProjects = projects.filter((project: any) => {
-          const searchText = `${project.name || ''} ${project.description || ''}`.toLowerCase();
+          const searchText = `${project.name || ''} ${project.description || ''} ${project.link || ''}`.toLowerCase();
+          
+          // For bees, prioritize EarthLungs or bee-specific projects
+          if (impactType === 'sponsor_bees') {
+            if (searchText.includes('earthlung') || searchText.includes('bee') || searchText.includes('pollinator') || searchText.includes('hive')) {
+              return true;
+            }
+          }
+          
+          // For kelp, ensure it's actually kelp-related, not just coastal
+          if (impactType === 'plant_kelp') {
+            return searchText.includes('kelp') || searchText.includes('seaweed');
+          }
+          
+          // General keyword matching for other types
           return keywords.some(keyword => searchText.includes(keyword));
         });
+        
+        console.log(`Found ${filteredProjects.length} projects matching ${impactType} keywords:`, 
+          filteredProjects.map(p => p.name).join(', '));
       }
       
       // If no matches found by keywords or need to ensure different projects for each type
@@ -237,10 +254,21 @@ class GreensparkService {
         const startIndex = (typeIndex * 2) % Math.max(1, projects.length - 1); // Ensure different starting points
         filteredProjects = projects.slice(startIndex, startIndex + 1);
       } else if (filteredProjects.length > 1) {
-        // If multiple matches, select one based on impact type to ensure variety
-        const typeIndex = ['plant_tree', 'sponsor_bees', 'plant_kelp', 'rescue_plastic', 'offset_carbon', 'provide_water'].indexOf(impactType);
-        const selectedIndex = typeIndex % filteredProjects.length;
-        filteredProjects = [filteredProjects[selectedIndex]];
+        // If multiple matches, prioritize based on impact type
+        if (impactType === 'sponsor_bees') {
+          // Prioritize EarthLungs or bee-specific projects
+          const beeProject = filteredProjects.find(p => 
+            p.name.toLowerCase().includes('earthlung') || 
+            p.name.toLowerCase().includes('bee') ||
+            p.link?.toLowerCase().includes('bee')
+          );
+          filteredProjects = beeProject ? [beeProject] : [filteredProjects[0]];
+        } else {
+          // For other types, select based on type index for variety
+          const typeIndex = ['plant_tree', 'sponsor_bees', 'plant_kelp', 'rescue_plastic', 'offset_carbon', 'provide_water'].indexOf(impactType);
+          const selectedIndex = typeIndex % filteredProjects.length;
+          filteredProjects = [filteredProjects[selectedIndex]];
+        }
       }
       
       console.log(`Found ${filteredProjects.length} projects matching ${impactType}`);
