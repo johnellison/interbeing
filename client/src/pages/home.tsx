@@ -209,6 +209,7 @@ export default function Home() {
           longestStreak={dashboardData.user.longestStreak}
           todayCompletions={dashboardData.todayCompletions}
           totalHabits={dashboardData.totalHabits}
+          habits={dashboardData.habits}
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
