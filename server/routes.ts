@@ -324,10 +324,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test endpoint to debug Greenspark API
+  app.get("/api/test-greenspark", isAuthenticated, async (req, res) => {
+    try {
+      console.log('Testing Greenspark API connection...');
+      const projects = await greensparkService.getProjectsByType('plant_tree');
+      console.log(`Found ${projects.length} projects`);
+      
+      if (projects.length > 0) {
+        console.log('First project structure:', JSON.stringify(projects[0], null, 2));
+        res.json({
+          success: true,
+          totalProjects: projects.length,
+          firstProject: projects[0],
+          imageFields: {
+            imageUrl: projects[0].imageUrl || 'not found',
+            thumbnailUrl: projects[0].thumbnailUrl || 'not found',
+            image: projects[0].image || 'not found'
+          }
+        });
+      } else {
+        res.json({ success: false, message: 'No projects found' });
+      }
+    } catch (error: any) {
+      console.error('Greenspark test error:', error);
+      res.status(500).json({ error: error?.message || 'Unknown error' });
+    }
+  });
+
   // Get impact locations for global map (enhanced with real project data)
   app.get("/api/impact-locations", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      
+      // Try to fetch real project data and merge with our location data
+      let realProjectData: Record<string, any> = {};
+      try {
+        const allImpactTypes = ['plant_tree', 'sponsor_bees', 'plant_kelp', 'rescue_plastic', 'offset_carbon', 'provide_water'];
+        for (const impactType of allImpactTypes) {
+          const projects = await greensparkService.getProjectsByType(impactType);
+          if (projects.length > 0) {
+            realProjectData[impactType] = projects[0]; // Use first project of each type
+          }
+        }
+        console.log('Successfully fetched real project data from Greenspark');
+      } catch (error: any) {
+        console.warn('Could not fetch real project data, using fallback images:', error?.message || 'Unknown error');
+      }
       
       // Enhanced impact locations with correct units and project details
       const impactLocations = [
@@ -358,7 +401,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           projectDescription: "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya through partnership with EarthLungs.",
           completionCount: 3,
           registryLink: "https://earthlungs.org/pollinator-project",
-          imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+          imageUrl: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=800&q=80",
           projectId: "kenya-bees-001"
         },
         {
@@ -403,7 +446,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           projectDescription: "Protecting existing rainforest and supporting reforestation efforts to capture atmospheric carbon.",
           completionCount: 22,
           registryLink: "https://registry.verra.org/amazon-carbon-project",
-          imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+          imageUrl: "https://images.unsplash.com/photo-1554990349-170b9e4bdf3b?w=800&q=80",
           projectId: "brazil-carbon-001"
         },
         {
@@ -418,7 +461,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           projectDescription: "Building wells and water purification systems to provide clean drinking water to rural communities.",
           completionCount: 18,
           registryLink: "https://www.charitywater.org/projects/ethiopia-wells",
-          imageUrl: "https://images.unsplash.com/photo-1559591146-bd10ab0e1a3f?w=800&q=80",
+          imageUrl: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80",
           projectId: "ethiopia-water-001"
         }
       ];

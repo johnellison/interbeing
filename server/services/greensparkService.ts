@@ -18,7 +18,7 @@ class GreensparkService {
 
   constructor() {
     this.projectsApi = new ProjectsApi({
-      basePath: "https://sandbox.getgreenspark.com",
+      basePath: "https://demo.getgreenspark.com",
       apiKey: process.env.GREENSPARK_API_KEY || ''
     });
   }
