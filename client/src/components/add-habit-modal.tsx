@@ -183,9 +183,8 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="plant_tree">🌳 Plant Trees</SelectItem>
-                <SelectItem value="clean_ocean">🌊 Clean Ocean</SelectItem>
-                <SelectItem value="capture_carbon">💨 Capture Carbon</SelectItem>
-                <SelectItem value="donate_money">💰 Donate Money</SelectItem>
+                <SelectItem value="rescue_plastic">🐋 Rescue Plastic</SelectItem>
+                <SelectItem value="offset_carbon">☁️ Offset Carbon</SelectItem>
               </SelectContent>
             </Select>
           </div>

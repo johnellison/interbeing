@@ -10,6 +10,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**August 19, 2025**: Successfully migrated from 1ClickImpact to Greenspark API integration:
+- Created new Greenspark service with API integration for three environmental impact actions
+- Updated database schema to support new impact types: plant_tree, rescue_plastic, offset_carbon
+- Removed charity donation action to focus solely on environmental impact
+- Updated all frontend components to display new impact actions with proper emojis (🌳, 🐋, ☁️)
+- Fixed analytics dashboard, impact dashboard, and home page to show Greenspark actions
+- Updated habit creation form to use new impact action options
+- Migrated existing database records to use new action types
+
 **August 14, 2025**: Completed comprehensive analytics dashboard with charts and impact visualization:
 - Built comprehensive analytics dashboard with multiple chart types using Recharts library
 - Created tabbed interface with Overview, All Habits, Progress Report, and Impact Map sections

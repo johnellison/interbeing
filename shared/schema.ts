@@ -37,7 +37,7 @@ export const habits = pgTable("habits", {
   isActive: boolean("is_active").notNull().default(true),
   streak: integer("streak").notNull().default(0),
   impactAction: text("impact_action", { 
-    enum: ["plant_tree", "clean_ocean", "capture_carbon", "donate_money"] 
+    enum: ["plant_tree", "rescue_plastic", "offset_carbon"] 
   }).notNull().default("plant_tree"),
   impactAmount: integer("impact_amount").notNull().default(1),
   totalImpactEarned: integer("total_impact_earned").notNull().default(0),

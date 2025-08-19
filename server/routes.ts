@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { oneClickImpactService } from "./services/oneClickImpactService";
+import { greensparkService } from "./services/greensparkService";
 import { insertHabitSchema, insertHabitCompletionSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { z } from "zod";
@@ -74,18 +74,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           case 'plant_tree':
             acc.treesPlanted += amount;
             break;
-          case 'clean_ocean':
-            acc.wasteRemoved += amount;
+          case 'rescue_plastic':
+            acc.plasticRescued += amount;
             break;
-          case 'capture_carbon':
-            acc.carbonCaptured += amount;
-            break;
-          case 'donate_money':
-            acc.moneyDonated += amount * 100; // Convert dollars to cents for storage
+          case 'offset_carbon':
+            acc.carbonOffset += amount;
             break;
         }
         return acc;
-      }, { treesPlanted: 0, wasteRemoved: 0, carbonCaptured: 0, moneyDonated: 0 });
+      }, { treesPlanted: 0, plasticRescued: 0, carbonOffset: 0 });
 
       res.json({
         user: {
@@ -102,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalHabits: habits.length,
         weeklyProgress,
         monthlyTrees: Math.floor(totalImpact.treesPlanted * 0.3),
-        co2Offset: totalImpact.carbonCaptured + (totalImpact.treesPlanted * 22),
+        co2Offset: totalImpact.carbonOffset + (totalImpact.treesPlanted * 22),
       });
     } catch (error) {
       console.error("Dashboard error:", error);
@@ -174,7 +171,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let impactId = null;
         
         try {
-          const impactResult = await oneClickImpactService.createImpact({
+          const impactResult = await greensparkService.createImpact({
             action: habit.impactAction as any,
             amount: habit.impactAmount,
           }, `${habit.name} completion - Streak: ${newStreak}`);
@@ -255,7 +252,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get available impact types
   app.get("/api/impact-types", async (req, res) => {
     try {
-      const impactTypes = await oneClickImpactService.getImpactTypes();
+      const impactTypes = await greensparkService.getImpactTypes();
       res.json(impactTypes);
     } catch (error) {
       console.error("Get impact types error:", error);
@@ -297,9 +294,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Calculate impact summary
       const impactSummary = {
         totalTrees: 0,
-        totalOceanCleaned: 0,
-        totalCarbonCaptured: 0,
-        totalDonated: 0
+        totalPlasticRescued: 0,
+        totalCarbonOffset: 0
       };
       
       habits.forEach(habit => {
@@ -307,14 +303,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           case 'plant_tree':
             impactSummary.totalTrees += habit.totalImpactEarned;
             break;
-          case 'clean_ocean':
-            impactSummary.totalOceanCleaned += habit.totalImpactEarned;
+          case 'rescue_plastic':
+            impactSummary.totalPlasticRescued += habit.totalImpactEarned;
             break;
-          case 'capture_carbon':
-            impactSummary.totalCarbonCaptured += habit.totalImpactEarned;
-            break;
-          case 'donate_money':
-            impactSummary.totalDonated += habit.totalImpactEarned; // Already in dollars
+          case 'offset_carbon':
+            impactSummary.totalCarbonOffset += habit.totalImpactEarned;
             break;
         }
       });

@@ -118,21 +118,15 @@ export default function Home() {
                 </span>
               </div>
               <div className="flex items-center space-x-2 bg-blue-500/20 px-3 py-1 rounded-organic">
-                <span className="text-lg">🌊</span>
-                <span className="text-xs font-medium text-blue-700" data-testid="waste-removed-counter">
-                  {dashboardData.user.totalImpact.wasteRemoved}lb
+                <span className="text-lg">🐋</span>
+                <span className="text-xs font-medium text-blue-700" data-testid="plastic-rescued-counter">
+                  {dashboardData.user.totalImpact.plasticRescued}
                 </span>
               </div>
               <div className="flex items-center space-x-2 bg-gray-500/20 px-3 py-1 rounded-organic">
-                <span className="text-lg">💨</span>
-                <span className="text-xs font-medium text-gray-700" data-testid="carbon-captured-counter">
-                  {dashboardData.user.totalImpact.carbonCaptured}lb
-                </span>
-              </div>
-              <div className="flex items-center space-x-2 bg-green-500/20 px-3 py-1 rounded-organic">
-                <span className="text-lg">💰</span>
-                <span className="text-xs font-medium text-green-700" data-testid="money-donated-counter">
-                  ${(dashboardData.user.totalImpact.moneyDonated / 100).toFixed(2)}
+                <span className="text-lg">☁️</span>
+                <span className="text-xs font-medium text-gray-700" data-testid="carbon-offset-counter">
+                  {dashboardData.user.totalImpact.carbonOffset}kg
                 </span>
               </div>
               

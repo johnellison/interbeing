@@ -3,9 +3,8 @@ import { TreePine, Flame, CheckCircle } from "lucide-react";
 interface ImpactDashboardProps {
   totalImpact: {
     treesPlanted: number;
-    wasteRemoved: number;
-    carbonCaptured: number;
-    moneyDonated: number;
+    plasticRescued: number;
+    carbonOffset: number;
   };
   currentStreak: number;
   longestStreak: number;
@@ -34,7 +33,7 @@ export default function ImpactDashboard({
               </div>
               <div>
                 <h3 className="font-semibold text-forest-text">Environmental Impact</h3>
-                <p className="text-sm text-forest-text/70">1ClickImpact Actions</p>
+                <p className="text-sm text-forest-text/70">Greenspark Actions</p>
               </div>
             </div>
           </div>
@@ -49,30 +48,21 @@ export default function ImpactDashboard({
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-lg">🌊</span>
+              <span className="text-lg">🐋</span>
               <div>
-                <p className="text-lg font-bold text-blue-600" data-testid="text-total-waste">
-                  {totalImpact.wasteRemoved}lb
+                <p className="text-lg font-bold text-blue-600" data-testid="text-total-plastic">
+                  {totalImpact.plasticRescued}
                 </p>
-                <p className="text-xs text-forest-text/70">waste removed</p>
+                <p className="text-xs text-forest-text/70">bottles rescued</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-lg">💨</span>
+              <span className="text-lg">☁️</span>
               <div>
                 <p className="text-lg font-bold text-gray-600" data-testid="text-total-carbon">
-                  {totalImpact.carbonCaptured}lb
+                  {totalImpact.carbonOffset}kg
                 </p>
-                <p className="text-xs text-forest-text/70">CO₂ captured</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-lg">💰</span>
-              <div>
-                <p className="text-lg font-bold text-green-600" data-testid="text-total-donated">
-                  ${(totalImpact.moneyDonated / 100).toFixed(2)}
-                </p>
-                <p className="text-xs text-forest-text/70">donated</p>
+                <p className="text-xs text-forest-text/70">CO₂ offset</p>
               </div>
             </div>
           </div>
