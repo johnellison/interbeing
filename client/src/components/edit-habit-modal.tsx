@@ -107,7 +107,7 @@ const impactActionOptions = [
 
 const habitSchema = z.object({
   name: z.string().min(1, "Habit name is required").max(100, "Name too long"),
-  description: z.string().min(1, "Description is required").max(200, "Description too long"),
+  description: z.string().max(200, "Description too long").optional(),
   category: z.enum(["wellness", "fitness", "learning", "productivity", "creativity", "social"]),
   icon: z.string().min(1, "Please select an icon"),
   impactAction: z.enum(["plant_tree", "rescue_plastic", "offset_carbon", "plant_kelp", "provide_water", "sponsor_bees"]),
@@ -165,13 +165,7 @@ export default function EditHabitModal({ isOpen, onClose, habit, onHabitUpdated 
     mutationFn: async (data: HabitFormData) => {
       if (!habit) throw new Error("No habit to update");
       
-      const response = await apiRequest("PUT", `/api/habits/${habit.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest("PUT", `/api/habits/${habit.id}`, data);
       
       if (!response.ok) {
         throw new Error("Failed to update habit");

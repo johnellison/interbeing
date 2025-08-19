@@ -79,6 +79,14 @@ export const insertHabitSchema = createInsertSchema(habits).omit({
   createdAt: true,
 });
 
+export const updateHabitSchema = createInsertSchema(habits).omit({
+  id: true,
+  userId: true,
+  streak: true,
+  totalImpactEarned: true,
+  createdAt: true,
+}).partial();
+
 export const insertHabitCompletionSchema = createInsertSchema(habitCompletions).omit({
   id: true,
   completedAt: true,
@@ -93,5 +101,6 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
 export type Habit = typeof habits.$inferSelect;
 export type InsertHabit = z.infer<typeof insertHabitSchema>;
+export type UpdateHabit = z.infer<typeof updateHabitSchema>;
 export type HabitCompletion = typeof habitCompletions.$inferSelect;
 export type InsertHabitCompletion = z.infer<typeof insertHabitCompletionSchema>;

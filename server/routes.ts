@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { greensparkService } from "./services/greensparkService";
-import { insertHabitSchema, insertHabitCompletionSchema } from "@shared/schema";
+import { insertHabitSchema, updateHabitSchema, insertHabitCompletionSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { z } from "zod";
 
@@ -155,7 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Habit not found" });
       }
       
-      const validatedData = insertHabitSchema.omit({ userId: true }).parse(req.body);
+      const validatedData = updateHabitSchema.parse(req.body);
       const updatedHabit = await storage.updateHabit(habitId, validatedData);
       
       res.json(updatedHabit);
