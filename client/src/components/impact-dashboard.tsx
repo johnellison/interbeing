@@ -93,8 +93,8 @@ export default function ImpactDashboard({
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-3">
-            <div className="flex items-center space-x-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="flex items-center space-x-2 p-2 bg-green-50 rounded-md">
               <span className="text-lg">🌳</span>
               <div>
                 <p className="text-lg font-bold text-forest-success" data-testid="text-total-trees">
@@ -103,7 +103,7 @@ export default function ImpactDashboard({
                 <p className="text-xs text-forest-text/70">trees planted</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 p-2 bg-blue-50 rounded-md">
               <span className="text-lg">🐋</span>
               <div>
                 <p className="text-lg font-bold text-blue-600" data-testid="text-total-plastic">
@@ -112,7 +112,7 @@ export default function ImpactDashboard({
                 <p className="text-xs text-forest-text/70">bottles rescued</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-md">
               <span className="text-lg">☁️</span>
               <div>
                 <p className="text-lg font-bold text-gray-600" data-testid="text-total-carbon">
@@ -121,7 +121,7 @@ export default function ImpactDashboard({
                 <p className="text-xs text-forest-text/70">CO₂ offset</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 p-2 bg-emerald-50 rounded-md">
               <span className="text-lg">🌿</span>
               <div>
                 <p className="text-lg font-bold text-green-600" data-testid="text-total-kelp">
@@ -130,7 +130,7 @@ export default function ImpactDashboard({
                 <p className="text-xs text-forest-text/70">kelp planted</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 p-2 bg-cyan-50 rounded-md">
               <span className="text-lg">💧</span>
               <div>
                 <p className="text-lg font-bold text-blue-500" data-testid="text-total-water">
@@ -139,7 +139,7 @@ export default function ImpactDashboard({
                 <p className="text-xs text-forest-text/70">water provided</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 p-2 bg-yellow-50 rounded-md">
               <span className="text-lg">🐝</span>
               <div>
                 <p className="text-lg font-bold text-yellow-600" data-testid="text-total-bees">
