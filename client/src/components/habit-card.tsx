@@ -8,7 +8,8 @@ import {
   Droplets, 
   PaintbrushVertical, 
   Users,
-  Check 
+  Check,
+  Edit3 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -24,13 +25,14 @@ const iconMap = {
   users: Users,
 } as const;
 
+// Updated to match the exact colors used in the donut chart
 const categoryColors = {
-  wellness: "bg-green-100 text-green-800",
-  fitness: "bg-blue-100 text-blue-800", 
-  learning: "bg-purple-100 text-purple-800",
-  productivity: "bg-orange-100 text-orange-800",
-  creativity: "bg-pink-100 text-pink-800",
-  social: "bg-yellow-100 text-yellow-800",
+  wellness: { bg: "#22c55e", text: "#15803d", bgLight: "#dcfce7" }, // green
+  fitness: { bg: "#3b82f6", text: "#1d4ed8", bgLight: "#dbeafe" }, // blue
+  learning: { bg: "#a855f7", text: "#7c3aed", bgLight: "#f3e8ff" }, // purple
+  productivity: { bg: "#f97316", text: "#ea580c", bgLight: "#fed7aa" }, // orange
+  creativity: { bg: "#ec4899", text: "#db2777", bgLight: "#fce7f3" }, // pink
+  social: { bg: "#eab308", text: "#ca8a04", bgLight: "#fef3c7" }, // yellow
 } as const;
 
 const getImpactUnit = (action: string) => {
@@ -84,14 +86,15 @@ interface HabitCardProps {
   };
   onComplete: (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any) => void;
   onRefresh: () => void;
+  onEdit?: (habit: any) => void;
 }
 
-export default function HabitCard({ habit, onComplete, onRefresh }: HabitCardProps) {
+export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: HabitCardProps) {
   const { toast } = useToast();
   const [isOptimisticComplete, setIsOptimisticComplete] = useState(habit.completedToday);
 
   const IconComponent = iconMap[habit.icon as keyof typeof iconMap] || Leaf;
-  const categoryClass = categoryColors[habit.category as keyof typeof categoryColors] || categoryColors.wellness;
+  const categoryColor = categoryColors[habit.category as keyof typeof categoryColors] || categoryColors.wellness;
 
   const toggleMutation = useMutation({
     mutationFn: async () => {
@@ -141,7 +144,11 @@ export default function HabitCard({ habit, onComplete, onRefresh }: HabitCardPro
   };
 
   return (
-    <div className="forest-card p-6 hover:shadow-xl transition-all duration-300" data-testid={`card-habit-${habit.id}`}>
+    <div 
+      className="forest-card p-6 hover:shadow-xl transition-all duration-300 border-l-4" 
+      style={{ borderLeftColor: categoryColor.bg }}
+      data-testid={`card-habit-${habit.id}`}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex-shrink-0">
@@ -159,8 +166,14 @@ export default function HabitCard({ habit, onComplete, onRefresh }: HabitCardPro
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-3">
-              <div className={`p-2 rounded-organic ${categoryClass.replace('text-', 'text-').replace('bg-', 'bg-')}/20`}>
-                <IconComponent className={`h-5 w-5 ${categoryClass.split(' ')[1]}`} />
+              <div 
+                className="p-2 rounded-organic"
+                style={{ backgroundColor: `${categoryColor.bg}20` }}
+              >
+                <IconComponent 
+                  className="h-5 w-5" 
+                  style={{ color: categoryColor.text }}
+                />
               </div>
               <div>
                 <h3 className="font-semibold text-forest-text" data-testid={`text-habit-name-${habit.id}`}>
@@ -185,6 +198,18 @@ export default function HabitCard({ habit, onComplete, onRefresh }: HabitCardPro
                 +{habit.impactAmount} {getImpactUnit(habit.impactAction)} per completion
               </p>
             </div>
+            
+            {onEdit && (
+              <Button
+                onClick={() => onEdit(habit)}
+                variant="outline"
+                size="sm"
+                className="flex-shrink-0 p-2"
+                data-testid={`button-edit-${habit.id}`}
+              >
+                <Edit3 className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>

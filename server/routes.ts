@@ -143,6 +143,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update habit (protected route)
+  app.put("/api/habits/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const habitId = req.params.id;
+      const userId = req.user.claims.sub;
+      
+      // Verify habit belongs to user
+      const existingHabit = await storage.getHabitById(habitId);
+      if (!existingHabit || existingHabit.userId !== userId) {
+        return res.status(404).json({ message: "Habit not found" });
+      }
+      
+      const validatedData = insertHabitSchema.omit({ userId: true }).parse(req.body);
+      const updatedHabit = await storage.updateHabit(habitId, validatedData);
+      
+      res.json(updatedHabit);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid habit data", errors: error.errors });
+      }
+      console.error("Update habit error:", error);
+      res.status(500).json({ message: "Failed to update habit" });
+    }
+  });
+
   // Complete/uncomplete habit (protected route)
   app.post("/api/habits/:habitId/toggle", isAuthenticated, async (req: any, res) => {
     try {

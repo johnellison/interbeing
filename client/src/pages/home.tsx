@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import ImpactDashboard from "@/components/impact-dashboard";
 import HabitCard from "@/components/habit-card";
 import AddHabitModal from "@/components/add-habit-modal";
+import EditHabitModal from "@/components/edit-habit-modal";
 import ImpactCelebration from "@/components/impact-celebration";
 import ProgressSidebar from "@/components/progress-sidebar";
 
@@ -48,6 +49,8 @@ interface DashboardData {
 
 export default function Home() {
   const [isAddHabitModalOpen, setIsAddHabitModalOpen] = useState(false);
+  const [isEditHabitModalOpen, setIsEditHabitModalOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<any>(null);
   const [showImpactCelebration, setShowImpactCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{
     habitName: string;
@@ -80,6 +83,17 @@ export default function Home() {
 
   const handleHabitAdded = () => {
     setIsAddHabitModalOpen(false);
+    refetch(); // Refresh dashboard data
+  };
+
+  const handleEditHabit = (habit: any) => {
+    setEditingHabit(habit);
+    setIsEditHabitModalOpen(true);
+  };
+
+  const handleHabitUpdated = () => {
+    setIsEditHabitModalOpen(false);
+    setEditingHabit(null);
     refetch(); // Refresh dashboard data
   };
 
@@ -235,6 +249,7 @@ export default function Home() {
                   habit={habit}
                   onComplete={handleHabitComplete}
                   onRefresh={refetch}
+                  onEdit={handleEditHabit}
                 />
               ))}
               
@@ -273,6 +288,13 @@ export default function Home() {
         isOpen={isAddHabitModalOpen}
         onClose={() => setIsAddHabitModalOpen(false)}
         onHabitAdded={handleHabitAdded}
+      />
+
+      <EditHabitModal
+        isOpen={isEditHabitModalOpen}
+        onClose={() => setIsEditHabitModalOpen(false)}
+        habit={editingHabit}
+        onHabitUpdated={handleHabitUpdated}
       />
 
       <ImpactCelebration
