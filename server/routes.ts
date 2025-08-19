@@ -302,7 +302,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = (req.user as any).claims.sub;
       const recentImpact = await storage.getRecentImpactEntries(userId, 5);
-      res.json(recentImpact);
+      
+      // Enhance impact entries with project location data
+      const enhancedImpact = await Promise.all(
+        recentImpact.map(async (entry) => {
+          try {
+            // Get project data for this impact type
+            const projects = await greensparkService.getProjectsByType(entry.impactAction);
+            
+            if (projects && projects.length > 0) {
+              // Use first matching project for location
+              const project = projects[0];
+              const location = project.location || 
+                              (project.countries && project.countries[0]) || 
+                              'Global Location';
+              
+              // Clean up location format
+              const cleanLocation = location.replace(/^USA - /, '').replace(/^([^,]+),.*/, '$1');
+              
+              return {
+                ...entry,
+                projectLocation: cleanLocation
+              };
+            }
+            
+            return {
+              ...entry,
+              projectLocation: 'Global Location'
+            };
+          } catch (error) {
+            console.warn(`Failed to get location for ${entry.impactAction}:`, error);
+            return {
+              ...entry,
+              projectLocation: 'Global Location'
+            };
+          }
+        })
+      );
+      
+      res.json(enhancedImpact);
     } catch (error) {
       console.error("Get recent impact error:", error);
       res.status(500).json({ message: "Failed to get recent impact" });

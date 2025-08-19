@@ -16,15 +16,19 @@ interface ProgressSidebarProps {
 interface RecentImpactEntry {
   id: string;
   habitName: string;
-  impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon';
+  impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
   impactAmount: number;
   completedAt: string;
+  projectLocation?: string;
 }
 
 const impactConfig = {
-  plant_tree: { emoji: "🌳", color: "text-green-600", unit: "tree" },
-  rescue_plastic: { emoji: "🐋", color: "text-blue-600", unit: "bottle" },
-  offset_carbon: { emoji: "☁️", color: "text-gray-600", unit: "kg CO₂" }
+  plant_tree: { emoji: "🌳", color: "text-green-600", unit: "tree", actionText: "Plant" },
+  rescue_plastic: { emoji: "🐋", color: "text-blue-600", unit: "bottle", actionText: "Rescue" },
+  offset_carbon: { emoji: "☁️", color: "text-gray-600", unit: "kg CO₂", actionText: "Offset" },
+  plant_kelp: { emoji: "🌿", color: "text-green-500", unit: "kelp plant", actionText: "Plant" },
+  provide_water: { emoji: "💧", color: "text-blue-500", unit: "liter of water", actionText: "Provide" },
+  sponsor_bees: { emoji: "🐝", color: "text-yellow-600", unit: "bee", actionText: "Protect" }
 };
 
 function RecentImpactTimeline() {
@@ -32,8 +36,18 @@ function RecentImpactTimeline() {
     queryKey: ["/api/recent-impact"],
   });
 
-  const formatImpactValue = (action: string, amount: number) => {
-    return amount.toString();
+  const formatImpactText = (action: string, amount: number, location?: string) => {
+    const config = impactConfig[action as keyof typeof impactConfig];
+    if (!config) return `${amount} impact`;
+    
+    const actionText = config.actionText;
+    const unitText = amount === 1 ? config.unit : 
+                    config.unit === "kg CO₂" ? config.unit :
+                    config.unit.endsWith('s') ? config.unit : config.unit + 's';
+    
+    const locationText = location ? ` in ${location}` : '';
+    
+    return `${actionText} ${amount} ${unitText}${locationText}`;
   };
 
   const getTimeAgo = (dateString: string) => {
@@ -59,7 +73,7 @@ function RecentImpactTimeline() {
   return (
     <div className="space-y-3" data-testid="recent-impact-timeline">
       {recentImpact.slice(0, 5).map((entry) => {
-        const config = impactConfig[entry.impactAction] || { emoji: '🌱', color: 'text-green-600', unit: 'impact' };
+        const config = impactConfig[entry.impactAction] || { emoji: '🌱', color: 'text-green-600', unit: 'impact', actionText: 'Create' };
         
         return (
           <div
@@ -73,7 +87,7 @@ function RecentImpactTimeline() {
                 {entry.habitName}
               </p>
               <p className={`text-xs ${config.color}`}>
-                {formatImpactValue(entry.impactAction, entry.impactAmount)} {config.unit}
+                {formatImpactText(entry.impactAction, entry.impactAmount, entry.projectLocation)}
               </p>
             </div>
             <div className="text-xs text-forest-text/60">
