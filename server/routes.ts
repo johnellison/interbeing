@@ -380,6 +380,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
 
+    // Test 3: Alternative endpoint testing
+    try {
+      const alternativeResults = await greensparkService.testAlternativeEndpoints();
+      diagnosticResult.tests.push({
+        test: 'alternativeEndpoints',
+        success: alternativeResults.some(r => r.success),
+        results: alternativeResults,
+        workingEndpoints: alternativeResults.filter(r => r.success)
+      });
+    } catch (error: any) {
+      diagnosticResult.tests.push({
+        test: 'alternativeEndpoints',
+        success: false,
+        error: error.message
+      });
+    }
+
     console.log('=== Greenspark API Diagnostic Completed ===');
     res.json(diagnosticResult);
   });

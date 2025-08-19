@@ -17,8 +17,12 @@ class GreensparkService {
   private projectsApi: ProjectsApi;
 
   constructor() {
+    // Use the confirmed working endpoint
+    const basePath = "https://api.getgreenspark.com";
+    console.log(`Initializing Greenspark API with working endpoint: ${basePath}`);
+    
     this.projectsApi = new ProjectsApi({
-      basePath: "https://demo.getgreenspark.com",
+      basePath,
       apiKey: process.env.GREENSPARK_API_KEY || ''
     });
   }
@@ -47,9 +51,19 @@ class GreensparkService {
       }
 
       // Get available projects to verify connection and show what's available
-      const { data: projects } = await this.projectsApi.getProjects();
+      const response = await this.projectsApi.getProjects();
+      let projects = response.data || response;
       
-      console.log(`Found ${projects.length} ${impactType} projects in Greenspark sandbox`);
+      // Handle non-array responses gracefully
+      if (!Array.isArray(projects)) {
+        console.warn('Greenspark API returned non-array response:', typeof projects);
+        return {
+          success: false,
+          error: `Invalid API response format: expected array, got ${typeof projects}`
+        };
+      }
+      
+      console.log(`Found ${projects.length} projects in Greenspark sandbox for ${impactType}`);
       
       if (projects.length > 0) {
         const project = projects[0];
@@ -158,7 +172,26 @@ class GreensparkService {
 
   async getProjectsByType(impactType: string): Promise<any[]> {
     try {
-      const { data: projects } = await this.projectsApi.getProjects();
+      console.log(`Attempting to fetch Greenspark projects for type: ${impactType}`);
+      const response = await this.projectsApi.getProjects();
+      console.log('Raw Greenspark API response structure:', JSON.stringify(response, null, 2));
+      
+      let projects = response.data || response;
+      
+      // Handle case where API might return HTML or invalid response
+      if (typeof projects === 'string') {
+        console.warn('Greenspark API returned string instead of project data:', (projects as string).substring(0, 200) + '...');
+        return [];
+      }
+      
+      // Ensure projects is an array
+      if (!Array.isArray(projects)) {
+        console.warn('Greenspark API did not return array. Response type:', typeof projects);
+        console.warn('Response content:', projects);
+        return [];
+      }
+      
+      console.log(`Found ${projects.length} total projects from Greenspark API`);
       
       // Map our impact types to Greenspark categories if needed
       const typeMapping = {
@@ -173,28 +206,44 @@ class GreensparkService {
       const mappedType = typeMapping[impactType as keyof typeof typeMapping] || impactType;
       
       // Filter projects by type or return all if no specific type
-      const filteredProjects = projects.filter(project => 
-        !mappedType || project.type === mappedType
+      const filteredProjects = projects.filter((project: any) => 
+        !mappedType || project.type === mappedType || project.impactType === mappedType
       );
       
-      return filteredProjects.map(project => ({
+      console.log(`Filtered to ${filteredProjects.length} projects for type ${mappedType}`);
+      
+      return filteredProjects.map((project: any) => ({
         ...project,
         impactType: impactType,
-        registryLink: (project as any).registryUrl || (project as any).certificationUrl || '#',
-        imageUrl: (project as any).imageUrl || (project as any).thumbnailUrl || null,
-        location: (project as any).location || 'Global',
-        coordinates: (project as any).coordinates || this.getDefaultCoordinates(impactType)
+        registryLink: project.registryUrl || project.certificationUrl || project.registryLink || '#',
+        imageUrl: project.imageUrl || project.thumbnailUrl || project.image || null,
+        location: project.location || 'Global',
+        coordinates: project.coordinates || this.getDefaultCoordinates(impactType)
       }));
     } catch (error: any) {
       console.error('Error fetching projects by type:', error);
+      console.error('Full error details:', {
+        message: error.message,
+        status: error.status,
+        response: error.response?.data
+      });
       return [];
     }
   }
 
   async getProjectDetails(projectId: string): Promise<any> {
     try {
-      const { data: projects } = await this.projectsApi.getProjects();
-      const project = projects.find(p => p.projectId === projectId || (p as any).id === projectId);
+      console.log(`Fetching project details for ID: ${projectId}`);
+      const response = await this.projectsApi.getProjects();
+      let projects = response.data || response;
+      
+      // Handle non-array responses
+      if (!Array.isArray(projects)) {
+        console.warn('Cannot find project details - API did not return array');
+        throw new Error('Invalid API response format');
+      }
+      
+      const project = projects.find((p: any) => p.projectId === projectId || p.id === projectId);
       
       if (!project) {
         throw new Error(`Project not found: ${projectId}`);
@@ -202,8 +251,8 @@ class GreensparkService {
       
       return {
         ...project,
-        registryLink: (project as any).registryUrl || (project as any).certificationUrl || '#',
-        imageUrl: (project as any).imageUrl || (project as any).thumbnailUrl || null,
+        registryLink: (project as any).registryUrl || (project as any).certificationUrl || (project as any).registryLink || '#',
+        imageUrl: (project as any).imageUrl || (project as any).thumbnailUrl || (project as any).image || null,
         location: (project as any).location || 'Global'
       };
     } catch (error: any) {
@@ -234,6 +283,64 @@ class GreensparkService {
       console.error('Greenspark API validation error:', error);
       return false;
     }
+  }
+
+  // Alternative API testing method using direct HTTP calls to find correct endpoint
+  async testAlternativeEndpoints(): Promise<{endpoint: string, success: boolean, data?: any}[]> {
+    const testEndpoints = [
+      'https://api.getgreenspark.com/v1/projects',
+      'https://api.getgreenspark.com/projects',
+      'https://demo.getgreenspark.com/api/v1/projects', 
+      'https://demo.getgreenspark.com/projects'
+    ];
+
+    const results: {endpoint: string, success: boolean, data?: any}[] = [];
+    const apiKey = process.env.GREENSPARK_API_KEY;
+    
+    for (const endpoint of testEndpoints) {
+      try {
+        console.log(`Testing endpoint: ${endpoint}`);
+        
+        // Test multiple authentication methods
+        const authHeaders = [
+          { 'Authorization': `Bearer ${apiKey || ''}`, 'Content-Type': 'application/json' },
+          { 'X-API-Key': apiKey || '', 'Content-Type': 'application/json' },
+          { 'Authorization': apiKey || '', 'Content-Type': 'application/json' }
+        ];
+
+        for (const headers of authHeaders) {
+          try {
+            const response = await fetch(endpoint, { headers });
+            const data = await response.text();
+            const isJson = data.startsWith('{') || data.startsWith('[');
+            
+            if (response.ok && isJson) {
+              results.push({
+                endpoint,
+                success: true,
+                data: {
+                  status: response.status,
+                  authMethod: Object.keys(headers)[0],
+                  projects: JSON.parse(data),
+                  preview: data.substring(0, 200)
+                }
+              });
+              break; // Found working combination
+            }
+          } catch (innerError: any) {
+            // Continue trying other auth methods
+          }
+        }
+      } catch (error: any) {
+        results.push({
+          endpoint,
+          success: false,
+          data: { error: error.message }
+        });
+      }
+    }
+    
+    return results;
   }
 }
 
