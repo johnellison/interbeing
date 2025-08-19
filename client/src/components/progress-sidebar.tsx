@@ -8,6 +8,11 @@ interface ProgressSidebarProps {
     completed: number;
     total: number;
     isToday: boolean;
+    completions: Array<{
+      habitId: string;
+      habitName: string;
+      category: string;
+    }>;
   }>;
   monthlyTrees: number;
   co2Offset: number;
@@ -29,6 +34,15 @@ const impactConfig = {
   plant_kelp: { emoji: "🌿", color: "text-green-500", unit: "kelp plant", actionText: "Plant" },
   provide_water: { emoji: "💧", color: "text-blue-500", unit: "liter of water", actionText: "Provide" },
   sponsor_bees: { emoji: "🐝", color: "text-yellow-600", unit: "bee", actionText: "Protect" }
+};
+
+const categoryColors = {
+  wellness: "#22c55e",
+  fitness: "#3b82f6", 
+  learning: "#a855f7",
+  productivity: "#f97316",
+  creativity: "#ec4899",
+  social: "#eab308",
 };
 
 function RecentImpactTimeline() {
@@ -125,16 +139,29 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
                 {day.day}
               </span>
               <div className="flex space-x-1">
-                {Array.from({ length: day.total }, (_, i) => (
-                  <div
-                    key={i}
-                    className={`w-4 h-4 rounded-sm ${
-                      i < day.completed 
-                        ? 'bg-forest-success' 
-                        : 'bg-forest-text/20'
-                    }`}
-                  />
-                ))}
+                {Array.from({ length: day.total }, (_, i) => {
+                  if (i < day.completed && day.completions) {
+                    // Use the category color for completed habits
+                    const completion = day.completions[i];
+                    const categoryColor = categoryColors[completion?.category as keyof typeof categoryColors] || categoryColors.wellness;
+                    return (
+                      <div
+                        key={i}
+                        className="w-4 h-4 rounded-sm"
+                        style={{ backgroundColor: categoryColor }}
+                        title={completion?.habitName || 'Completed habit'}
+                      />
+                    );
+                  } else {
+                    // Empty/incomplete habit slot
+                    return (
+                      <div
+                        key={i}
+                        className="w-4 h-4 rounded-sm bg-forest-text/20"
+                      />
+                    );
+                  }
+                })}
               </div>
               <span className="text-xs text-forest-text/70">
                 {day.completed}/{day.total}

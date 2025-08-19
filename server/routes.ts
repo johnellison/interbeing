@@ -58,12 +58,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
           completion.completedAt >= date && completion.completedAt < nextDay
         );
         
+        // Get detailed completion information with habit categories
+        const completionDetails = dayCompletions.map(completion => {
+          const habit = habits.find(h => h.id === completion.habitId);
+          return {
+            habitId: completion.habitId,
+            habitName: habit?.name || 'Unknown',
+            category: habit?.category || 'wellness'
+          };
+        });
+        
         const dayName = date.toLocaleDateString('en', { weekday: 'short' });
         weeklyProgress.push({
           day: dayName,
           completed: dayCompletions.length,
           total: habits.length,
           isToday: i === 0,
+          completions: completionDetails
         });
       }
 
