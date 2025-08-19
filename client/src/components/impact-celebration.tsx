@@ -8,7 +8,7 @@ interface ImpactCelebrationProps {
   data: {
     habitName: string;
     streak: number;
-    impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+    impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon';
     impactAmount: number;
   } | null;
 }
@@ -23,33 +23,25 @@ const impactConfig = {
     bgColor: "bg-green-50",
     particleColor: "#22c55e"
   },
-  clean_ocean: {
-    emoji: "🌊",
-    title: "Ocean Cleaned!",
-    description: "You've helped remove waste from our oceans",
-    unit: "lb of waste removed",
+  rescue_plastic: {
+    emoji: "🐋",
+    title: "Plastic Rescued!",
+    description: "You've helped remove plastic waste from our oceans",
+    unit: "bottle rescued",
     color: "text-blue-600",
     bgColor: "bg-blue-50",
     particleColor: "#3b82f6"
   },
-  capture_carbon: {
-    emoji: "💨",
-    title: "Carbon Captured!",
-    description: "You've helped reduce atmospheric CO₂",
-    unit: "lb of CO₂ captured",
+  offset_carbon: {
+    emoji: "☁️",
+    title: "Carbon Offset!",
+    description: "You've helped offset CO₂ emissions",
+    unit: "kg of CO₂ offset",
     color: "text-gray-600",
     bgColor: "bg-gray-50",
     particleColor: "#6b7280"
   },
-  donate_money: {
-    emoji: "💰",
-    title: "Donation Made!",
-    description: "You've supported verified environmental causes",
-    unit: "donated",
-    color: "text-green-600",
-    bgColor: "bg-green-50",
-    particleColor: "#10b981"
-  }
+
 };
 
 interface Particle {
@@ -130,10 +122,16 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
 
   if (!isOpen || !data) return null;
 
-  const config = impactConfig[data.impactAction];
-  const impactValue = data.impactAction === 'donate_money' 
-    ? `$${(data.impactAmount / 100).toFixed(2)}` 
-    : `${data.impactAmount}`;
+  const config = impactConfig[data.impactAction] || {
+    emoji: "🌱",
+    title: "Impact Created!",
+    description: "You've made a positive environmental impact",
+    unit: "impact",
+    color: "text-green-600",
+    bgColor: "bg-green-50",
+    particleColor: "#22c55e"
+  };
+  const impactValue = `${data.impactAmount}`;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
