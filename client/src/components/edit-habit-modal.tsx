@@ -231,6 +231,7 @@ export default function EditHabitModal({ isOpen, onClose, habit, onHabitUpdated 
                         placeholder="e.g., Morning meditation" 
                         {...field} 
                         data-testid="input-habit-name"
+                        className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-forest-primary focus:ring-forest-primary"
                       />
                     </FormControl>
                     <FormMessage />
@@ -249,6 +250,7 @@ export default function EditHabitModal({ isOpen, onClose, habit, onHabitUpdated 
                         placeholder="Describe your habit and why it's important to you"
                         {...field}
                         data-testid="input-habit-description"
+                        className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-forest-primary focus:ring-forest-primary"
                       />
                     </FormControl>
                     <FormMessage />
@@ -269,7 +271,7 @@ export default function EditHabitModal({ isOpen, onClose, habit, onHabitUpdated 
                     <FormLabel>Category & Color</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger data-testid="select-habit-category">
+                        <SelectTrigger data-testid="select-habit-category" className="bg-white border-gray-300 text-gray-900 focus:border-forest-primary focus:ring-forest-primary">
                           <SelectValue placeholder="Select a category" />
                         </SelectTrigger>
                         <SelectContent>
@@ -303,7 +305,7 @@ export default function EditHabitModal({ isOpen, onClose, habit, onHabitUpdated 
                     <FormLabel>Icon</FormLabel>
                     <FormControl>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <SelectTrigger data-testid="select-habit-icon">
+                        <SelectTrigger data-testid="select-habit-icon" className="bg-white border-gray-300 text-gray-900 focus:border-forest-primary focus:ring-forest-primary">
                           <SelectValue placeholder="Select an icon" />
                         </SelectTrigger>
                         <SelectContent>
@@ -345,7 +347,7 @@ export default function EditHabitModal({ isOpen, onClose, habit, onHabitUpdated 
                         }} 
                         defaultValue={field.value}
                       >
-                        <SelectTrigger data-testid="select-impact-action">
+                        <SelectTrigger data-testid="select-impact-action" className="bg-white border-gray-300 text-gray-900 focus:border-forest-primary focus:ring-forest-primary">
                           <SelectValue placeholder="Select an environmental impact" />
                         </SelectTrigger>
                         <SelectContent>
@@ -384,6 +386,7 @@ export default function EditHabitModal({ isOpen, onClose, habit, onHabitUpdated 
                         {...field}
                         onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
                         data-testid="input-impact-amount"
+                        className="bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-forest-primary focus:ring-forest-primary"
                       />
                     </FormControl>
                     <FormDescription>
