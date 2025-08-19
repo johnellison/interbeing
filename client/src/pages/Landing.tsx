@@ -33,9 +33,9 @@ export default function Landing() {
             Transform the World.
           </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Every habit you complete triggers real environmental action. Plant trees, clean oceans, 
-            capture carbon, or donate to causes. Choose your impact and watch personal growth create 
-            authentic change for the planet.
+            Every habit you complete triggers real environmental action through our partnership with <strong>Greenspark</strong>. 
+            Plant trees, rescue plastic, offset carbon, plant kelp, provide clean water, or protect bees. 
+            Choose your impact and watch personal growth create authentic change for the planet.
           </p>
           <Button 
             onClick={handleLogin}
@@ -48,55 +48,81 @@ export default function Landing() {
         </div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          <Card className="bg-card/50 border-forest-accent/20">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          <Card className="bg-card/50 border-forest-accent/20 hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <TreePine className="h-12 w-12 text-forest-success mx-auto mb-4" />
+              <div className="text-4xl mb-2">🌳</div>
               <CardTitle className="text-forest-text">Plant Trees</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription className="text-center">
-                Reforest the planet with every habit completed. Real trees planted 
-                in verified locations worldwide.
+                Support reforestation in Oregon through American Forests. Real trees planted 
+                to restore wildfire-affected areas and wildlife habitats.
               </CardDescription>
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 border-forest-accent/20">
+          <Card className="bg-card/50 border-forest-accent/20 hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <Waves className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-              <CardTitle className="text-forest-text">Clean Oceans</CardTitle>
+              <div className="text-4xl mb-2">🐋</div>
+              <CardTitle className="text-forest-text">Rescue Plastic</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription className="text-center">
-                Remove plastic waste from our oceans. Each completion helps 
-                extract pounds of pollution from marine ecosystems.
+                Remove ocean-bound plastic through Plastic Bank. Transform waste into 
+                empowering income while cleaning our marine ecosystems.
               </CardDescription>
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 border-forest-accent/20">
+          <Card className="bg-card/50 border-forest-accent/20 hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <Wind className="h-12 w-12 text-gray-500 mx-auto mb-4" />
-              <CardTitle className="text-forest-text">Capture Carbon</CardTitle>
+              <div className="text-4xl mb-2">☁️</div>
+              <CardTitle className="text-forest-text">Offset Carbon</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription className="text-center">
-                Fight climate change by removing CO₂ from the atmosphere. 
-                Every habit builds towards a carbon-neutral future.
+                Fight climate change through Greenspark's verified carbon pool. 
+                Support projects with maximum environmental and social benefit.
               </CardDescription>
             </CardContent>
           </Card>
 
-          <Card className="bg-card/50 border-forest-accent/20">
+          <Card className="bg-card/50 border-forest-accent/20 hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
-              <DollarSign className="h-12 w-12 text-green-600 mx-auto mb-4" />
-              <CardTitle className="text-forest-text">Support Causes</CardTitle>
+              <div className="text-4xl mb-2">🌿</div>
+              <CardTitle className="text-forest-text">Plant Kelp</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription className="text-center">
-                Make direct donations to environmental organizations. 
-                Every habit completion funds real conservation efforts.
+                Restore marine ecosystems in British Columbia, Canada. Support 
+                kelp forest restoration to enhance underwater biodiversity.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card/50 border-forest-accent/20 hover:shadow-lg transition-shadow">
+            <CardHeader className="text-center">
+              <div className="text-4xl mb-2">💧</div>
+              <CardTitle className="text-forest-text">Provide Clean Water</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Protect water quality in Florida's Kissimmee Basin. Support 
+                watershed protection through strategic forest restoration.
+              </CardDescription>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card/50 border-forest-accent/20 hover:shadow-lg transition-shadow">
+            <CardHeader className="text-center">
+              <div className="text-4xl mb-2">🐝</div>
+              <CardTitle className="text-forest-text">Protect Bees</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CardDescription className="text-center">
+                Create pollinator habitats through EarthLungs in Kenya. Foster 
+                biodiversity and support essential ecosystem services.
               </CardDescription>
             </CardContent>
           </Card>
@@ -126,8 +152,53 @@ export default function Landing() {
               <Users className="h-16 w-16 text-forest-primary mx-auto mb-4" />
               <h4 className="text-xl font-semibold text-forest-text mb-2">3. Create Real Impact</h4>
               <p className="text-muted-foreground">
-                Every completion triggers authentic environmental action through our verified partners.
+                Every completion triggers authentic environmental action through our Greenspark partnership with verified global projects.
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Greenspark Partnership Section */}
+        <div className="bg-white/80 rounded-2xl p-8 mb-16 border border-forest-accent/20">
+          <div className="text-center mb-8">
+            <h3 className="text-3xl font-bold text-forest-text mb-4">
+              Powered by <span className="text-forest-primary">Greenspark</span>
+            </h3>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              We partner with Greenspark to ensure every environmental action is authentic, verified, and trackable. 
+              Our impact is driven by real projects with transparent reporting and measurable results.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center p-6 bg-green-50/80 rounded-xl">
+              <div className="text-3xl mb-3">🌲</div>
+              <h4 className="font-semibold text-forest-text mb-2">American Forests</h4>
+              <p className="text-sm text-muted-foreground">
+                Restoring Oregon's wildfire-affected areas with native Pacific Northwest trees
+              </p>
+            </div>
+            <div className="text-center p-6 bg-blue-50/80 rounded-xl">
+              <div className="text-3xl mb-3">🌊</div>
+              <h4 className="font-semibold text-forest-text mb-2">Plastic Bank</h4>
+              <p className="text-sm text-muted-foreground">
+                Transforming ocean-bound plastic waste into empowering income globally
+              </p>
+            </div>
+            <div className="text-center p-6 bg-yellow-50/80 rounded-xl">
+              <div className="text-3xl mb-3">🐝</div>
+              <h4 className="font-semibold text-forest-text mb-2">EarthLungs Kenya</h4>
+              <p className="text-sm text-muted-foreground">
+                Creating pollinator habitats and fostering biodiversity through bee conservation
+              </p>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <div className="inline-flex items-center space-x-4 bg-forest-primary/5 px-6 py-3 rounded-full">
+              <span className="text-sm font-medium text-forest-text">✓ Verified Projects</span>
+              <span className="text-sm font-medium text-forest-text">✓ Transparent Tracking</span>
+              <span className="text-sm font-medium text-forest-text">✓ Measurable Impact</span>
             </div>
           </div>
         </div>
@@ -135,10 +206,12 @@ export default function Landing() {
         {/* Call to Action */}
         <div className="text-center bg-gradient-to-br from-forest-primary/10 to-forest-success/10 rounded-2xl p-8">
           <div className="flex justify-center space-x-4 mb-4">
-            <TreePine className="h-12 w-12 text-forest-success" />
-            <Waves className="h-12 w-12 text-blue-500" />
-            <Wind className="h-12 w-12 text-gray-500" />
-            <DollarSign className="h-12 w-12 text-green-600" />
+            <div className="text-4xl">🌳</div>
+            <div className="text-4xl">🐋</div>
+            <div className="text-4xl">☁️</div>
+            <div className="text-4xl">🌿</div>
+            <div className="text-4xl">💧</div>
+            <div className="text-4xl">🐝</div>
           </div>
           <h3 className="text-3xl font-bold text-forest-text mb-4">
             Ready to Transform Habits into Impact?
@@ -158,7 +231,7 @@ export default function Landing() {
               Start Creating Impact
             </Button>
             <p className="text-sm text-muted-foreground">
-              🌍 Real actions • 📊 Verified tracking • 🔥 Habit streaks
+              🌍 Real Greenspark projects • 📊 Verified tracking • 🔥 Habit streaks
             </p>
           </div>
         </div>
