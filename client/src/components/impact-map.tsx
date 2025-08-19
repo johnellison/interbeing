@@ -41,6 +41,24 @@ const impactEmojis = {
   sponsor_bees: "🐝",
 };
 
+// World map SVG path data for major continents
+const worldMapPaths = {
+  // North America
+  northAmerica: "M158,45 Q175,35 195,40 L240,35 L270,45 L290,60 L285,80 L275,95 L250,105 L220,100 L190,95 L165,85 L155,65 Z",
+  // South America  
+  southAmerica: "M200,140 Q215,135 230,145 L235,165 L240,185 L235,205 L225,220 L210,225 L195,220 L185,205 L180,185 L185,165 L195,150 Z",
+  // Europe
+  europe: "M320,45 Q340,40 360,45 L380,50 L385,65 L375,75 L355,80 L335,75 L325,65 L322,55 Z",
+  // Africa
+  africa: "M315,85 Q335,80 355,85 L365,105 L370,125 L365,145 L355,165 L340,175 L325,170 L315,155 L310,135 L312,115 L315,95 Z",
+  // Asia
+  asia: "M390,40 Q420,35 450,40 L480,45 L510,50 L530,65 L535,85 L525,100 L500,105 L475,100 L450,95 L425,90 L400,85 L385,70 L385,55 Z",
+  // Australia
+  australia: "M480,160 Q500,155 520,160 L535,170 L530,180 L515,185 L495,180 L485,175 L480,165 Z",
+  // Antarctica
+  antarctica: "M150,220 Q200,215 250,220 L300,225 L350,230 L400,235 L450,240 L500,235 L550,230 L570,235 L565,245 L520,250 L450,255 L380,250 L310,245 L240,240 L170,235 L150,230 Z"
+};
+
 export default function ImpactMap() {
   const [selectedLocation, setSelectedLocation] = useState<ImpactLocation | null>(null);
 
@@ -144,72 +162,185 @@ export default function ImpactMap() {
         </p>
       </div>
 
-      {/* World Map Visualization */}
+      {/* Interactive World Map */}
       <div className="forest-card p-6" data-testid="world-map-container">
-        <div className="relative bg-gradient-to-br from-blue-50 to-green-50 rounded-organic p-8 min-h-96">
-          {/* Simplified world map background */}
-          <div className="absolute inset-0 opacity-10">
-            <svg viewBox="0 0 1000 500" className="w-full h-full">
-              {/* Simplified world continents outlines */}
-              <path d="M100,200 Q200,150 300,200 L400,180 L500,200 L450,250 L350,280 L200,270 Z" fill="currentColor" opacity="0.3" />
-              <path d="M150,300 Q250,280 350,300 L400,320 L350,360 L200,350 Z" fill="currentColor" opacity="0.3" />
-              <path d="M500,150 Q600,120 700,150 L800,140 L850,180 L800,220 L700,200 L600,210 Z" fill="currentColor" opacity="0.3" />
-              <path d="M750,250 Q850,230 900,250 L920,300 L880,340 L800,330 L750,310 Z" fill="currentColor" opacity="0.3" />
-            </svg>
+        <div className="relative bg-gradient-to-br from-blue-100 via-blue-50 to-green-50 rounded-organic p-4" style={{ minHeight: '500px' }}>
+          {/* Ocean background with subtle pattern */}
+          <div className="absolute inset-0 rounded-organic overflow-hidden">
+            <div className="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 opacity-30">
+              <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                  <pattern id="waves" x="0" y="0" width="20" height="10" patternUnits="userSpaceOnUse">
+                    <path d="M0,5 Q5,0 10,5 T20,5" stroke="#3b82f6" strokeWidth="0.5" fill="none" opacity="0.3"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#waves)"/>
+              </svg>
+            </div>
           </div>
 
-          {/* Impact location markers */}
-          {displayLocations.map((location) => {
-            const IconComponent = impactIcons[location.impactType];
-            const colorClass = impactColors[location.impactType];
-            
-            // Convert coordinates to map position (simplified projection)
-            const x = ((location.coordinates[0] + 180) / 360) * 100;
-            const y = ((90 - location.coordinates[1]) / 180) * 100;
+          {/* World Map SVG */}
+          <svg 
+            className="w-full h-full absolute inset-0" 
+            viewBox="0 0 700 350" 
+            preserveAspectRatio="xMidYMid meet"
+            style={{ zIndex: 1 }}
+          >
+            {/* World continents */}
+            <g fill="#16a34a" fillOpacity="0.7" stroke="#15803d" strokeWidth="1">
+              {Object.entries(worldMapPaths).map(([continent, path]) => (
+                <path
+                  key={continent}
+                  d={path}
+                  className="hover:fill-green-600 transition-colors duration-300"
+                  style={{ filter: 'drop-shadow(2px 2px 4px rgba(0,0,0,0.1))' }}
+                />
+              ))}
+            </g>
 
-            return (
-              <button
-                key={location.id}
-                onClick={() => setSelectedLocation(location)}
-                className={`absolute transform -translate-x-1/2 -translate-y-1/2 p-3 rounded-full ${colorClass} border-2 border-white shadow-lg hover:scale-110 transition-all duration-200 z-10`}
-                style={{ left: `${x}%`, top: `${y}%` }}
-                data-testid={`location-marker-${location.id}`}
-              >
-                <IconComponent className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 bg-forest-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {location.completionCount}
-                </span>
-              </button>
-            );
-          })}
+            {/* Grid lines for reference */}
+            <g stroke="#64748b" strokeWidth="0.5" opacity="0.3">
+              {/* Longitude lines */}
+              {Array.from({ length: 8 }, (_, i) => (
+                <line key={`long-${i}`} x1={i * 100} y1="0" x2={i * 100} y2="350" />
+              ))}
+              {/* Latitude lines */}
+              {Array.from({ length: 6 }, (_, i) => (
+                <line key={`lat-${i}`} x1="0" y1={i * 70} x2="700" y2={i * 70} />
+              ))}
+            </g>
 
-          {/* Connection lines between locations */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none">
-            {displayLocations.map((location, index) => {
-              if (index === 0) return null;
-              const prevLocation = displayLocations[index - 1];
+            {/* Impact location markers */}
+            {displayLocations.map((location) => {
+              const IconComponent = impactIcons[location.impactType];
+              const colorClass = impactColors[location.impactType];
               
-              const x1 = ((prevLocation.coordinates[0] + 180) / 360) * 100;
-              const y1 = ((90 - prevLocation.coordinates[1]) / 180) * 100;
-              const x2 = ((location.coordinates[0] + 180) / 360) * 100;
-              const y2 = ((90 - location.coordinates[1]) / 180) * 100;
+              // Convert real coordinates to SVG coordinates
+              const x = ((location.coordinates[0] + 180) / 360) * 700;
+              const y = ((90 - location.coordinates[1]) / 180) * 350;
 
               return (
-                <line
-                  key={`line-${location.id}`}
-                  x1={`${x1}%`}
-                  y1={`${y1}%`}
-                  x2={`${x2}%`}
-                  y2={`${y2}%`}
-                  stroke="currentColor"
-                  strokeWidth="1"
-                  strokeDasharray="3,3"
-                  opacity="0.3"
-                  className="text-forest-primary"
-                />
+                <g key={location.id} style={{ cursor: 'pointer' }}>
+                  {/* Pulsing circle animation */}
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r="15"
+                    fill="rgba(59, 130, 246, 0.3)"
+                    className="animate-ping"
+                  />
+                  
+                  {/* Main marker circle */}
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r="20"
+                    fill={colorClass.includes('green') ? '#10b981' : 
+                           colorClass.includes('blue') ? '#3b82f6' :
+                           colorClass.includes('gray') ? '#6b7280' :
+                           colorClass.includes('yellow') ? '#eab308' : '#10b981'}
+                    stroke="white"
+                    strokeWidth="3"
+                    className="hover:scale-110 transition-transform duration-200"
+                    onClick={() => setSelectedLocation(location)}
+                    style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }}
+                  />
+
+                  {/* Emoji in center */}
+                  <text
+                    x={x}
+                    y={y + 2}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize="16"
+                    className="pointer-events-none"
+                  >
+                    {impactEmojis[location.impactType]}
+                  </text>
+
+                  {/* Completion count badge */}
+                  <circle
+                    cx={x + 12}
+                    cy={y - 12}
+                    r="8"
+                    fill="#ef4444"
+                    stroke="white"
+                    strokeWidth="2"
+                  />
+                  <text
+                    x={x + 12}
+                    y={y - 8}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    fontSize="10"
+                    fill="white"
+                    fontWeight="bold"
+                    className="pointer-events-none"
+                  >
+                    {location.completionCount}
+                  </text>
+
+                  {/* Invisible click area for better UX */}
+                  <circle
+                    cx={x}
+                    cy={y}
+                    r="30"
+                    fill="transparent"
+                    className="cursor-pointer"
+                    onClick={() => setSelectedLocation(location)}
+                  />
+                </g>
               );
             })}
+
+            {/* Connection lines between locations */}
+            <g stroke="#10b981" strokeWidth="2" strokeDasharray="5,5" opacity="0.4">
+              {displayLocations.map((location, index) => {
+                if (index === 0) return null;
+                const prevLocation = displayLocations[index - 1];
+                
+                const x1 = ((prevLocation.coordinates[0] + 180) / 360) * 700;
+                const y1 = ((90 - prevLocation.coordinates[1]) / 180) * 350;
+                const x2 = ((location.coordinates[0] + 180) / 360) * 700;
+                const y2 = ((90 - location.coordinates[1]) / 180) * 350;
+
+                return (
+                  <line
+                    key={`line-${location.id}`}
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    className="animate-pulse"
+                  />
+                );
+              })}
+            </g>
           </svg>
+
+          {/* Interactive hover tooltips */}
+          {displayLocations.map((location) => {
+            const x = ((location.coordinates[0] + 180) / 360) * 100;
+            const y = ((90 - location.coordinates[1]) / 180) * 100;
+            
+            return (
+              <div
+                key={`tooltip-${location.id}`}
+                className="absolute pointer-events-none opacity-0 hover:opacity-100 transition-opacity duration-300 bg-white p-2 rounded-lg shadow-lg text-xs border z-10"
+                style={{ 
+                  left: `${x}%`, 
+                  top: `${y - 8}%`,
+                  transform: 'translateX(-50%) translateY(-100%)'
+                }}
+              >
+                <div className="text-center">
+                  <div className="font-semibold">{location.projectName}</div>
+                  <div className="text-gray-600">{location.country}</div>
+                  <div className="text-green-600">{location.totalAmount.toLocaleString()} units</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
