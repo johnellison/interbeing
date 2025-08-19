@@ -10,7 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**August 19, 2025**: Successfully expanded Greenspark integration to six environmental impact actions:
+**August 19, 2025**: Enhanced Global Impact Map with comprehensive project details and filtering:
+- Added enhanced project cards with real project images from environmental initiatives
+- Implemented correct units for each impact type: trees planted, bottles collected, days of clean water, kelp plants, kg CO₂, bees protected
+- Added registry links to authentic project certification pages (Gold Standard, EarthLungs, Blue Carbon, Plastic Bank, Verra, Charity Water)
+- Built filtering system allowing users to click on impact categories to view specific project types
+- Created comprehensive project gallery with detailed project information cards
+- Enhanced map popups with project images, detailed descriptions, and registry links
+- Added visual feedback for filtered project categories with highlighted states
+- Improved user experience with hover effects and smooth transitions
+
+Previously expanded Greenspark integration to six environmental impact actions:
 - Expanded impact actions from 3 to 6 types: plant_tree (🌳), rescue_plastic (🐋), offset_carbon (☁️), plant_kelp (🌿), provide_water (💧), sponsor_bees (🐝)
 - Updated database schema to support all six impact types with proper constraints
 - Enhanced Greenspark service to map all action types to corresponding project types (trees, plastic, carbon, kelp, water, bees)

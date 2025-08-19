@@ -156,6 +156,75 @@ class GreensparkService {
     ];
   }
 
+  async getProjectsByType(impactType: string): Promise<any[]> {
+    try {
+      const { data: projects } = await this.projectsApi.getProjects();
+      
+      // Map our impact types to Greenspark categories if needed
+      const typeMapping = {
+        'plant_tree': 'trees',
+        'rescue_plastic': 'plastic', 
+        'offset_carbon': 'carbon',
+        'plant_kelp': 'kelp',
+        'provide_water': 'water',
+        'sponsor_bees': 'bees'
+      };
+      
+      const mappedType = typeMapping[impactType as keyof typeof typeMapping] || impactType;
+      
+      // Filter projects by type or return all if no specific type
+      const filteredProjects = projects.filter(project => 
+        !mappedType || project.type === mappedType
+      );
+      
+      return filteredProjects.map(project => ({
+        ...project,
+        impactType: impactType,
+        registryLink: (project as any).registryUrl || (project as any).certificationUrl || '#',
+        imageUrl: (project as any).imageUrl || (project as any).thumbnailUrl || null,
+        location: (project as any).location || 'Global',
+        coordinates: (project as any).coordinates || this.getDefaultCoordinates(impactType)
+      }));
+    } catch (error: any) {
+      console.error('Error fetching projects by type:', error);
+      return [];
+    }
+  }
+
+  async getProjectDetails(projectId: string): Promise<any> {
+    try {
+      const { data: projects } = await this.projectsApi.getProjects();
+      const project = projects.find(p => p.projectId === projectId || (p as any).id === projectId);
+      
+      if (!project) {
+        throw new Error(`Project not found: ${projectId}`);
+      }
+      
+      return {
+        ...project,
+        registryLink: (project as any).registryUrl || (project as any).certificationUrl || '#',
+        imageUrl: (project as any).imageUrl || (project as any).thumbnailUrl || null,
+        location: (project as any).location || 'Global'
+      };
+    } catch (error: any) {
+      console.error('Error fetching project details:', error);
+      throw error;
+    }
+  }
+
+  private getDefaultCoordinates(impactType: string): [number, number] {
+    // Default coordinates for each impact type
+    const defaults: Record<string, [number, number]> = {
+      'plant_tree': [37.0902, -0.0236], // Kenya
+      'rescue_plastic': [-87.7289, 20.6296], // Mexico
+      'offset_carbon': [-60.0261, -3.4653], // Brazil
+      'plant_kelp': [115.0920, -8.4095], // Indonesia
+      'provide_water': [39.4759, 14.2681], // Ethiopia
+      'sponsor_bees': [34.7519, 0.0236] // Kenya
+    };
+    return defaults[impactType] || [0, 0];
+  }
+
   async validateApiKey(): Promise<boolean> {
     try {
       // Test the API key by attempting to get projects

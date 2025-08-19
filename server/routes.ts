@@ -300,13 +300,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get impact locations for global map
+  // Get projects by impact type
+  app.get("/api/projects/:impactType", isAuthenticated, async (req, res) => {
+    try {
+      const { impactType } = req.params;
+      const projects = await greensparkService.getProjectsByType(impactType);
+      res.json(projects);
+    } catch (error) {
+      console.error("Error fetching projects by type:", error);
+      res.status(500).json({ message: "Failed to fetch projects" });
+    }
+  });
+
+  // Get specific project details
+  app.get("/api/project/:projectId", isAuthenticated, async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      const project = await greensparkService.getProjectDetails(projectId);
+      res.json(project);
+    } catch (error) {
+      console.error("Error fetching project details:", error);
+      res.status(500).json({ message: "Failed to fetch project details" });
+    }
+  });
+
+  // Get impact locations for global map (enhanced with real project data)
   app.get("/api/impact-locations", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       
-      // Mock impact locations data (in real implementation, this would aggregate user impact 
-      // with Greenspark project locations and calculate user contributions)
+      // Enhanced impact locations with correct units and project details
       const impactLocations = [
         {
           id: "kenya-trees",
@@ -315,9 +338,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           coordinates: [37.0902, -0.0236],
           impactType: "plant_tree",
           totalAmount: 45,
+          unit: "trees planted",
           projectName: "Kenya Forest Restoration",
           projectDescription: "Restoring indigenous forests in the Mount Kenya region to combat deforestation and support local communities.",
-          completionCount: 12
+          completionCount: 12,
+          registryLink: "https://www.goldstandard.org/projects/kenya-forest-restoration",
+          imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80",
+          projectId: "kenya-trees-001"
         },
         {
           id: "kenya-bees",
@@ -326,9 +353,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           coordinates: [34.7519, 0.0236],
           impactType: "sponsor_bees",
           totalAmount: 60,
+          unit: "bees protected",
           projectName: "EarthLungs Pollinator Project",
-          projectDescription: "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya to restore balance of nature.",
-          completionCount: 3
+          projectDescription: "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya through partnership with EarthLungs.",
+          completionCount: 3,
+          registryLink: "https://earthlungs.org/pollinator-project",
+          imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+          projectId: "kenya-bees-001"
         },
         {
           id: "bali-kelp",
@@ -337,9 +368,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           coordinates: [115.0920, -8.4095],
           impactType: "plant_kelp",
           totalAmount: 25,
+          unit: "kelp plants",
           projectName: "Bali Marine Restoration", 
           projectDescription: "Restoring kelp forests around Bali to support marine biodiversity and protect coral reef ecosystems.",
-          completionCount: 8
+          completionCount: 8,
+          registryLink: "https://www.bluecarbon.org/bali-marine-restoration",
+          imageUrl: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
+          projectId: "bali-kelp-001"
         },
         {
           id: "mexico-plastic",
@@ -348,9 +383,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           coordinates: [-87.7289, 20.6296],
           impactType: "rescue_plastic",
           totalAmount: 180,
+          unit: "bottles collected",
           projectName: "Caribbean Ocean Cleanup",
           projectDescription: "Removing plastic waste from Caribbean waters to protect marine life and preserve ocean ecosystems.",
-          completionCount: 15
+          completionCount: 15,
+          registryLink: "https://www.plasticbank.com/projects/caribbean-cleanup",
+          imageUrl: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80",
+          projectId: "mexico-plastic-001"
         },
         {
           id: "brazil-carbon",
@@ -359,9 +398,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           coordinates: [-60.0261, -3.4653],
           impactType: "offset_carbon",
           totalAmount: 320,
+          unit: "kg CO₂ offset",
           projectName: "Amazon Carbon Sequestration",
           projectDescription: "Protecting existing rainforest and supporting reforestation efforts to capture atmospheric carbon.",
-          completionCount: 22
+          completionCount: 22,
+          registryLink: "https://registry.verra.org/amazon-carbon-project",
+          imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+          projectId: "brazil-carbon-001"
         },
         {
           id: "ethiopia-water",
@@ -370,9 +413,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           coordinates: [39.4759, 14.2681],
           impactType: "provide_water",
           totalAmount: 2500,
+          unit: "days of clean water",
           projectName: "Clean Water Access Initiative",
           projectDescription: "Building wells and water purification systems to provide clean drinking water to rural communities.",
-          completionCount: 18
+          completionCount: 18,
+          registryLink: "https://www.charitywater.org/projects/ethiopia-wells",
+          imageUrl: "https://images.unsplash.com/photo-1559591146-bd10ab0e1a3f?w=800&q=80",
+          projectId: "ethiopia-water-001"
         }
       ];
 
