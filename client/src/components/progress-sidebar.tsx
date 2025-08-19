@@ -16,16 +16,15 @@ interface ProgressSidebarProps {
 interface RecentImpactEntry {
   id: string;
   habitName: string;
-  impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+  impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon';
   impactAmount: number;
   completedAt: string;
 }
 
 const impactConfig = {
   plant_tree: { emoji: "🌳", color: "text-green-600", unit: "tree" },
-  clean_ocean: { emoji: "🌊", color: "text-blue-600", unit: "lb" },
-  capture_carbon: { emoji: "💨", color: "text-gray-600", unit: "lb CO₂" },
-  donate_money: { emoji: "💰", color: "text-green-600", unit: "donated" }
+  rescue_plastic: { emoji: "🐋", color: "text-blue-600", unit: "bottle" },
+  offset_carbon: { emoji: "☁️", color: "text-gray-600", unit: "kg CO₂" }
 };
 
 function RecentImpactTimeline() {
@@ -34,7 +33,7 @@ function RecentImpactTimeline() {
   });
 
   const formatImpactValue = (action: string, amount: number) => {
-    return action === 'donate_money' ? `$${(amount / 100).toFixed(2)}` : amount.toString();
+    return amount.toString();
   };
 
   const getTimeAgo = (dateString: string) => {
@@ -60,7 +59,7 @@ function RecentImpactTimeline() {
   return (
     <div className="space-y-3" data-testid="recent-impact-timeline">
       {recentImpact.slice(0, 5).map((entry) => {
-        const config = impactConfig[entry.impactAction];
+        const config = impactConfig[entry.impactAction] || { emoji: '🌱', color: 'text-green-600', unit: 'impact' };
         
         return (
           <div
