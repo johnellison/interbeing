@@ -9,7 +9,7 @@ interface GreensparkResponse {
 }
 
 interface ImpactAction {
-  action: 'plant_tree' | 'rescue_plastic' | 'offset_carbon';
+  action: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
   amount: number;
 }
 
@@ -32,7 +32,10 @@ class GreensparkService {
       const impactTypeMapping = {
         'plant_tree': 'trees',
         'rescue_plastic': 'plastic',
-        'offset_carbon': 'carbon'
+        'offset_carbon': 'carbon',
+        'plant_kelp': 'kelp',
+        'provide_water': 'water',
+        'sponsor_bees': 'bees'
       };
 
       const impactType = impactTypeMapping[action.action];
@@ -128,6 +131,27 @@ class GreensparkService {
         unit: 'kg CO₂',
         description: 'Offset carbon emissions through verified projects',
         emoji: '☁️'
+      },
+      {
+        action: 'plant_kelp',
+        name: 'Plant Kelp',
+        unit: 'kelp plants',
+        description: 'Restore marine ecosystems by planting kelp forests',
+        emoji: '🌿'
+      },
+      {
+        action: 'provide_water',
+        name: 'Provide Clean Water',
+        unit: 'liters',
+        description: 'Support clean water access projects in communities worldwide',
+        emoji: '💧'
+      },
+      {
+        action: 'sponsor_bees',
+        name: 'Sponsor Bees',
+        unit: 'bees',
+        description: 'Support bee conservation and pollinator habitat restoration',
+        emoji: '🐝'
       }
     ];
   }

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Interbeing is a full-stack web application that combines personal habit tracking with real environmental impact actions. Users can create and track daily habits while triggering authentic environmental impact through the 1ClickImpact API - including tree planting, ocean cleanup, carbon capture, and charitable donations. Each habit can be customized with specific impact actions and amounts, creating a powerful connection between personal growth and environmental responsibility. The application features a clean, nature-inspired interface built with modern React components and a robust Express.js backend with full user authentication.
+Interbeing is a full-stack web application that combines personal habit tracking with real environmental impact actions. Users can create and track daily habits while triggering authentic environmental impact through the Greenspark API - including tree planting (🌳), plastic rescue (🐋), carbon offsetting (☁️), kelp planting (🌿), clean water provision (💧), and bee sponsorship (🐝). Each habit can be customized with specific impact actions and amounts, creating a powerful connection between personal growth and environmental responsibility. The application features a clean, nature-inspired interface built with modern React components and a robust Express.js backend with full user authentication.
 
 ## User Preferences
 
@@ -10,14 +10,15 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**August 19, 2025**: Successfully migrated from 1ClickImpact to Greenspark API integration:
-- Created new Greenspark service with API integration for three environmental impact actions
-- Updated database schema to support new impact types: plant_tree, rescue_plastic, offset_carbon
-- Removed charity donation action to focus solely on environmental impact
-- Updated all frontend components to display new impact actions with proper emojis (🌳, 🐋, ☁️)
-- Fixed analytics dashboard, impact dashboard, and home page to show Greenspark actions
-- Updated habit creation form to use new impact action options
-- Migrated existing database records to use new action types
+**August 19, 2025**: Successfully expanded Greenspark integration to six environmental impact actions:
+- Expanded impact actions from 3 to 6 types: plant_tree (🌳), rescue_plastic (🐋), offset_carbon (☁️), plant_kelp (🌿), provide_water (💧), sponsor_bees (🐝)
+- Updated database schema to support all six impact types with proper constraints
+- Enhanced Greenspark service to map all action types to corresponding project types (trees, plastic, carbon, kelp, water, bees)
+- Updated all frontend components to display six impact actions with proper emojis and descriptions
+- Removed "units earned" displays and replaced with specific impact action information
+- Fixed impact celebration component to handle all six action types with unique styling
+- Reset database completely to start fresh tracking with expanded impact actions
+- Updated habit creation form with all six impact action options and descriptive help text
 
 **August 14, 2025**: Completed comprehensive analytics dashboard with charts and impact visualization:
 - Built comprehensive analytics dashboard with multiple chart types using Recharts library

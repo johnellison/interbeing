@@ -39,7 +39,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
     description: "",
     category: "wellness",
     icon: "leaf",
-    impactAction: "plant_tree" as 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money',
+    impactAction: "plant_tree" as 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees',
     impactAmount: 1,
   });
   const [selectedIcon, setSelectedIcon] = useState("leaf");
@@ -185,6 +185,9 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
                 <SelectItem value="plant_tree">🌳 Plant Trees</SelectItem>
                 <SelectItem value="rescue_plastic">🐋 Rescue Plastic</SelectItem>
                 <SelectItem value="offset_carbon">☁️ Offset Carbon</SelectItem>
+                <SelectItem value="plant_kelp">🌿 Plant Kelp</SelectItem>
+                <SelectItem value="provide_water">💧 Provide Clean Water</SelectItem>
+                <SelectItem value="sponsor_bees">🐝 Sponsor Bees</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -204,9 +207,11 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
             />
             <p className="text-xs text-gray-500 mt-1">
               {formData.impactAction === 'plant_tree' && 'Number of trees to plant'}
-              {formData.impactAction === 'clean_ocean' && 'Pounds of ocean waste to remove'}
-              {formData.impactAction === 'capture_carbon' && 'Pounds of CO₂ to capture'}
-              {formData.impactAction === 'donate_money' && 'Cents to donate (e.g., 100 = $1.00)'}
+              {formData.impactAction === 'rescue_plastic' && 'Number of plastic bottles to rescue'}
+              {formData.impactAction === 'offset_carbon' && 'Kilograms of CO₂ to offset'}
+              {formData.impactAction === 'plant_kelp' && 'Number of kelp plants to grow'}
+              {formData.impactAction === 'provide_water' && 'Liters of clean water to provide'}
+              {formData.impactAction === 'sponsor_bees' && 'Number of bees to sponsor'}
             </p>
           </div>
 

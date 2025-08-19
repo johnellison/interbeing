@@ -8,7 +8,7 @@ interface ImpactCelebrationProps {
   data: {
     habitName: string;
     streak: number;
-    impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon';
+    impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
     impactAmount: number;
   } | null;
 }
@@ -41,7 +41,33 @@ const impactConfig = {
     bgColor: "bg-gray-50",
     particleColor: "#6b7280"
   },
-
+  plant_kelp: {
+    emoji: "🌿",
+    title: "Kelp Planted!",
+    description: "You've helped restore marine ecosystems",
+    unit: "kelp plant",
+    color: "text-green-600",
+    bgColor: "bg-green-50",
+    particleColor: "#10b981"
+  },
+  provide_water: {
+    emoji: "💧",
+    title: "Clean Water Provided!",
+    description: "You've supported clean water access worldwide",
+    unit: "liter provided",
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
+    particleColor: "#3b82f6"
+  },
+  sponsor_bees: {
+    emoji: "🐝",
+    title: "Bees Sponsored!",
+    description: "You've supported bee conservation efforts",
+    unit: "bee sponsored",
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-50",
+    particleColor: "#eab308"
+  }
 };
 
 interface Particle {
