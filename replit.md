@@ -22,6 +22,12 @@ Preferred communication style: Simple, everyday language.
 - Integrated real bee protection project details: £0.36 per 20 bees protected through EarthLungs partnership in Kenya
 - Updated bee sponsorship terminology from "bees sponsored" to "bees protected" throughout the application
 - Enhanced habit form to suggest 20-bee increments for bee protection actions
+- Fixed impact timeline errors and added safety checks for undefined configurations
+- Implemented geolocation-based environmental impact visualization with interactive global map
+- Created impact map component showing user environmental contributions across 6 locations worldwide
+- Added Global Impact Map navigation button to sidebar with Globe icon
+- Built backend API endpoint for impact location data with project details and user contribution tracking
+- Updated all component attributions from "1ClickImpact" to "Greenspark"
 
 **August 14, 2025**: Completed comprehensive analytics dashboard with charts and impact visualization:
 - Built comprehensive analytics dashboard with multiple chart types using Recharts library

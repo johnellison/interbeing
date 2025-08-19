@@ -300,6 +300,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get impact locations for global map
+  app.get("/api/impact-locations", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Mock impact locations data (in real implementation, this would aggregate user impact 
+      // with Greenspark project locations and calculate user contributions)
+      const impactLocations = [
+        {
+          id: "kenya-trees",
+          country: "Kenya",
+          region: "Central Kenya",
+          coordinates: [37.0902, -0.0236],
+          impactType: "plant_tree",
+          totalAmount: 45,
+          projectName: "Kenya Forest Restoration",
+          projectDescription: "Restoring indigenous forests in the Mount Kenya region to combat deforestation and support local communities.",
+          completionCount: 12
+        },
+        {
+          id: "kenya-bees",
+          country: "Kenya", 
+          region: "Western Kenya",
+          coordinates: [34.7519, 0.0236],
+          impactType: "sponsor_bees",
+          totalAmount: 60,
+          projectName: "EarthLungs Pollinator Project",
+          projectDescription: "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya to restore balance of nature.",
+          completionCount: 3
+        },
+        {
+          id: "bali-kelp",
+          country: "Indonesia",
+          region: "Bali",
+          coordinates: [115.0920, -8.4095],
+          impactType: "plant_kelp",
+          totalAmount: 25,
+          projectName: "Bali Marine Restoration", 
+          projectDescription: "Restoring kelp forests around Bali to support marine biodiversity and protect coral reef ecosystems.",
+          completionCount: 8
+        },
+        {
+          id: "mexico-plastic",
+          country: "Mexico",
+          region: "Yucatan Peninsula",
+          coordinates: [-87.7289, 20.6296],
+          impactType: "rescue_plastic",
+          totalAmount: 180,
+          projectName: "Caribbean Ocean Cleanup",
+          projectDescription: "Removing plastic waste from Caribbean waters to protect marine life and preserve ocean ecosystems.",
+          completionCount: 15
+        },
+        {
+          id: "brazil-carbon",
+          country: "Brazil",
+          region: "Amazon Basin",
+          coordinates: [-60.0261, -3.4653],
+          impactType: "offset_carbon",
+          totalAmount: 320,
+          projectName: "Amazon Carbon Sequestration",
+          projectDescription: "Protecting existing rainforest and supporting reforestation efforts to capture atmospheric carbon.",
+          completionCount: 22
+        },
+        {
+          id: "ethiopia-water",
+          country: "Ethiopia",
+          region: "Tigray Region",
+          coordinates: [39.4759, 14.2681],
+          impactType: "provide_water",
+          totalAmount: 2500,
+          projectName: "Clean Water Access Initiative",
+          projectDescription: "Building wells and water purification systems to provide clean drinking water to rural communities.",
+          completionCount: 18
+        }
+      ];
+
+      res.json(impactLocations);
+    } catch (error) {
+      console.error("Error fetching impact locations:", error);
+      res.status(500).json({ message: "Failed to fetch impact locations" });
+    }
+  });
+
   // Analytics data
   app.get('/api/analytics', isAuthenticated, async (req: any, res) => {
     try {

@@ -1,4 +1,4 @@
-import { BarChart3, MapPin, TrendingUp } from "lucide-react";
+import { BarChart3, MapPin, TrendingUp, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 
@@ -155,7 +155,7 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
 
         <div className="mt-4 pt-4 border-t border-forest-secondary/20">
           <p className="text-xs text-forest-text/70">
-            🌍 Your habits create real environmental impact through 1ClickImpact's verified partners and transparent tracking.
+            🌍 Your habits create real environmental impact through Greenspark's verified partners and transparent tracking.
           </p>
         </div>
       </div>
@@ -188,11 +188,11 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
           <Button
             variant="ghost"
             className="w-full justify-start p-3 hover:bg-forest-bg rounded-organic transition-colors"
-            onClick={() => { window.location.href = "/analytics"; }}
+            onClick={() => { window.location.href = "/impact-map"; }}
             data-testid="button-impact-map"
           >
-            <MapPin className="h-4 w-4 mr-3 text-forest-success" />
-            <span className="text-sm text-forest-text">Impact Map</span>
+            <Globe className="h-4 w-4 mr-3 text-forest-success" />
+            <span className="text-sm text-forest-text">Global Impact Map</span>
           </Button>
         </div>
       </div>
