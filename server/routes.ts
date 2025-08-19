@@ -406,38 +406,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       
-      // Try to fetch real project data and merge with our location data
+      // Fetch real project data from Greenspark API
       let realProjectData: Record<string, any> = {};
       try {
         const allImpactTypes = ['plant_tree', 'sponsor_bees', 'plant_kelp', 'rescue_plastic', 'offset_carbon', 'provide_water'];
+        console.log('Fetching real environmental projects from Greenspark API...');
+        
         for (const impactType of allImpactTypes) {
           const projects = await greensparkService.getProjectsByType(impactType);
-          if (projects.length > 0 && projects[0].imageUrl) {
-            // Only use real project data if it has valid image URLs
+          if (projects.length > 0) {
+            // Use the first project for this impact type
             realProjectData[impactType] = projects[0];
+            console.log(`Found ${projects.length} ${impactType} projects - using: ${projects[0].name}`);
           }
         }
-        if (Object.keys(realProjectData).length > 0) {
-          console.log(`Successfully fetched real project data from Greenspark for ${Object.keys(realProjectData).length} impact types`);
+        
+        const projectCount = Object.keys(realProjectData).length;
+        if (projectCount > 0) {
+          console.log(`Successfully loaded ${projectCount} real environmental projects from Greenspark API`);
         } else {
-          console.warn('Greenspark API returned data but no valid project images found');
+          console.warn('No projects retrieved from Greenspark API');
         }
       } catch (error: any) {
-        console.warn('Could not fetch real project data from Greenspark API, using curated fallback images:', error?.message || 'Unknown error');
+        console.error('Failed to fetch real project data from Greenspark API:', error?.message || 'Unknown error');
       }
       
-      // Enhanced impact locations with correct units and project details
-      // Use real Greenspark project images when available, otherwise use curated representative images
-      const getProjectImage = (impactType: string, fallbackUrl: string) => {
-        return realProjectData[impactType]?.imageUrl || fallbackUrl;
-      };
-      
-      const getProjectDetails = (impactType: string, fallbackName: string, fallbackDesc: string, fallbackRegistry: string) => {
+      // Use real Greenspark project data when available
+      const getProjectData = (impactType: string, fallbackName: string, fallbackDesc: string, fallbackRegistry: string, fallbackImage: string) => {
         const realProject = realProjectData[impactType];
+        if (realProject) {
+          console.log(`Using real project data for ${impactType}: ${realProject.name}`);
+          return {
+            projectName: realProject.name || fallbackName,
+            projectDescription: realProject.description || fallbackDesc,
+            registryLink: realProject.registryLink || fallbackRegistry,
+            imageUrl: realProject.imageUrl || fallbackImage,
+            projectId: realProject.projectId,
+            dataSource: "greenspark-api"
+          };
+        }
+        console.log(`Using fallback data for ${impactType}`);
         return {
-          projectName: realProject?.name || fallbackName,
-          projectDescription: realProject?.description || fallbackDesc,
-          registryLink: realProject?.registryLink || fallbackRegistry
+          projectName: fallbackName,
+          projectDescription: fallbackDesc,
+          registryLink: fallbackRegistry,
+          imageUrl: fallbackImage,
+          projectId: `fallback-${impactType}-001`,
+          dataSource: "curated"
         };
       };
 
@@ -450,17 +465,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "plant_tree",
           totalAmount: 45,
           unit: "trees planted",
-          ...getProjectDetails(
+          completionCount: 12,
+          ...getProjectData(
             "plant_tree",
             "Kenya Forest Restoration",
             "Restoring indigenous forests in the Mount Kenya region to combat deforestation and support local communities.",
-            "https://www.goldstandard.org/projects/kenya-forest-restoration"
-          ),
-          // Use real project image if available, otherwise curated forest restoration image
-          imageUrl: getProjectImage("plant_tree", "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80"),
-          completionCount: 12,
-          projectId: realProjectData["plant_tree"]?.projectId || "kenya-trees-001",
-          dataSource: realProjectData["plant_tree"] ? "greenspark-api" : "curated"
+            "https://www.goldstandard.org/projects/kenya-forest-restoration",
+            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80"
+          )
         },
         {
           id: "kenya-bees",
@@ -470,16 +482,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "sponsor_bees",
           totalAmount: 60,
           unit: "bees protected",
-          ...getProjectDetails(
+          completionCount: 3,
+          ...getProjectData(
             "sponsor_bees",
             "EarthLungs Pollinator Project",
             "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya through partnership with EarthLungs.",
-            "https://earthlungs.org/pollinator-project"
-          ),
-          imageUrl: getProjectImage("sponsor_bees", "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=800&q=80"),
-          completionCount: 3,
-          projectId: realProjectData["sponsor_bees"]?.projectId || "kenya-bees-001",
-          dataSource: realProjectData["sponsor_bees"] ? "greenspark-api" : "curated"
+            "https://earthlungs.org/pollinator-project",
+            "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=800&q=80"
+          )
         },
         {
           id: "bali-kelp",
@@ -489,16 +499,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "plant_kelp",
           totalAmount: 25,
           unit: "kelp plants",
-          ...getProjectDetails(
+          completionCount: 8,
+          ...getProjectData(
             "plant_kelp",
             "Bali Marine Restoration",
             "Restoring kelp forests around Bali to support marine biodiversity and protect coral reef ecosystems.",
-            "https://www.bluecarbon.org/bali-marine-restoration"
-          ),
-          imageUrl: getProjectImage("plant_kelp", "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80"),
-          completionCount: 8,
-          projectId: realProjectData["plant_kelp"]?.projectId || "bali-kelp-001",
-          dataSource: realProjectData["plant_kelp"] ? "greenspark-api" : "curated"
+            "https://www.bluecarbon.org/bali-marine-restoration",
+            "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80"
+          )
         },
         {
           id: "mexico-plastic",
@@ -508,16 +516,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "rescue_plastic",
           totalAmount: 180,
           unit: "bottles collected",
-          ...getProjectDetails(
+          completionCount: 15,
+          ...getProjectData(
             "rescue_plastic",
             "Caribbean Ocean Cleanup",
             "Removing plastic waste from Caribbean waters to protect marine life and preserve ocean ecosystems.",
-            "https://www.plasticbank.com/projects/caribbean-cleanup"
-          ),
-          imageUrl: getProjectImage("rescue_plastic", "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80"),
-          completionCount: 15,
-          projectId: realProjectData["rescue_plastic"]?.projectId || "mexico-plastic-001",
-          dataSource: realProjectData["rescue_plastic"] ? "greenspark-api" : "curated"
+            "https://www.plasticbank.com/projects/caribbean-cleanup",
+            "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80"
+          )
         },
         {
           id: "brazil-carbon",
@@ -527,16 +533,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "offset_carbon",
           totalAmount: 320,
           unit: "kg CO₂ offset",
-          ...getProjectDetails(
+          completionCount: 22,
+          ...getProjectData(
             "offset_carbon",
             "Amazon Carbon Sequestration",
             "Protecting existing rainforest and supporting reforestation efforts to capture atmospheric carbon.",
-            "https://registry.verra.org/amazon-carbon-project"
-          ),
-          imageUrl: getProjectImage("offset_carbon", "https://images.unsplash.com/photo-1554990349-170b9e4bdf3b?w=800&q=80"),
-          completionCount: 22,
-          projectId: realProjectData["offset_carbon"]?.projectId || "brazil-carbon-001",
-          dataSource: realProjectData["offset_carbon"] ? "greenspark-api" : "curated"
+            "https://registry.verra.org/amazon-carbon-project",
+            "https://images.unsplash.com/photo-1554990349-170b9e4bdf3b?w=800&q=80"
+          )
         },
         {
           id: "ethiopia-water",
@@ -546,16 +550,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "provide_water",
           totalAmount: 2500,
           unit: "days of clean water",
-          ...getProjectDetails(
+          completionCount: 18,
+          ...getProjectData(
             "provide_water",
             "Clean Water Access Initiative",
             "Building wells and water purification systems to provide clean drinking water to rural communities.",
-            "https://www.charitywater.org/projects/ethiopia-wells"
-          ),
-          imageUrl: getProjectImage("provide_water", "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80"),
-          completionCount: 18,
-          projectId: realProjectData["provide_water"]?.projectId || "ethiopia-water-001",
-          dataSource: realProjectData["provide_water"] ? "greenspark-api" : "curated"
+            "https://www.charitywater.org/projects/ethiopia-wells",
+            "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80"
+          )
         }
       ];
 
