@@ -6,7 +6,7 @@ import { useLocation } from "wouter";
 interface TimelineEntry {
   id: string;
   habitName: string;
-  impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+  impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
   impactAmount: number;
   completedAt: string;
   streak: number;
@@ -20,26 +20,40 @@ const impactConfig = {
     bgColor: "bg-green-50",
     unit: "tree"
   },
-  clean_ocean: {
-    emoji: "🌊",
-    title: "Ocean Cleaned",
+  rescue_plastic: {
+    emoji: "🐋",
+    title: "Plastic Rescued",
     color: "text-blue-600",
     bgColor: "bg-blue-50",
-    unit: "lb waste removed"
+    unit: "bottle rescued"
   },
-  capture_carbon: {
-    emoji: "💨",
-    title: "Carbon Captured",
+  offset_carbon: {
+    emoji: "☁️",
+    title: "Carbon Offset",
     color: "text-gray-600",
     bgColor: "bg-gray-50",
-    unit: "lb CO₂ captured"
+    unit: "kg CO₂ offset"
   },
-  donate_money: {
-    emoji: "💰",
-    title: "Donation Made",
+  plant_kelp: {
+    emoji: "🌿",
+    title: "Kelp Planted",
     color: "text-green-600",
     bgColor: "bg-green-50",
-    unit: "donated"
+    unit: "kelp plant"
+  },
+  provide_water: {
+    emoji: "💧",
+    title: "Clean Water Provided",
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
+    unit: "liter provided"
+  },
+  sponsor_bees: {
+    emoji: "🐝",
+    title: "Bees Protected",
+    color: "text-yellow-600",
+    bgColor: "bg-yellow-50",
+    unit: "bees protected"
   }
 };
 
@@ -61,9 +75,6 @@ export default function ImpactTimeline() {
   };
 
   const formatImpactValue = (action: string, amount: number) => {
-    if (action === 'donate_money') {
-      return `$${(amount / 100).toFixed(2)}`;
-    }
     return amount.toString();
   };
 
@@ -119,7 +130,13 @@ export default function ImpactTimeline() {
         <div className="space-y-6" data-testid="impact-timeline">
           {timelineData && timelineData.length > 0 ? (
             timelineData.map((entry, index) => {
-              const config = impactConfig[entry.impactAction];
+              const config = impactConfig[entry.impactAction as keyof typeof impactConfig];
+              
+              // Safety check for undefined config
+              if (!config) {
+                console.warn(`Unknown impact action: ${entry.impactAction}`);
+                return null;
+              }
               
               return (
                 <div
@@ -174,7 +191,7 @@ export default function ImpactTimeline() {
                         </div>
                         
                         <div className="text-xs text-forest-text/60">
-                          Via 1ClickImpact
+                          Via Greenspark
                         </div>
                       </div>
                     </div>
