@@ -40,7 +40,7 @@ const getImpactUnit = (action: string) => {
     case 'offset_carbon': return 'kg CO₂';
     case 'plant_kelp': return 'kelp plants';
     case 'provide_water': return 'liters';
-    case 'sponsor_bees': return 'bees';
+    case 'sponsor_bees': return 'bees supported';
     default: return 'units';
   }
 };

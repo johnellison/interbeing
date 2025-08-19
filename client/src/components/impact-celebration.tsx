@@ -61,9 +61,9 @@ const impactConfig = {
   },
   sponsor_bees: {
     emoji: "🐝",
-    title: "Bees Sponsored!",
-    description: "You've supported bee conservation efforts",
-    unit: "bee sponsored",
+    title: "Bees Protected!",
+    description: "You've supported pollinator habitats in Kenya through EarthLungs",
+    unit: "bees protected",
     color: "text-yellow-600",
     bgColor: "bg-yellow-50",
     particleColor: "#eab308"

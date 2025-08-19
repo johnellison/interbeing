@@ -81,10 +81,19 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
-      [field]: field === 'impactAmount' ? parseInt(value) || 1 : value 
-    }));
+    setFormData(prev => {
+      const newData = { 
+        ...prev, 
+        [field]: field === 'impactAmount' ? parseInt(value) || 1 : value 
+      };
+      
+      // When impact action changes to bees, suggest 20 as default amount
+      if (field === 'impactAction' && value === 'sponsor_bees' && prev.impactAmount === 1) {
+        newData.impactAmount = 20;
+      }
+      
+      return newData;
+    });
   };
 
   if (!isOpen) return null;
@@ -187,7 +196,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
                 <SelectItem value="offset_carbon">☁️ Offset Carbon</SelectItem>
                 <SelectItem value="plant_kelp">🌿 Plant Kelp</SelectItem>
                 <SelectItem value="provide_water">💧 Provide Clean Water</SelectItem>
-                <SelectItem value="sponsor_bees">🐝 Sponsor Bees</SelectItem>
+                <SelectItem value="sponsor_bees">🐝 Protect Bees</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -211,7 +220,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
               {formData.impactAction === 'offset_carbon' && 'Kilograms of CO₂ to offset'}
               {formData.impactAction === 'plant_kelp' && 'Number of kelp plants to grow'}
               {formData.impactAction === 'provide_water' && 'Liters of clean water to provide'}
-              {formData.impactAction === 'sponsor_bees' && 'Number of bees to sponsor'}
+              {formData.impactAction === 'sponsor_bees' && 'Number of bees to protect (work in increments of 20 - £0.36 per 20 bees through EarthLungs Kenya)'}
             </p>
           </div>
 

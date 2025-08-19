@@ -149,8 +149,8 @@ class GreensparkService {
       {
         action: 'sponsor_bees',
         name: 'Sponsor Bees',
-        unit: 'bees',
-        description: 'Support bee conservation and pollinator habitat restoration',
+        unit: 'bees protected',
+        description: 'Creating pollinator habitats and fostering biodiversity in Kenya through EarthLungs partnership (£0.36 per 20 bees)',
         emoji: '🐝'
       }
     ];

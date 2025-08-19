@@ -19,6 +19,9 @@ Preferred communication style: Simple, everyday language.
 - Fixed impact celebration component to handle all six action types with unique styling
 - Reset database completely to start fresh tracking with expanded impact actions
 - Updated habit creation form with all six impact action options and descriptive help text
+- Integrated real bee protection project details: £0.36 per 20 bees protected through EarthLungs partnership in Kenya
+- Updated bee sponsorship terminology from "bees sponsored" to "bees protected" throughout the application
+- Enhanced habit form to suggest 20-bee increments for bee protection actions
 
 **August 14, 2025**: Completed comprehensive analytics dashboard with charts and impact visualization:
 - Built comprehensive analytics dashboard with multiple chart types using Recharts library

@@ -92,7 +92,7 @@ export default function ImpactDashboard({
                 <p className="text-lg font-bold text-yellow-600" data-testid="text-total-bees">
                   {totalImpact.beesSponsored}
                 </p>
-                <p className="text-xs text-forest-text/70">bees sponsored</p>
+                <p className="text-xs text-forest-text/70">bees protected</p>
               </div>
             </div>
           </div>
