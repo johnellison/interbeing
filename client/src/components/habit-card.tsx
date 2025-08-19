@@ -36,9 +36,11 @@ const categoryColors = {
 const getImpactUnit = (action: string) => {
   switch (action) {
     case 'plant_tree': return 'trees';
-    case 'clean_ocean': return 'lbs of waste';
-    case 'capture_carbon': return 'lbs CO₂';
-    case 'donate_money': return 'cents USD';
+    case 'rescue_plastic': return 'bottles';
+    case 'offset_carbon': return 'kg CO₂';
+    case 'plant_kelp': return 'kelp plants';
+    case 'provide_water': return 'liters';
+    case 'sponsor_bees': return 'bees';
     default: return 'units';
   }
 };
@@ -46,9 +48,11 @@ const getImpactUnit = (action: string) => {
 const getImpactEmoji = (action: string) => {
   switch (action) {
     case 'plant_tree': return '🌳';
-    case 'clean_ocean': return '🌊';
-    case 'capture_carbon': return '💨';
-    case 'donate_money': return '💰';
+    case 'rescue_plastic': return '🐋';
+    case 'offset_carbon': return '☁️';
+    case 'plant_kelp': return '🌿';
+    case 'provide_water': return '💧';
+    case 'sponsor_bees': return '🐝';
     default: return '🌍';
   }
 };
@@ -61,12 +65,12 @@ interface HabitCardProps {
     icon: string;
     category: string;
     streak: number;
-    impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+    impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
     impactAmount: number;
     totalImpactEarned: number;
     completedToday: boolean;
   };
-  onComplete: (habitName: string, streak: number, impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money', impactAmount: number) => void;
+  onComplete: (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number) => void;
   onRefresh: () => void;
 }
 

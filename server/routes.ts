@@ -80,9 +80,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
           case 'offset_carbon':
             acc.carbonOffset += amount;
             break;
+          case 'plant_kelp':
+            acc.kelpPlanted += amount;
+            break;
+          case 'provide_water':
+            acc.waterProvided += amount;
+            break;
+          case 'sponsor_bees':
+            acc.beesSponsored += amount;
+            break;
         }
         return acc;
-      }, { treesPlanted: 0, plasticRescued: 0, carbonOffset: 0 });
+      }, { 
+        treesPlanted: 0, 
+        plasticRescued: 0, 
+        carbonOffset: 0, 
+        kelpPlanted: 0, 
+        waterProvided: 0, 
+        beesSponsored: 0 
+      });
 
       res.json({
         user: {
