@@ -10,7 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**August 19, 2025**: Enhanced Global Impact Map with comprehensive project details and filtering:
+**August 19, 2025**: Successfully fixed Greenspark API integration to use authentic environmental project data:
+- Identified and resolved authentication issue - SDK uses x-api-key but API requires Bearer token authentication
+- Bypassed broken Greenspark SDK to implement direct HTTP calls to https://api.getgreenspark.com/v1/projects
+- Added project uniqueness tracking to prevent duplicate projects across different impact types  
+- Enhanced location extraction from real API project data (countries field, GeoJSON coordinates)
+- Fixed registry URL mapping to use project.link field for working project page links
+- Implemented intelligent project matching by keywords (forest, plastic, carbon, etc.) for better categorization
+- Global Impact Map now displays authentic project images, names, descriptions, and working registry links from real environmental initiatives
+- Cleared database to start fresh with properly integrated API data
+
+Previously enhanced Global Impact Map with comprehensive project details and filtering:
 - Added enhanced project cards with real project images from environmental initiatives
 - Implemented correct units for each impact type: trees planted, bottles collected, days of clean water, kelp plants, kg CO₂, bees protected
 - Added registry links to authentic project certification pages (Gold Standard, EarthLungs, Blue Carbon, Plastic Bank, Verra, Charity Water)
