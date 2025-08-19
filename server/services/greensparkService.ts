@@ -18,7 +18,7 @@ class GreensparkService {
 
   constructor() {
     this.projectsApi = new ProjectsApi({
-      basePath: "https://sandbox.getgreenspark.com",
+      basePath: "https://demo.getgreenspark.com",
       apiKey: process.env.GREENSPARK_API_KEY || ''
     });
   }
@@ -44,20 +44,20 @@ class GreensparkService {
       }
 
       // Get available projects to verify connection and show what's available
-      const { data: projects } = await this.projectsApi.getProjects({ type: impactType });
+      const { data: projects } = await this.projectsApi.getProjects();
       
       console.log(`Found ${projects.length} ${impactType} projects in Greenspark sandbox`);
       
       if (projects.length > 0) {
         const project = projects[0];
-        console.log(`Using project: ${project.name} (${project.id})`);
+        console.log(`Using project: ${project.name || 'Unnamed Project'} (${project.projectId || 'No ID'})`);
         
         // Since Projects API is read-only, we'll log the intended impact
         // This confirms the API connection works and shows available projects
         return {
           success: true,
           impact_id: `gs_verified_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          message: `Verified Greenspark connection - would create ${action.amount} ${action.action} impact via project: ${project.name}`,
+          message: `Verified Greenspark connection - would create ${action.amount} ${action.action} impact via project: ${project.name || 'Greenspark Project'}`,
           data: {
             action: action.action,
             amount: action.amount,
@@ -71,7 +71,7 @@ class GreensparkService {
         throw new Error(`No ${impactType} projects available in sandbox environment`);
       }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Greenspark service error:', error);
       
       // Check if it's an authentication error
@@ -137,7 +137,7 @@ class GreensparkService {
       // Test the API key by attempting to get projects
       const testResult = await this.projectsApi.getProjects();
       return !!testResult && testResult.data && testResult.data.length >= 0;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Greenspark API validation error:', error);
       return false;
     }
