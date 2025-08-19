@@ -406,18 +406,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       
-      // Fetch real project data from Greenspark API
+      // Fetch real project data from Greenspark API with uniqueness tracking
       let realProjectData: Record<string, any> = {};
+      let usedProjectIds = new Set<string>();
+      
       try {
         const allImpactTypes = ['plant_tree', 'sponsor_bees', 'plant_kelp', 'rescue_plastic', 'offset_carbon', 'provide_water'];
-        console.log('Fetching real environmental projects from Greenspark API...');
+        console.log('Fetching unique environmental projects from Greenspark API...');
         
         for (const impactType of allImpactTypes) {
           const projects = await greensparkService.getProjectsByType(impactType);
-          if (projects.length > 0) {
-            // Use the first project for this impact type
+          
+          // Find first project that hasn't been used yet
+          let selectedProject = null;
+          for (const project of projects) {
+            const projectId = project.projectId || project.id;
+            if (!usedProjectIds.has(projectId)) {
+              selectedProject = project;
+              usedProjectIds.add(projectId);
+              break;
+            }
+          }
+          
+          if (selectedProject) {
+            realProjectData[impactType] = selectedProject;
+            console.log(`Found ${projects.length} ${impactType} projects - using unique project: ${selectedProject.name}`);
+          } else if (projects.length > 0) {
+            // Fallback to first project if all are used (shouldn't happen with enough diversity)
             realProjectData[impactType] = projects[0];
-            console.log(`Found ${projects.length} ${impactType} projects - using: ${projects[0].name}`);
+            console.log(`Using ${impactType} project (no unique available): ${projects[0].name}`);
           }
         }
         

@@ -220,19 +220,27 @@ class GreensparkService {
       
       const keywords = typeKeywords[impactType as keyof typeof typeKeywords] || [];
       
-      // Filter by matching project names/descriptions or return all if no specific filter
-      let filteredProjects = projects;
+      // Filter by matching project names/descriptions with better logic to ensure uniqueness
+      let filteredProjects = [];
       if (keywords.length > 0) {
+        // First try to find projects matching keywords
         filteredProjects = projects.filter((project: any) => {
           const searchText = `${project.name || ''} ${project.description || ''}`.toLowerCase();
           return keywords.some(keyword => searchText.includes(keyword));
         });
       }
       
-      // If no matches found by keywords, just return some projects for variety
+      // If no matches found by keywords or need to ensure different projects for each type
       if (filteredProjects.length === 0) {
-        const startIndex = Math.floor(Math.random() * Math.max(0, projects.length - 2));
-        filteredProjects = projects.slice(startIndex, startIndex + 3);
+        // Use a deterministic but varied selection based on impact type
+        const typeIndex = ['plant_tree', 'sponsor_bees', 'plant_kelp', 'rescue_plastic', 'offset_carbon', 'provide_water'].indexOf(impactType);
+        const startIndex = (typeIndex * 2) % Math.max(1, projects.length - 1); // Ensure different starting points
+        filteredProjects = projects.slice(startIndex, startIndex + 1);
+      } else if (filteredProjects.length > 1) {
+        // If multiple matches, select one based on impact type to ensure variety
+        const typeIndex = ['plant_tree', 'sponsor_bees', 'plant_kelp', 'rescue_plastic', 'offset_carbon', 'provide_water'].indexOf(impactType);
+        const selectedIndex = typeIndex % filteredProjects.length;
+        filteredProjects = [filteredProjects[selectedIndex]];
       }
       
       console.log(`Found ${filteredProjects.length} projects matching ${impactType}`);
