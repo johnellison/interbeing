@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Sprout } from "lucide-react";
+import { Sprout, Settings, Menu, Home as HomeIcon, BarChart, Globe, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ImpactDashboard from "@/components/impact-dashboard";
 import HabitCard from "@/components/habit-card";
@@ -122,6 +122,100 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-forest-bg font-nunito text-forest-text">
       <Navigation currentPage="/" />
+
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-4">
+              <div className="flex-shrink-0">
+                <Sprout className="h-8 w-8 text-forest-secondary" />
+              </div>
+              <h1 className="text-xl font-bold font-inter" data-testid="app-title">
+                Interbeing
+              </h1>
+            </div>
+            
+            <div className="hidden md:flex items-center space-x-1">
+              {/* Main Navigation Links */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+                data-testid="nav-dashboard"
+              >
+                <HomeIcon className="h-4 w-4" />
+                <span className="text-sm font-medium">Dashboard</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.location.href = "/analytics"}
+                className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+                data-testid="nav-analytics"
+              >
+                <BarChart className="h-4 w-4" />
+                <span className="text-sm font-medium">Analytics</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.location.href = "/impact-map"}
+                className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+                data-testid="nav-impact-map"
+              >
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">Impact Map</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.location.href = "/impact-timeline"}
+                className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+                data-testid="nav-timeline"
+              >
+                <Clock className="h-4 w-4" />
+                <span className="text-sm font-medium">Timeline</span>
+              </Button>
+              
+              {/* Divider */}
+              <div className="h-6 w-px bg-forest-secondary/30 mx-2"></div>
+              
+              {/* User Actions */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.location.href = "/api/logout"}
+                className="text-sm hover:bg-forest-secondary/20 transition-colors text-white px-3 py-2"
+                data-testid="button-logout"
+              >
+                Sign Out
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-2 rounded-organic hover:bg-forest-secondary/20 transition-colors"
+                data-testid="button-settings"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden p-2 rounded-organic hover:bg-forest-secondary/20 transition-colors"
+              data-testid="button-mobile-menu"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      </nav>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Environmental Impact Dashboard */}

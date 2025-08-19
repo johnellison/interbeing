@@ -6,6 +6,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Calendar, TreePine, Waves, Factory, Heart, MapPin, TrendingUp, Target } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getEmojiForIcon } from "@/lib/iconMapping";
+import Navigation from "@/components/navigation";
 // Using a simple world map component instead of react-leaflet due to version conflicts
 
 interface HabitAnalytics {
@@ -168,13 +169,15 @@ export default function Analytics() {
 
   const impactTypeData = [
     { name: 'Trees Planted', value: impactSummary.totalTrees, color: '#22c55e', icon: '🌳' },
-    { name: 'Plastic Rescued (bottles)', value: impactSummary.totalPlasticRescued, color: '#3b82f6', icon: '🐋' },
-    { name: 'Carbon Offset (kg)', value: impactSummary.totalCarbonOffset, color: '#8b5cf6', icon: '☁️' },
+    { name: 'Plastic Rescued (bottles)', value: impactSummary.totalPlasticRescued || impactSummary.totalOceanCleaned || 0, color: '#3b82f6', icon: '🐋' },
+    { name: 'Carbon Offset (kg)', value: impactSummary.totalCarbonOffset || impactSummary.totalCarbonCaptured || 0, color: '#8b5cf6', icon: '☁️' },
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
-      <div className="mb-8">
+    <div className="min-h-screen bg-forest-bg font-nunito text-forest-text">
+      <Navigation currentPage="/analytics" />
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <div className="mb-8">
         <h1 className="text-3xl font-bold text-forest-text mb-2" data-testid="heading-analytics">Analytics Dashboard</h1>
         <p className="text-forest-text/70">Track your habits and environmental impact over time</p>
       </div>
@@ -435,6 +438,7 @@ export default function Analytics() {
           </Card>
         </TabsContent>
       </Tabs>
+        </div>
     </div>
   );
 }
