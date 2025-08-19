@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Sprout, Settings, Menu } from "lucide-react";
+import { Sprout, Settings, Menu, Home as HomeIcon, BarChart, Globe, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ImpactDashboard from "@/components/impact-dashboard";
 import HabitCard from "@/components/habit-card";
@@ -15,9 +15,11 @@ interface DashboardData {
     longestStreak: number;
     totalImpact: {
       treesPlanted: number;
-      wasteRemoved: number;
-      carbonCaptured: number;
-      moneyDonated: number;
+      plasticRescued: number;
+      carbonOffset: number;
+      kelpPlanted: number;
+      waterProvided: number;
+      beesSponsored: number;
     };
   };
   habits: Array<{
@@ -27,7 +29,7 @@ interface DashboardData {
     icon: string;
     category: string;
     streak: number;
-    impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+    impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
     impactAmount: number;
     totalImpactEarned: number;
     completedToday: boolean;
@@ -50,7 +52,7 @@ export default function Home() {
   const [celebrationData, setCelebrationData] = useState<{
     habitName: string;
     streak: number;
-    impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money';
+    impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
     impactAmount: number;
   } | null>(null);
 
@@ -58,7 +60,7 @@ export default function Home() {
     queryKey: ["/api/dashboard"],
   });
 
-  const handleHabitComplete = (habitName: string, streak: number, impactAction: 'plant_tree' | 'clean_ocean' | 'capture_carbon' | 'donate_money', impactAmount: number) => {
+  const handleHabitComplete = (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number) => {
     setCelebrationData({ habitName, streak, impactAction, impactAmount });
     setShowImpactCelebration(true);
     refetch(); // Refresh dashboard data
@@ -110,31 +112,60 @@ export default function Home() {
               </h1>
             </div>
             
-            <div className="hidden md:flex items-center space-x-4">
-              <div className="flex items-center space-x-2 bg-forest-secondary/20 px-3 py-1 rounded-organic">
-                <span className="text-lg">🌳</span>
-                <span className="text-xs font-medium" data-testid="trees-planted-counter">
-                  {dashboardData.user.totalImpact.treesPlanted}
-                </span>
-              </div>
-              <div className="flex items-center space-x-2 bg-blue-500/20 px-3 py-1 rounded-organic">
-                <span className="text-lg">🐋</span>
-                <span className="text-xs font-medium text-blue-700" data-testid="plastic-rescued-counter">
-                  {dashboardData.user.totalImpact.plasticRescued}
-                </span>
-              </div>
-              <div className="flex items-center space-x-2 bg-gray-500/20 px-3 py-1 rounded-organic">
-                <span className="text-lg">☁️</span>
-                <span className="text-xs font-medium text-gray-700" data-testid="carbon-offset-counter">
-                  {dashboardData.user.totalImpact.carbonOffset}kg
-                </span>
-              </div>
+            <div className="hidden md:flex items-center space-x-1">
+              {/* Main Navigation Links */}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+                data-testid="nav-dashboard"
+              >
+                <HomeIcon className="h-4 w-4" />
+                <span className="text-sm font-medium">Dashboard</span>
+              </Button>
               
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={() => window.location.href = "/analytics"}
+                className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+                data-testid="nav-analytics"
+              >
+                <BarChart className="h-4 w-4" />
+                <span className="text-sm font-medium">Analytics</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.location.href = "/impact-map"}
+                className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+                data-testid="nav-impact-map"
+              >
+                <Globe className="h-4 w-4" />
+                <span className="text-sm font-medium">Impact Map</span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => window.location.href = "/impact-timeline"}
+                className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+                data-testid="nav-timeline"
+              >
+                <Clock className="h-4 w-4" />
+                <span className="text-sm font-medium">Timeline</span>
+              </Button>
+              
+              {/* Divider */}
+              <div className="h-6 w-px bg-forest-secondary/30 mx-2"></div>
+              
+              {/* User Actions */}
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => window.location.href = "/api/logout"}
-                className="text-sm hover:bg-forest-secondary/20 transition-colors"
+                className="text-sm hover:bg-forest-secondary/20 transition-colors text-white px-3 py-2"
                 data-testid="button-logout"
               >
                 Sign Out
