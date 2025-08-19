@@ -431,18 +431,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error('Failed to fetch real project data from Greenspark API:', error?.message || 'Unknown error');
       }
       
-      // Use real Greenspark project data when available
-      const getProjectData = (impactType: string, fallbackName: string, fallbackDesc: string, fallbackRegistry: string, fallbackImage: string) => {
+      // Use real Greenspark project data when available, with proper location override
+      const getProjectData = (impactType: string, fallbackName: string, fallbackDesc: string, fallbackRegistry: string, fallbackImage: string, templateRegion: string, templateCountry: string) => {
         const realProject = realProjectData[impactType];
         if (realProject) {
           console.log(`Using real project data for ${impactType}: ${realProject.name}`);
+          // Extract real location from API project
+          const realLocation = realProject.location || (realProject.countries && realProject.countries[0]) || `${templateRegion}, ${templateCountry}`;
+          const [region, country] = realLocation.includes(',') ? realLocation.split(',').map(s => s.trim()) : [realLocation, realLocation];
+          
           return {
             projectName: realProject.name || fallbackName,
             projectDescription: realProject.description || fallbackDesc,
             registryLink: realProject.registryLink || fallbackRegistry,
             imageUrl: realProject.imageUrl || fallbackImage,
             projectId: realProject.projectId,
-            dataSource: "greenspark-api"
+            dataSource: "greenspark-api",
+            // Override template location with real project location
+            realRegion: region,
+            realCountry: country,
+            realCoordinates: realProject.coordinates
           };
         }
         console.log(`Using fallback data for ${impactType}`);
@@ -456,110 +464,143 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       };
 
-      const impactLocations = [
+      // Build impact locations using real API data
+      const impactLocations = [];
+      
+      // Create unique projects for each impact type
+      const impactProjects = [
         {
-          id: "kenya-trees",
-          country: "Kenya",
-          region: "Central Kenya",
-          coordinates: [37.0902, -0.0236],
+          id: "project-trees",
           impactType: "plant_tree",
+          templateCountry: "Kenya",
+          templateRegion: "Central Kenya", 
+          templateCoords: [37.0902, -0.0236],
           totalAmount: 45,
           unit: "trees planted",
           completionCount: 12,
-          ...getProjectData(
-            "plant_tree",
-            "Kenya Forest Restoration",
-            "Restoring indigenous forests in the Mount Kenya region to combat deforestation and support local communities.",
-            "https://www.goldstandard.org/projects/kenya-forest-restoration",
-            "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80"
-          )
+          fallbacks: {
+            name: "Kenya Forest Restoration",
+            description: "Restoring indigenous forests in the Mount Kenya region to combat deforestation and support local communities.",
+            registry: "https://www.goldstandard.org/projects/kenya-forest-restoration",
+            image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80"
+          }
         },
         {
-          id: "kenya-bees",
-          country: "Kenya", 
-          region: "Western Kenya",
-          coordinates: [34.7519, 0.0236],
+          id: "project-bees",
           impactType: "sponsor_bees",
+          templateCountry: "Kenya",
+          templateRegion: "Western Kenya",
+          templateCoords: [34.7519, 0.0236],
           totalAmount: 60,
           unit: "bees protected",
           completionCount: 3,
-          ...getProjectData(
-            "sponsor_bees",
-            "EarthLungs Pollinator Project",
-            "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya through partnership with EarthLungs.",
-            "https://earthlungs.org/pollinator-project",
-            "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=800&q=80"
-          )
+          fallbacks: {
+            name: "EarthLungs Pollinator Project",
+            description: "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya through partnership with EarthLungs.",
+            registry: "https://earthlungs.org/pollinator-project",
+            image: "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=800&q=80"
+          }
         },
         {
-          id: "bali-kelp",
-          country: "Indonesia",
-          region: "Bali",
-          coordinates: [115.0920, -8.4095],
+          id: "project-kelp",
           impactType: "plant_kelp",
+          templateCountry: "Indonesia",
+          templateRegion: "Bali",
+          templateCoords: [115.0920, -8.4095],
           totalAmount: 25,
-          unit: "kelp plants",
+          unit: "kelp plants", 
           completionCount: 8,
-          ...getProjectData(
-            "plant_kelp",
-            "Bali Marine Restoration",
-            "Restoring kelp forests around Bali to support marine biodiversity and protect coral reef ecosystems.",
-            "https://www.bluecarbon.org/bali-marine-restoration",
-            "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80"
-          )
+          fallbacks: {
+            name: "Bali Marine Restoration",
+            description: "Restoring kelp forests around Bali to support marine biodiversity and protect coral reef ecosystems.",
+            registry: "https://www.bluecarbon.org/bali-marine-restoration",
+            image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80"
+          }
         },
         {
-          id: "mexico-plastic",
-          country: "Mexico",
-          region: "Yucatan Peninsula",
-          coordinates: [-87.7289, 20.6296],
-          impactType: "rescue_plastic",
+          id: "project-plastic",
+          impactType: "rescue_plastic", 
+          templateCountry: "Mexico",
+          templateRegion: "Yucatan Peninsula",
+          templateCoords: [-87.7289, 20.6296],
           totalAmount: 180,
           unit: "bottles collected",
           completionCount: 15,
-          ...getProjectData(
-            "rescue_plastic",
-            "Caribbean Ocean Cleanup",
-            "Removing plastic waste from Caribbean waters to protect marine life and preserve ocean ecosystems.",
-            "https://www.plasticbank.com/projects/caribbean-cleanup",
-            "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80"
-          )
+          fallbacks: {
+            name: "Caribbean Ocean Cleanup",
+            description: "Removing plastic waste from Caribbean waters to protect marine life and preserve ocean ecosystems.",
+            registry: "https://www.plasticbank.com/projects/caribbean-cleanup", 
+            image: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80"
+          }
         },
         {
-          id: "brazil-carbon",
-          country: "Brazil",
-          region: "Amazon Basin",
-          coordinates: [-60.0261, -3.4653],
+          id: "project-carbon",
           impactType: "offset_carbon",
+          templateCountry: "Brazil", 
+          templateRegion: "Amazon Basin",
+          templateCoords: [-60.0261, -3.4653],
           totalAmount: 320,
           unit: "kg CO₂ offset",
           completionCount: 22,
-          ...getProjectData(
-            "offset_carbon",
-            "Amazon Carbon Sequestration",
-            "Protecting existing rainforest and supporting reforestation efforts to capture atmospheric carbon.",
-            "https://registry.verra.org/amazon-carbon-project",
-            "https://images.unsplash.com/photo-1554990349-170b9e4bdf3b?w=800&q=80"
-          )
+          fallbacks: {
+            name: "Amazon Carbon Sequestration",
+            description: "Protecting existing rainforest and supporting reforestation efforts to capture atmospheric carbon.",
+            registry: "https://registry.verra.org/amazon-carbon-project",
+            image: "https://images.unsplash.com/photo-1554990349-170b9e4bdf3b?w=800&q=80"
+          }
         },
         {
-          id: "ethiopia-water",
-          country: "Ethiopia",
-          region: "Tigray Region",
-          coordinates: [39.4759, 14.2681],
+          id: "project-water",
           impactType: "provide_water",
+          templateCountry: "Ethiopia",
+          templateRegion: "Tigray Region", 
+          templateCoords: [39.4759, 14.2681],
           totalAmount: 2500,
           unit: "days of clean water",
           completionCount: 18,
-          ...getProjectData(
-            "provide_water",
-            "Clean Water Access Initiative",
-            "Building wells and water purification systems to provide clean drinking water to rural communities.",
-            "https://www.charitywater.org/projects/ethiopia-wells",
-            "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80"
-          )
+          fallbacks: {
+            name: "Clean Water Access Initiative",
+            description: "Building wells and water purification systems to provide clean drinking water to rural communities.",
+            registry: "https://www.charitywater.org/projects/ethiopia-wells",
+            image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80"
+          }
         }
       ];
+
+      // Build final impact locations array with correct data priority
+      for (const template of impactProjects) {
+        const projectData = getProjectData(
+          template.impactType,
+          template.fallbacks.name,
+          template.fallbacks.description, 
+          template.fallbacks.registry,
+          template.fallbacks.image,
+          template.templateRegion,
+          template.templateCountry
+        );
+
+        // Use real project coordinates if available, otherwise template coordinates
+        const finalCoords = projectData.realCoordinates || template.templateCoords;
+        const finalRegion = projectData.realRegion || template.templateRegion;
+        const finalCountry = projectData.realCountry || template.templateCountry;
+
+        impactLocations.push({
+          id: template.id,
+          country: finalCountry,
+          region: finalRegion,
+          coordinates: finalCoords,
+          impactType: template.impactType,
+          totalAmount: template.totalAmount,
+          unit: template.unit,
+          completionCount: template.completionCount,
+          projectName: projectData.projectName,
+          projectDescription: projectData.projectDescription,
+          registryLink: projectData.registryLink,
+          imageUrl: projectData.imageUrl,
+          projectId: projectData.projectId,
+          dataSource: projectData.dataSource
+        });
+      }
 
       res.json(impactLocations);
     } catch (error) {
