@@ -45,6 +45,18 @@ const getImpactUnit = (action: string) => {
   }
 };
 
+const getImpactActionText = (action: string) => {
+  switch (action) {
+    case 'plant_tree': return 'planted';
+    case 'rescue_plastic': return 'rescued';
+    case 'offset_carbon': return 'offset';
+    case 'plant_kelp': return 'planted';
+    case 'provide_water': return 'provided';
+    case 'sponsor_bees': return 'protected';
+    default: return 'created';
+  }
+};
+
 const getImpactEmoji = (action: string) => {
   switch (action) {
     case 'plant_tree': return '🌳';
@@ -167,7 +179,7 @@ export default function HabitCard({ habit, onComplete, onRefresh }: HabitCardPro
                 🔥 {habit.streak} day streak
               </p>
               <p className="text-xs text-forest-text/70" data-testid={`text-habit-impact-${habit.id}`}>
-                {getImpactEmoji(habit.impactAction)} {habit.totalImpactEarned} {getImpactUnit(habit.impactAction)} earned
+                {getImpactEmoji(habit.impactAction)} {habit.totalImpactEarned} {getImpactUnit(habit.impactAction)} {getImpactActionText(habit.impactAction)}
               </p>
               <p className="text-xs text-forest-accent/80">
                 +{habit.impactAmount} {getImpactUnit(habit.impactAction)} per completion

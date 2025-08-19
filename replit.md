@@ -10,7 +10,17 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-**August 19, 2025**: Successfully fixed Greenspark API integration to use authentic environmental project data:
+**August 19, 2025**: Enhanced celebration modal with project information and emotional feedback system:
+- Built comprehensive impact celebration modal with authentic Greenspark project details
+- Added project information display including images, names, descriptions, and locations from real environmental initiatives
+- Implemented 5-emoji emotional feedback system (😞 to 🤩) for tracking user feelings after habit completion
+- Added "View Impact on Map" button with direct navigation to Global Impact Map
+- Updated backend to fetch and provide project data during habit completion
+- Enhanced data flow to pass project information through habit completion workflow
+- Replaced "earned" language with proper action verbs: "planted", "rescued", "offset", "provided", "protected"
+- Updated habit cards to show authentic impact actions matching environmental dashboard language
+
+Previously fixed Greenspark API integration to use authentic environmental project data:
 - Identified and resolved authentication issue - SDK uses x-api-key but API requires Bearer token authentication
 - Bypassed broken Greenspark SDK to implement direct HTTP calls to https://api.getgreenspark.com/v1/projects
 - Added project uniqueness tracking to prevent duplicate projects across different impact types  
