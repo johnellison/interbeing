@@ -243,10 +243,11 @@ class GreensparkService {
         projectId: project.projectId || project.id,
         name: project.name || 'Environmental Impact Project',
         description: project.description || 'Supporting global environmental initiatives',
-        registryLink: project.registryUrl || project.certificationUrl || project.verificationUrl || '#',
+        // Use the project's link field as the main registry link, fallback to registryLink
+        registryLink: project.link || project.registryLink || project.registryUrl || project.certificationUrl || 'https://www.getgreenspark.com',
         imageUrl: project.imageUrl || project.thumbnailUrl || project.image || null,
-        location: project.location || project.region || 'Global',
-        coordinates: project.coordinates || this.getDefaultCoordinates(impactType)
+        location: project.location || project.region || (project.countries && project.countries[0]) || 'Global',
+        coordinates: project.coordinates || this.extractCoordinatesFromGeoJSON(project.geoJSON) || this.getDefaultCoordinates(impactType)
       }));
     } catch (error: any) {
       console.error(`Failed to fetch real projects for ${impactType}:`, error.message);
@@ -284,9 +285,9 @@ class GreensparkService {
       
       return {
         ...project,
-        registryLink: project.registryUrl || project.certificationUrl || project.verificationUrl || '#',
+        registryLink: project.link || project.registryLink || project.registryUrl || project.certificationUrl || 'https://www.getgreenspark.com',
         imageUrl: project.imageUrl || project.thumbnailUrl || project.image || null,
-        location: project.location || project.region || 'Global'
+        location: project.location || project.region || (project.countries && project.countries[0]) || 'Global'
       };
     } catch (error: any) {
       console.error('Error fetching project details:', error);
@@ -305,6 +306,19 @@ class GreensparkService {
       'sponsor_bees': [34.7519, 0.0236] // Kenya
     };
     return defaults[impactType] || [0, 0];
+  }
+
+  private extractCoordinatesFromGeoJSON(geoJSON: any): [number, number] | null {
+    try {
+      if (geoJSON?.features?.[0]?.geometry?.coordinates) {
+        const coords = geoJSON.features[0].geometry.coordinates;
+        // GeoJSON coordinates are [longitude, latitude]
+        return [coords[0], coords[1]];
+      }
+    } catch (error) {
+      console.warn('Failed to extract coordinates from GeoJSON:', error);
+    }
+    return null;
   }
 
   async validateApiKey(): Promise<boolean> {
