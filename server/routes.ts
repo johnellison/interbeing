@@ -324,12 +324,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Diagnostic endpoint for Greenspark API troubleshooting
+  app.get("/api/greenspark-diagnostic", isAuthenticated, async (req, res) => {
+    const diagnosticResult = {
+      timestamp: new Date().toISOString(),
+      apiKeyConfigured: !!process.env.GREENSPARK_API_KEY,
+      apiKeyPrefix: process.env.GREENSPARK_API_KEY ? process.env.GREENSPARK_API_KEY.substring(0, 8) + '...' : 'not configured',
+      sdkVersion: '1.4.0',
+      baseUrl: 'https://demo.getgreenspark.com',
+      tests: []
+    };
+
+    // Test 1: Basic API connection
+    try {
+      console.log('=== Greenspark API Diagnostic Started ===');
+      const projects = await greensparkService.getProjectsByType('plant_tree');
+      
+      diagnosticResult.tests.push({
+        test: 'getProjectsByType',
+        success: true,
+        projectCount: projects.length,
+        hasValidImages: projects.filter(p => p.imageUrl && p.imageUrl.startsWith('http')).length,
+        sampleProject: projects.length > 0 ? {
+          name: projects[0].name || 'unnamed',
+          hasImageUrl: !!projects[0].imageUrl,
+          imageUrl: projects[0].imageUrl || 'none',
+          registryLink: projects[0].registryLink || 'none'
+        } : null
+      });
+
+      console.log(`Greenspark API test: ${projects.length} projects found`);
+    } catch (error: any) {
+      diagnosticResult.tests.push({
+        test: 'getProjectsByType',
+        success: false,
+        error: error.message,
+        isHtmlResponse: error.message.includes('<!doctype html>') || error.message.includes('<html')
+      });
+      console.error('Greenspark API test failed:', error.message);
+    }
+
+    // Test 2: API validation
+    try {
+      const isValid = await greensparkService.validateApiKey();
+      diagnosticResult.tests.push({
+        test: 'validateApiKey',
+        success: isValid,
+        result: isValid ? 'API key is valid' : 'API key validation failed'
+      });
+    } catch (error: any) {
+      diagnosticResult.tests.push({
+        test: 'validateApiKey',
+        success: false,
+        error: error.message
+      });
+    }
+
+    console.log('=== Greenspark API Diagnostic Completed ===');
+    res.json(diagnosticResult);
+  });
+
   // Get impact locations for global map (enhanced with real project data)
   app.get("/api/impact-locations", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       
+      // Try to fetch real project data and merge with our location data
+      let realProjectData: Record<string, any> = {};
+      try {
+        const allImpactTypes = ['plant_tree', 'sponsor_bees', 'plant_kelp', 'rescue_plastic', 'offset_carbon', 'provide_water'];
+        for (const impactType of allImpactTypes) {
+          const projects = await greensparkService.getProjectsByType(impactType);
+          if (projects.length > 0 && projects[0].imageUrl) {
+            // Only use real project data if it has valid image URLs
+            realProjectData[impactType] = projects[0];
+          }
+        }
+        if (Object.keys(realProjectData).length > 0) {
+          console.log(`Successfully fetched real project data from Greenspark for ${Object.keys(realProjectData).length} impact types`);
+        } else {
+          console.warn('Greenspark API returned data but no valid project images found');
+        }
+      } catch (error: any) {
+        console.warn('Could not fetch real project data from Greenspark API, using curated fallback images:', error?.message || 'Unknown error');
+      }
+      
       // Enhanced impact locations with correct units and project details
+      // Use real Greenspark project images when available, otherwise use curated representative images
+      const getProjectImage = (impactType: string, fallbackUrl: string) => {
+        return realProjectData[impactType]?.imageUrl || fallbackUrl;
+      };
+      
+      const getProjectDetails = (impactType: string, fallbackName: string, fallbackDesc: string, fallbackRegistry: string) => {
+        const realProject = realProjectData[impactType];
+        return {
+          projectName: realProject?.name || fallbackName,
+          projectDescription: realProject?.description || fallbackDesc,
+          registryLink: realProject?.registryLink || fallbackRegistry
+        };
+      };
+
       const impactLocations = [
         {
           id: "kenya-trees",
@@ -339,12 +433,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "plant_tree",
           totalAmount: 45,
           unit: "trees planted",
-          projectName: "Kenya Forest Restoration",
-          projectDescription: "Restoring indigenous forests in the Mount Kenya region to combat deforestation and support local communities.",
+          ...getProjectDetails(
+            "plant_tree",
+            "Kenya Forest Restoration",
+            "Restoring indigenous forests in the Mount Kenya region to combat deforestation and support local communities.",
+            "https://www.goldstandard.org/projects/kenya-forest-restoration"
+          ),
+          // Use real project image if available, otherwise curated forest restoration image
+          imageUrl: getProjectImage("plant_tree", "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80"),
           completionCount: 12,
-          registryLink: "https://www.goldstandard.org/projects/kenya-forest-restoration",
-          imageUrl: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&q=80",
-          projectId: "kenya-trees-001"
+          projectId: realProjectData["plant_tree"]?.projectId || "kenya-trees-001",
+          dataSource: realProjectData["plant_tree"] ? "greenspark-api" : "curated"
         },
         {
           id: "kenya-bees",
@@ -354,12 +453,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "sponsor_bees",
           totalAmount: 60,
           unit: "bees protected",
-          projectName: "EarthLungs Pollinator Project",
-          projectDescription: "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya through partnership with EarthLungs.",
+          ...getProjectDetails(
+            "sponsor_bees",
+            "EarthLungs Pollinator Project",
+            "Creating pollinator habitats and fostering biodiversity. Supporting bee conservation in Kenya through partnership with EarthLungs.",
+            "https://earthlungs.org/pollinator-project"
+          ),
+          imageUrl: getProjectImage("sponsor_bees", "https://images.unsplash.com/photo-1592496431122-2349e0fbc666?w=800&q=80"),
           completionCount: 3,
-          registryLink: "https://earthlungs.org/pollinator-project",
-          imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-          projectId: "kenya-bees-001"
+          projectId: realProjectData["sponsor_bees"]?.projectId || "kenya-bees-001",
+          dataSource: realProjectData["sponsor_bees"] ? "greenspark-api" : "curated"
         },
         {
           id: "bali-kelp",
@@ -369,12 +472,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "plant_kelp",
           totalAmount: 25,
           unit: "kelp plants",
-          projectName: "Bali Marine Restoration", 
-          projectDescription: "Restoring kelp forests around Bali to support marine biodiversity and protect coral reef ecosystems.",
+          ...getProjectDetails(
+            "plant_kelp",
+            "Bali Marine Restoration",
+            "Restoring kelp forests around Bali to support marine biodiversity and protect coral reef ecosystems.",
+            "https://www.bluecarbon.org/bali-marine-restoration"
+          ),
+          imageUrl: getProjectImage("plant_kelp", "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80"),
           completionCount: 8,
-          registryLink: "https://www.bluecarbon.org/bali-marine-restoration",
-          imageUrl: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80",
-          projectId: "bali-kelp-001"
+          projectId: realProjectData["plant_kelp"]?.projectId || "bali-kelp-001",
+          dataSource: realProjectData["plant_kelp"] ? "greenspark-api" : "curated"
         },
         {
           id: "mexico-plastic",
@@ -384,12 +491,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "rescue_plastic",
           totalAmount: 180,
           unit: "bottles collected",
-          projectName: "Caribbean Ocean Cleanup",
-          projectDescription: "Removing plastic waste from Caribbean waters to protect marine life and preserve ocean ecosystems.",
+          ...getProjectDetails(
+            "rescue_plastic",
+            "Caribbean Ocean Cleanup",
+            "Removing plastic waste from Caribbean waters to protect marine life and preserve ocean ecosystems.",
+            "https://www.plasticbank.com/projects/caribbean-cleanup"
+          ),
+          imageUrl: getProjectImage("rescue_plastic", "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80"),
           completionCount: 15,
-          registryLink: "https://www.plasticbank.com/projects/caribbean-cleanup",
-          imageUrl: "https://images.unsplash.com/photo-1621451537084-482c73073a0f?w=800&q=80",
-          projectId: "mexico-plastic-001"
+          projectId: realProjectData["rescue_plastic"]?.projectId || "mexico-plastic-001",
+          dataSource: realProjectData["rescue_plastic"] ? "greenspark-api" : "curated"
         },
         {
           id: "brazil-carbon",
@@ -399,12 +510,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "offset_carbon",
           totalAmount: 320,
           unit: "kg CO₂ offset",
-          projectName: "Amazon Carbon Sequestration",
-          projectDescription: "Protecting existing rainforest and supporting reforestation efforts to capture atmospheric carbon.",
+          ...getProjectDetails(
+            "offset_carbon",
+            "Amazon Carbon Sequestration",
+            "Protecting existing rainforest and supporting reforestation efforts to capture atmospheric carbon.",
+            "https://registry.verra.org/amazon-carbon-project"
+          ),
+          imageUrl: getProjectImage("offset_carbon", "https://images.unsplash.com/photo-1554990349-170b9e4bdf3b?w=800&q=80"),
           completionCount: 22,
-          registryLink: "https://registry.verra.org/amazon-carbon-project",
-          imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-          projectId: "brazil-carbon-001"
+          projectId: realProjectData["offset_carbon"]?.projectId || "brazil-carbon-001",
+          dataSource: realProjectData["offset_carbon"] ? "greenspark-api" : "curated"
         },
         {
           id: "ethiopia-water",
@@ -414,12 +529,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactType: "provide_water",
           totalAmount: 2500,
           unit: "days of clean water",
-          projectName: "Clean Water Access Initiative",
-          projectDescription: "Building wells and water purification systems to provide clean drinking water to rural communities.",
+          ...getProjectDetails(
+            "provide_water",
+            "Clean Water Access Initiative",
+            "Building wells and water purification systems to provide clean drinking water to rural communities.",
+            "https://www.charitywater.org/projects/ethiopia-wells"
+          ),
+          imageUrl: getProjectImage("provide_water", "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800&q=80"),
           completionCount: 18,
-          registryLink: "https://www.charitywater.org/projects/ethiopia-wells",
-          imageUrl: "https://images.unsplash.com/photo-1559591146-bd10ab0e1a3f?w=800&q=80",
-          projectId: "ethiopia-water-001"
+          projectId: realProjectData["provide_water"]?.projectId || "ethiopia-water-001",
+          dataSource: realProjectData["provide_water"] ? "greenspark-api" : "curated"
         }
       ];
 
