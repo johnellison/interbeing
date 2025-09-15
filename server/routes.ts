@@ -22,6 +22,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get featured Greenspark projects for landing page
+  app.get("/api/featured-projects", async (req, res) => {
+    try {
+      console.log('Fetching featured Greenspark projects for landing page');
+      
+      // Fetch projects for the three organizations mentioned on landing page
+      const [treeProjects, plasticProjects, beeProjects] = await Promise.all([
+        greensparkService.getProjectsByType('plant_tree'),
+        greensparkService.getProjectsByType('rescue_plastic'), 
+        greensparkService.getProjectsByType('sponsor_bees')
+      ]);
+
+      // Find specific projects by searching for organization names
+      const americanForestsProject = treeProjects.find(p => 
+        p.name?.toLowerCase().includes('american forests') || 
+        p.description?.toLowerCase().includes('american forests') ||
+        p.description?.toLowerCase().includes('oregon') ||
+        p.name?.toLowerCase().includes('wildfire')
+      ) || treeProjects[0];
+
+      const plasticBankProject = plasticProjects.find(p => 
+        p.name?.toLowerCase().includes('plastic bank') ||
+        p.description?.toLowerCase().includes('plastic bank') ||
+        p.description?.toLowerCase().includes('ocean-bound plastic')
+      ) || plasticProjects[0];
+
+      const earthLungsProject = beeProjects.find(p => 
+        p.name?.toLowerCase().includes('earthlungs') || 
+        p.name?.toLowerCase().includes('earth lungs') ||
+        p.description?.toLowerCase().includes('earthlungs') ||
+        p.description?.toLowerCase().includes('kenya') ||
+        p.description?.toLowerCase().includes('pollinator')
+      ) || beeProjects[0];
+
+      const featuredProjects = [
+        {
+          id: 'american-forests',
+          name: 'American Forests',
+          title: 'Wildfire Forest Restoration',
+          description: 'Restoring Oregon\'s wildfire-affected areas with native Pacific Northwest trees',
+          emoji: '🌲',
+          impactType: 'plant_tree',
+          project: americanForestsProject
+        },
+        {
+          id: 'plastic-bank', 
+          name: 'Plastic Bank',
+          title: 'Ocean-Bound Plastic Recovery',
+          description: 'Transforming ocean-bound plastic waste into empowering income globally',
+          emoji: '🌊',
+          impactType: 'rescue_plastic',
+          project: plasticBankProject
+        },
+        {
+          id: 'earthlungs-kenya',
+          name: 'EarthLungs Kenya', 
+          title: 'Pollinator Habitat Conservation',
+          description: 'Creating pollinator habitats and fostering biodiversity through bee conservation',
+          emoji: '🐝',
+          impactType: 'sponsor_bees',
+          project: earthLungsProject
+        }
+      ];
+
+      console.log(`Successfully fetched ${featuredProjects.length} featured projects`);
+      res.json(featuredProjects);
+    } catch (error: any) {
+      console.error('Error fetching featured projects:', error);
+      res.status(500).json({ 
+        message: 'Failed to fetch featured projects',
+        error: error.message 
+      });
+    }
+  });
+
   // Get user stats and habits (protected route)
   app.get("/api/dashboard", isAuthenticated, async (req: any, res) => {
     try {
