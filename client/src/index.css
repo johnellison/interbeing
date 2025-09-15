@@ -3,67 +3,67 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(118 22% 95%);
-  --foreground: hsl(105 10% 20%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(105 10% 20%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(105 10% 20%);
-  --primary: hsl(96 50% 19%);
-  --primary-foreground: hsl(0 0% 100%);
-  --secondary: hsl(90 25% 70%);
-  --secondary-foreground: hsl(96 50% 19%);
-  --muted: hsl(118 22% 92%);
-  --muted-foreground: hsl(105 10% 40%);
-  --accent: hsl(22 72% 44%);
-  --accent-foreground: hsl(0 0% 100%);
+  --background: hsl(240 10% 3.9%);
+  --foreground: hsl(0 0% 98%);
+  --card: hsl(240 10% 3.9%);
+  --card-foreground: hsl(0 0% 98%);
+  --popover: hsl(240 10% 3.9%);
+  --popover-foreground: hsl(0 0% 98%);
+  --primary: hsl(47 96% 53%);
+  --primary-foreground: hsl(240 10% 3.9%);
+  --secondary: hsl(240 3.7% 15.9%);
+  --secondary-foreground: hsl(0 0% 98%);
+  --muted: hsl(240 3.7% 15.9%);
+  --muted-foreground: hsl(240 5% 64.9%);
+  --accent: hsl(47 96% 53%);
+  --accent-foreground: hsl(240 10% 3.9%);
   --destructive: hsl(0 84% 60%);
-  --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(90 25% 85%);
-  --input: hsl(118 22% 95%);
-  --ring: hsl(96 50% 19%);
-  --success: hsl(120 61% 34%);
-  --success-foreground: hsl(0 0% 100%);
-  --forest-primary: hsl(96 50% 19%);
-  --forest-secondary: hsl(90 25% 70%);
-  --forest-accent: hsl(22 72% 44%);
-  --forest-bg: hsl(118 22% 95%);
-  --forest-success: hsl(120 61% 34%);
-  --forest-text: hsl(105 10% 20%);
-  --font-sans: 'Nunito', 'Inter', sans-serif;
-  --font-serif: Georgia, serif;
-  --font-mono: Menlo, monospace;
+  --destructive-foreground: hsl(0 0% 98%);
+  --border: hsl(240 3.7% 15.9%);
+  --input: hsl(240 3.7% 15.9%);
+  --ring: hsl(47 96% 53%);
+  --success: hsl(142 71% 45%);
+  --success-foreground: hsl(240 10% 3.9%);
+  --tiempo-primary: hsl(47 96% 53%);
+  --tiempo-secondary: hsl(240 3.7% 15.9%);
+  --tiempo-accent: hsl(47 96% 53%);
+  --tiempo-bg: hsl(240 10% 3.9%);
+  --tiempo-success: hsl(142 71% 45%);
+  --tiempo-text: hsl(0 0% 98%);
+  --font-sans: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-serif: 'SF Pro Display', Georgia, serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
   --radius: 0.75rem;
 }
 
 .dark {
-  --background: hsl(96 50% 5%);
-  --foreground: hsl(118 22% 90%);
-  --card: hsl(96 30% 8%);
-  --card-foreground: hsl(118 22% 90%);
-  --popover: hsl(96 50% 5%);
-  --popover-foreground: hsl(118 22% 90%);
-  --primary: hsl(90 25% 70%);
-  --primary-foreground: hsl(96 50% 5%);
-  --secondary: hsl(96 30% 15%);
-  --secondary-foreground: hsl(118 22% 90%);
-  --muted: hsl(96 30% 10%);
-  --muted-foreground: hsl(105 10% 60%);
-  --accent: hsl(22 72% 55%);
-  --accent-foreground: hsl(96 50% 5%);
+  --background: hsl(240 10% 3.9%);
+  --foreground: hsl(0 0% 98%);
+  --card: hsl(240 10% 3.9%);
+  --card-foreground: hsl(0 0% 98%);
+  --popover: hsl(240 10% 3.9%);
+  --popover-foreground: hsl(0 0% 98%);
+  --primary: hsl(47 96% 53%);
+  --primary-foreground: hsl(240 10% 3.9%);
+  --secondary: hsl(240 3.7% 15.9%);
+  --secondary-foreground: hsl(0 0% 98%);
+  --muted: hsl(240 3.7% 15.9%);
+  --muted-foreground: hsl(240 5% 64.9%);
+  --accent: hsl(47 96% 53%);
+  --accent-foreground: hsl(240 10% 3.9%);
   --destructive: hsl(0 84% 60%);
-  --destructive-foreground: hsl(0 0% 100%);
-  --border: hsl(96 30% 15%);
-  --input: hsl(96 30% 10%);
-  --ring: hsl(90 25% 70%);
-  --success: hsl(120 61% 45%);
-  --success-foreground: hsl(96 50% 5%);
-  --forest-primary: hsl(90 25% 70%);
-  --forest-secondary: hsl(96 30% 40%);
-  --forest-accent: hsl(22 72% 55%);
-  --forest-bg: hsl(96 50% 5%);
-  --forest-success: hsl(120 61% 45%);
-  --forest-text: hsl(118 22% 90%);
+  --destructive-foreground: hsl(0 0% 98%);
+  --border: hsl(240 3.7% 15.9%);
+  --input: hsl(240 3.7% 15.9%);
+  --ring: hsl(47 96% 53%);
+  --success: hsl(142 71% 45%);
+  --success-foreground: hsl(240 10% 3.9%);
+  --tiempo-primary: hsl(47 96% 53%);
+  --tiempo-secondary: hsl(240 3.7% 15.9%);
+  --tiempo-accent: hsl(47 96% 53%);
+  --tiempo-bg: hsl(240 10% 3.9%);
+  --tiempo-success: hsl(142 71% 45%);
+  --tiempo-text: hsl(0 0% 98%);
 }
 
 @layer base {
@@ -92,16 +92,16 @@
 }
 
 @layer components {
-  .forest-card {
+  .tiempo-card {
     @apply bg-card border border-border rounded-[12px] shadow-sm;
   }
   
-  .forest-btn-primary {
-    @apply bg-forest-primary text-white hover:bg-forest-primary/90 rounded-[12px] transition-colors;
+  .tiempo-btn-primary {
+    @apply bg-tiempo-primary text-tiempo-bg hover:bg-tiempo-primary/90 rounded-[12px] transition-colors font-medium;
   }
   
-  .forest-btn-secondary {
-    @apply bg-forest-secondary text-forest-text hover:bg-forest-secondary/80 rounded-[12px] transition-colors;
+  .tiempo-btn-secondary {
+    @apply bg-tiempo-secondary text-tiempo-text hover:bg-tiempo-secondary/80 rounded-[12px] transition-colors;
   }
 
   .habit-checkbox {
@@ -109,15 +109,28 @@
   }
 
   .habit-checkbox.completed {
-    @apply bg-forest-success border-forest-success text-white;
+    @apply bg-tiempo-success border-tiempo-success text-primary-foreground;
   }
 
   .habit-checkbox.incomplete {
-    @apply border-muted-foreground border-opacity-30 hover:border-forest-success;
+    @apply border-muted-foreground border-opacity-30 hover:border-tiempo-success;
   }
   
   .habit-checkbox.incomplete:hover {
-    background-color: hsl(120 61% 34% / 0.1);
+    background-color: hsl(142 71% 45% / 0.1);
+  }
+
+  /* Keep forest classes for backward compatibility during transition */
+  .forest-card {
+    @apply bg-card border border-border rounded-[12px] shadow-sm;
+  }
+  
+  .forest-btn-primary {
+    @apply bg-tiempo-primary text-tiempo-bg hover:bg-tiempo-primary/90 rounded-[12px] transition-colors font-medium;
+  }
+  
+  .forest-btn-secondary {
+    @apply bg-tiempo-secondary text-tiempo-text hover:bg-tiempo-secondary/80 rounded-[12px] transition-colors;
   }
 
   .celebration-animation {
@@ -141,55 +154,108 @@
 }
 
 @layer utilities {
+  .text-tiempo-primary {
+    color: var(--tiempo-primary);
+  }
+  
+  .text-tiempo-secondary {
+    color: var(--tiempo-secondary);
+  }
+  
+  .text-tiempo-accent {
+    color: var(--tiempo-accent);
+  }
+  
+  .text-tiempo-success {
+    color: var(--tiempo-success);
+  }
+  
+  .text-tiempo-text {
+    color: var(--tiempo-text);
+  }
+  
+  .bg-tiempo-primary {
+    background-color: var(--tiempo-primary);
+  }
+  
+  .bg-tiempo-secondary {
+    background-color: var(--tiempo-secondary);
+  }
+  
+  .bg-tiempo-accent {
+    background-color: var(--tiempo-accent);
+  }
+  
+  .bg-tiempo-bg {
+    background-color: var(--tiempo-bg);
+  }
+  
+  .bg-tiempo-success {
+    background-color: var(--tiempo-success);
+  }
+  
+  .border-tiempo-primary {
+    border-color: var(--tiempo-primary);
+  }
+  
+  .border-tiempo-secondary {
+    border-color: var(--tiempo-secondary);
+  }
+  
+  .border-tiempo-success {
+    border-color: var(--tiempo-success);
+  }
+  
+  /* Keep forest classes for backward compatibility during transition */
   .text-forest-primary {
-    color: var(--forest-primary);
+    color: var(--tiempo-primary);
   }
   
   .text-forest-secondary {
-    color: var(--forest-secondary);
+    color: var(--tiempo-secondary);
   }
   
   .text-forest-accent {
-    color: var(--forest-accent);
+    color: var(--tiempo-accent);
   }
   
   .text-forest-success {
-    color: var(--forest-success);
+    color: var(--tiempo-success);
   }
   
   .text-forest-text {
-    color: var(--forest-text);
+    color: var(--tiempo-text);
   }
   
   .bg-forest-primary {
-    background-color: var(--forest-primary);
+    background-color: var(--tiempo-primary);
   }
   
   .bg-forest-secondary {
-    background-color: var(--forest-secondary);
+    background-color: var(--tiempo-secondary);
   }
   
   .bg-forest-accent {
-    background-color: var(--forest-accent);
+    background-color: var(--tiempo-accent);
   }
   
   .bg-forest-bg {
-    background-color: var(--forest-bg);
+    background-color: var(--tiempo-bg);
   }
   
   .bg-forest-success {
-    background-color: var(--forest-success);
+    background-color: var(--tiempo-success);
   }
   
   .border-forest-primary {
-    border-color: var(--forest-primary);
+    border-color: var(--tiempo-primary);
   }
   
   .border-forest-secondary {
-    border-color: var(--forest-secondary);
+    border-color: var(--tiempo-secondary);
   }
   
   .border-forest-success {
-    border-color: var(--forest-success);
+    border-color: var(--tiempo-success);
   }
 }
