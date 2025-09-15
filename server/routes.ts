@@ -61,28 +61,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: 'american-forests',
           name: 'American Forests',
           title: 'Wildfire Forest Restoration',
-          description: 'Restoring Oregon\'s wildfire-affected areas with native Pacific Northwest trees',
+          description: americanForestsProject?.description || 'Restoring Oregon\'s wildfire-affected areas with native Pacific Northwest trees',
           emoji: '🌲',
           impactType: 'plant_tree',
-          project: americanForestsProject
+          imageUrl: americanForestsProject?.imageUrl || null,
+          registryLink: americanForestsProject?.registryLink || americanForestsProject?.link || null,
+          location: americanForestsProject?.location || (americanForestsProject?.countries && americanForestsProject.countries[0]) || 'Global',
+          projectName: americanForestsProject?.name || null
         },
         {
           id: 'plastic-bank', 
           name: 'Plastic Bank',
           title: 'Ocean-Bound Plastic Recovery',
-          description: 'Transforming ocean-bound plastic waste into empowering income globally',
+          description: plasticBankProject?.description || 'Transforming ocean-bound plastic waste into empowering income globally',
           emoji: '🌊',
           impactType: 'rescue_plastic',
-          project: plasticBankProject
+          imageUrl: plasticBankProject?.imageUrl || null,
+          registryLink: plasticBankProject?.registryLink || plasticBankProject?.link || null,
+          location: plasticBankProject?.location || (plasticBankProject?.countries && plasticBankProject.countries[0]) || 'Global',
+          projectName: plasticBankProject?.name || null
         },
         {
           id: 'earthlungs-kenya',
           name: 'EarthLungs Kenya', 
           title: 'Pollinator Habitat Conservation',
-          description: 'Creating pollinator habitats and fostering biodiversity through bee conservation',
+          description: earthLungsProject?.description || 'Creating pollinator habitats and fostering biodiversity through bee conservation',
           emoji: '🐝',
           impactType: 'sponsor_bees',
-          project: earthLungsProject
+          imageUrl: earthLungsProject?.imageUrl || null,
+          registryLink: earthLungsProject?.registryLink || earthLungsProject?.link || null,
+          location: earthLungsProject?.location || (earthLungsProject?.countries && earthLungsProject.countries[0]) || 'Global',
+          projectName: earthLungsProject?.name || null
         }
       ];
 

@@ -1,8 +1,34 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, Target, TreePine, Users } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+
+interface FeaturedProject {
+  id: string;
+  name: string;
+  title: string;
+  description: string;
+  emoji: string;
+  impactType: string;
+  imageUrl?: string;
+  registryLink?: string;
+  location?: string;
+  projectName?: string;
+}
 
 export default function Landing() {
+  const { data: featuredProjects, isLoading: projectsLoading, isError } = useQuery<FeaturedProject[]>({
+    queryKey: ["/api/featured-projects"],
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
+  
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+  
+  const handleImageError = (projectId: string) => {
+    setImageErrors((prev: Set<string>) => new Set(Array.from(prev).concat(projectId)));
+  };
+  
   const handleLogin = () => {
     window.location.href = "/api/login";
   };
@@ -170,27 +196,82 @@ export default function Landing() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="text-center p-8 bg-secondary/20 rounded-2xl border border-border hover:border-primary/20 transition-colors duration-200">
-              <div className="text-4xl mb-4">🌲</div>
-              <h4 className="font-semibold text-foreground mb-3 text-lg">American Forests</h4>
-              <p className="text-muted-foreground leading-relaxed">
-                Restoring Oregon's wildfire-affected areas with native Pacific Northwest trees
-              </p>
-            </div>
-            <div className="text-center p-8 bg-secondary/20 rounded-2xl border border-border hover:border-primary/20 transition-colors duration-200">
-              <div className="text-4xl mb-4">🌊</div>
-              <h4 className="font-semibold text-foreground mb-3 text-lg">Plastic Bank</h4>
-              <p className="text-muted-foreground leading-relaxed">
-                Transforming ocean-bound plastic waste into empowering income globally
-              </p>
-            </div>
-            <div className="text-center p-8 bg-secondary/20 rounded-2xl border border-border hover:border-primary/20 transition-colors duration-200">
-              <div className="text-4xl mb-4">🐝</div>
-              <h4 className="font-semibold text-foreground mb-3 text-lg">EarthLungs Kenya</h4>
-              <p className="text-muted-foreground leading-relaxed">
-                Creating pollinator habitats and fostering biodiversity through bee conservation
-              </p>
-            </div>
+            {projectsLoading ? (
+              // Loading skeleton for project cards
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="text-center p-8 bg-secondary/20 rounded-2xl border border-border animate-pulse">
+                  <div className="w-20 h-20 bg-muted rounded-lg mx-auto mb-4"></div>
+                  <div className="h-5 bg-muted rounded w-3/4 mx-auto mb-3"></div>
+                  <div className="h-4 bg-muted rounded w-full mb-2"></div>
+                  <div className="h-4 bg-muted rounded w-2/3 mx-auto"></div>
+                </div>
+              ))
+            ) : isError ? (
+              // Error fallback with static content
+              [
+                { id: 'american-forests', name: 'American Forests', emoji: '🌲', description: 'Restoring Oregon\'s wildfire-affected areas with native Pacific Northwest trees' },
+                { id: 'plastic-bank', name: 'Plastic Bank', emoji: '🌊', description: 'Transforming ocean-bound plastic waste into empowering income globally' },
+                { id: 'earthlungs-kenya', name: 'EarthLungs Kenya', emoji: '🐝', description: 'Creating pollinator habitats and fostering biodiversity through bee conservation' }
+              ].map((project) => (
+                <div key={project.id} className="text-center p-6 bg-secondary/20 rounded-2xl border border-border opacity-75">
+                  <div className="w-full h-32 flex items-center justify-center text-5xl bg-secondary/30 rounded-xl mb-4">
+                    {project.emoji}
+                  </div>
+                  <h4 className="font-semibold text-foreground mb-3 text-lg">{project.name}</h4>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{project.description}</p>
+                </div>
+              ))
+            ) : (
+              // Render actual project cards with images
+              (featuredProjects || []).map((project) => {
+                const hasImageError = imageErrors.has(project.id);
+                const shouldShowImage = project.imageUrl && !hasImageError;
+                
+                return (
+                  <div 
+                    key={project.id} 
+                    className="text-center p-6 bg-secondary/20 rounded-2xl border border-border hover:border-primary/20 transition-all duration-300 hover:shadow-lg group cursor-pointer" 
+                    data-testid={`project-${project.id}`}
+                    onClick={() => project.registryLink && window.open(project.registryLink, '_blank')}
+                  >
+                    <div className="mb-4 overflow-hidden rounded-xl">
+                      {shouldShowImage ? (
+                        <img 
+                          src={project.imageUrl}
+                          alt={`${project.name} project`}
+                          className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                          onError={() => handleImageError(project.id)}
+                          data-testid={`img-project-${project.id}`}
+                        />
+                      ) : (
+                        <div className="w-full h-32 flex items-center justify-center text-5xl bg-secondary/30 rounded-xl group-hover:scale-105 transition-transform duration-300">
+                          {project.emoji}
+                        </div>
+                      )}
+                    </div>
+                    <h4 className="font-semibold text-foreground mb-3 text-lg" data-testid={`text-project-name-${project.id}`}>
+                      {project.name}
+                    </h4>
+                    <p className="text-muted-foreground leading-relaxed text-sm mb-3">
+                      {project.description}
+                    </p>
+                    <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground/70">
+                      {project.location && (
+                        <span className="flex items-center gap-1">
+                          📍 {project.location}
+                        </span>
+                      )}
+                      {project.registryLink && (
+                        <span className="flex items-center gap-1 text-primary/70 hover:text-primary transition-colors">
+                          🔗 View Project
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
           </div>
           
           <div className="text-center">
