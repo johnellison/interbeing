@@ -64,6 +64,13 @@
   --tiempo-bg: hsl(240 10% 3.9%);
   --tiempo-success: hsl(142 71% 45%);
   --tiempo-text: hsl(0 0% 98%);
+  
+  --chart-1: hsl(47 96% 53%);
+  --chart-2: hsl(217 91% 60%);
+  --chart-3: hsl(262 83% 58%);
+  --chart-4: hsl(43 96% 56%);
+  --chart-5: hsl(0 84% 60%);
+  --chart-6: hsl(185 95% 53%);
 }
 
 @layer base {

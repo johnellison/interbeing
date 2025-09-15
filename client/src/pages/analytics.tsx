@@ -145,10 +145,10 @@ export default function Analytics() {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="animate-pulse space-y-6">
-          <div className="h-8 bg-forest-secondary rounded w-1/3"></div>
+          <div className="h-8 bg-muted rounded w-1/3"></div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-32 bg-forest-secondary rounded"></div>
+              <div key={i} className="h-32 bg-muted rounded"></div>
             ))}
           </div>
         </div>
@@ -163,40 +163,41 @@ export default function Analytics() {
   
   const impactSummary = analytics?.impactSummary || {
     totalTrees: 127,
-    totalPlasticRescued: 45,
-    totalCarbonOffset: 23
+    totalOceanCleaned: 45,
+    totalCarbonCaptured: 23,
+    totalDonated: 150
   };
 
   const impactTypeData = [
     { name: 'Trees Planted', value: impactSummary.totalTrees, color: '#22c55e', icon: '🌳' },
-    { name: 'Plastic Rescued (bottles)', value: impactSummary.totalPlasticRescued || impactSummary.totalOceanCleaned || 0, color: '#3b82f6', icon: '🐋' },
-    { name: 'Carbon Offset (kg)', value: impactSummary.totalCarbonOffset || impactSummary.totalCarbonCaptured || 0, color: '#8b5cf6', icon: '☁️' },
+    { name: 'Plastic Rescued (bottles)', value: impactSummary.totalOceanCleaned, color: '#3b82f6', icon: '🐋' },
+    { name: 'Carbon Offset (kg)', value: impactSummary.totalCarbonCaptured, color: '#8b5cf6', icon: '☁️' },
   ];
 
   return (
-    <div className="min-h-screen bg-forest-bg font-nunito text-forest-text">
+    <div className="min-h-screen bg-background text-foreground">
       <Navigation currentPage="/analytics" />
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         <div className="mb-8">
-        <h1 className="text-3xl font-bold text-forest-text mb-2" data-testid="heading-analytics">Analytics Dashboard</h1>
-        <p className="text-forest-text/70">Track your habits and environmental impact over time</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2 tracking-tight" data-testid="heading-analytics">Analytics Dashboard</h1>
+        <p className="text-muted-foreground">Track your habits and environmental impact over time</p>
       </div>
 
       {/* Impact Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         {impactTypeData.map((item) => (
-          <Card key={item.name} className="forest-card">
+          <Card key={item.name} className="bg-card border-border">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-forest-text/70">
+              <CardTitle className="text-sm font-medium text-muted-foreground">
                 {item.name}
               </CardTitle>
               <span className="text-2xl">{item.icon}</span>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-forest-text" data-testid={`metric-${item.name.toLowerCase().replace(/\s+/g, '-')}`}>
+              <div className="text-2xl font-bold text-foreground" data-testid={`metric-${item.name.toLowerCase().replace(/\s+/g, '-')}`}>
                 {item.value.toLocaleString()}
               </div>
-              <p className="text-xs text-forest-text/50 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 Total generated
               </p>
             </CardContent>
@@ -216,9 +217,9 @@ export default function Analytics() {
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="forest-card">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-forest-text">Habit Categories</CardTitle>
+                <CardTitle className="text-foreground">Habit Categories</CardTitle>
                 <CardDescription>Distribution of your habits by category</CardDescription>
               </CardHeader>
               <CardContent>
@@ -243,9 +244,9 @@ export default function Analytics() {
               </CardContent>
             </Card>
 
-            <Card className="forest-card">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-forest-text">Impact Distribution</CardTitle>
+                <CardTitle className="text-foreground">Impact Distribution</CardTitle>
                 <CardDescription>Your environmental impact by type</CardDescription>
               </CardHeader>
               <CardContent>
@@ -267,39 +268,39 @@ export default function Analytics() {
 
         {/* All Habits Tab */}
         <TabsContent value="habits" className="space-y-6">
-          <Card className="forest-card">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-forest-text">Your Habits Overview</CardTitle>
+              <CardTitle className="text-foreground">Your Habits Overview</CardTitle>
               <CardDescription>Complete breakdown of all your tracked habits</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
                 {habitsList.length === 0 ? (
-                  <div className="text-center py-8 text-forest-text/60">
+                  <div className="text-center py-8 text-muted-foreground">
                     <p>No habits found. Create your first habit to start tracking your impact!</p>
                   </div>
                 ) : (
                   habitsList.map((habit: any) => (
-                    <div key={habit.id} className="flex items-center justify-between p-4 border border-forest-secondary/20 rounded-lg" data-testid={`habit-card-${habit.id}`}>
+                    <div key={habit.id} className="flex items-center justify-between p-4 border border-border rounded-lg" data-testid={`habit-card-${habit.id}`}>
                     <div className="flex items-center space-x-4">
                       <div className="text-2xl">
                         {getEmojiForIcon(habit.icon)}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-forest-text">{habit.name}</h3>
-                        <p className="text-sm text-forest-text/70">{habit.category}</p>
+                        <h3 className="font-semibold text-foreground">{habit.name}</h3>
+                        <p className="text-sm text-muted-foreground">{habit.category}</p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-6">
                       <div className="text-center">
-                        <div className="text-lg font-bold text-forest-accent">{habit.streak}</div>
-                        <div className="text-xs text-forest-text/70">Current Streak</div>
+                        <div className="text-lg font-bold text-primary">{habit.streak}</div>
+                        <div className="text-xs text-muted-foreground">Current Streak</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-lg font-bold text-forest-primary">
+                        <div className="text-lg font-bold text-primary">
                           {habit.totalImpactEarned}
                         </div>
-                        <div className="text-xs text-forest-text/70">Total Impact</div>
+                        <div className="text-xs text-muted-foreground">Total Impact</div>
                       </div>
                       <Badge variant="outline" className="capitalize">
                         {habit.impactAction === 'plant_tree' ? 'Plant Trees' :
@@ -319,9 +320,9 @@ export default function Analytics() {
         {/* Progress Report Tab */}
         <TabsContent value="progress" className="space-y-6">
           <div className="grid gap-6">
-            <Card className="forest-card">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-forest-text">Daily Habit Completions</CardTitle>
+                <CardTitle className="text-foreground">Daily Habit Completions</CardTitle>
                 <CardDescription>Your consistency over the last 30 days</CardDescription>
               </CardHeader>
               <CardContent>
@@ -340,9 +341,9 @@ export default function Analytics() {
               </CardContent>
             </Card>
 
-            <Card className="forest-card">
+            <Card className="bg-card border-border">
               <CardHeader>
-                <CardTitle className="text-forest-text">Environmental Impact Over Time</CardTitle>
+                <CardTitle className="text-foreground">Environmental Impact Over Time</CardTitle>
                 <CardDescription>Track your positive environmental contributions</CardDescription>
               </CardHeader>
               <CardContent>
@@ -366,9 +367,9 @@ export default function Analytics() {
 
         {/* Impact Map Tab */}
         <TabsContent value="impact-map" className="space-y-6">
-          <Card className="forest-card">
+          <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-forest-text">Global Impact Projects</CardTitle>
+              <CardTitle className="text-foreground">Global Impact Projects</CardTitle>
               <CardDescription>See where your habits are making a difference around the world</CardDescription>
             </CardHeader>
             <CardContent>
@@ -421,13 +422,13 @@ export default function Analytics() {
               
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {impactProjects.map((project) => (
-                  <div key={project.id} className="p-4 border border-forest-secondary/20 rounded-lg" data-testid={`project-card-${project.id}`}>
+                  <div key={project.id} className="p-4 border border-border rounded-lg" data-testid={`project-card-${project.id}`}>
                     <div className="flex items-center space-x-2 mb-2">
                       <span className="text-xl">{project.icon}</span>
-                      <h3 className="font-semibold text-sm text-forest-text">{project.name}</h3>
+                      <h3 className="font-semibold text-sm text-foreground">{project.name}</h3>
                     </div>
-                    <p className="text-xs text-forest-text/70 mb-1">{project.location}</p>
-                    <p className="text-xs text-forest-text/60 mb-2">{project.description}</p>
+                    <p className="text-xs text-muted-foreground mb-1">{project.location}</p>
+                    <p className="text-xs text-muted-foreground mb-2">{project.description}</p>
                     <div className="text-xs font-semibold" style={{ color: project.color }}>
                       {project.impact}
                     </div>

@@ -105,10 +105,10 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-forest-bg flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Sprout className="h-12 w-12 text-forest-primary animate-pulse mx-auto mb-4" />
-          <p className="text-forest-text">Loading your habits...</p>
+          <Sprout className="h-12 w-12 text-primary animate-pulse mx-auto mb-4" />
+          <p className="text-foreground">Loading your habits...</p>
         </div>
       </div>
     );
@@ -116,16 +116,16 @@ export default function Home() {
 
   if (!dashboardData) {
     return (
-      <div className="min-h-screen bg-forest-bg flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-forest-text">Failed to load dashboard data.</p>
+          <p className="text-foreground">Failed to load dashboard data.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-forest-bg font-nunito text-forest-text">
+    <div className="min-h-screen bg-background text-foreground">
       <Navigation currentPage="/" />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -143,10 +143,10 @@ export default function Home() {
           {/* Daily Habits Section */}
           <div className="lg:col-span-2">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-forest-text">Today's Habits</h2>
+              <h2 className="text-2xl font-bold text-foreground tracking-tight">Today's Habits</h2>
               <Button
                 onClick={() => setIsAddHabitModalOpen(true)}
-                className="bg-forest-primary text-white px-4 py-2 rounded-organic hover:bg-forest-primary/90 transition-colors"
+                className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors font-medium"
                 data-testid="button-add-habit"
               >
                 <span className="text-lg mr-2">+</span>
@@ -168,16 +168,16 @@ export default function Home() {
               
               {dashboardData.habits.length === 0 && (
                 <div className="text-center py-12" data-testid="empty-habits-state">
-                  <Sprout className="h-16 w-16 text-forest-secondary mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-forest-text mb-2">
+                  <Sprout className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-foreground mb-2">
                     No habits yet!
                   </h3>
-                  <p className="text-forest-text/70 mb-4">
+                  <p className="text-muted-foreground mb-4">
                     Start your environmental journey by adding your first habit.
                   </p>
                   <Button
                     onClick={() => setIsAddHabitModalOpen(true)}
-                    className="bg-forest-primary text-white px-6 py-2 rounded-organic hover:bg-forest-primary/90"
+                    className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 font-medium"
                     data-testid="button-add-first-habit"
                   >
                     Add Your First Habit
