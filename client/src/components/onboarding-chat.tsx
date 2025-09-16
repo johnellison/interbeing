@@ -16,8 +16,9 @@ interface Message {
 }
 
 interface ConversationState {
-  phase: 'welcome' | 'clarify_aspiration' | 'ready_to_create';
-  data: Partial<OnboardingProfile>;
+  phase: 'welcome' | 'clarify_aspiration' | 'recommend_behaviors';
+  messageCount: number;
+  data: Partial<OnboardingProfile & { recommendedBehaviors?: Behavior[] }>;
 }
 
 interface OnboardingChatProps {
@@ -36,11 +37,12 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
   const [input, setInput] = useState("");
   const [conversationState, setConversationState] = useState<ConversationState>({
     phase: 'welcome',
+    messageCount: 0,
     data: {}
   });
 
-  const handleCreateFirstHabit = () => {
-    // Complete onboarding with the aspiration data we've collected
+  const handleOnboardingChoice = (choice: 'manual' | 'automatic') => {
+    // Complete onboarding with the collected data and user's choice
     const celebrationPrefs: CelebrationPrefs = {
       personalityTone: 'warm',
       style: 'standard',
@@ -55,7 +57,9 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
       motivations: conversationState.data.motivations || [],
       obstacles: conversationState.data.obstacles || [],
       context: conversationState.data.context || "User wants to start building positive habits",
-      selectedBehaviors: []
+      selectedBehaviors: choice === 'automatic' ? (conversationState.data.recommendedBehaviors || []) : [],
+      recommendedBehaviors: conversationState.data.recommendedBehaviors || [],
+      choice: choice
     };
 
     onComplete(profile, celebrationPrefs);
@@ -89,6 +93,7 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
       // Update conversation state
       setConversationState(prev => ({
         phase: data.nextPhase,
+        messageCount: prev.messageCount + 1,
         data: data.updatedData
       }));
 
@@ -190,24 +195,38 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
         </div>
       </div>
 
-      {/* Add First Habit Button */}
-      {conversationState.phase === 'ready_to_create' && (
+      {/* Behavior Choice Buttons */}
+      {conversationState.phase === 'recommend_behaviors' && (
         <div className="border-t border-border bg-card p-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <Button
-              onClick={handleCreateFirstHabit}
-              size="lg"
-              className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-8"
-              data-testid="button-add-first-habit"
-            >
-              Add First Habit
-            </Button>
+          <div className="max-w-4xl mx-auto">
+            <p className="text-sm text-muted-foreground mb-4 text-center">
+              Choose how you'd like to proceed:
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                onClick={() => handleOnboardingChoice('automatic')}
+                size="lg"
+                className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-8"
+                data-testid="button-create-automatic"
+              >
+                Create These Habits for Me
+              </Button>
+              <Button
+                onClick={() => handleOnboardingChoice('manual')}
+                variant="outline"
+                size="lg"
+                className="font-medium px-8"
+                data-testid="button-create-manual"
+              >
+                I'll Add Habits Manually
+              </Button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Suggestions */}
-      {suggestions.length > 0 && conversationState.phase !== 'ready_to_create' && (
+      {suggestions.length > 0 && conversationState.phase !== 'recommend_behaviors' && (
         <div className="border-t border-border bg-card p-4">
           <div className="max-w-4xl mx-auto">
             <p className="text-sm text-muted-foreground mb-2">Quick responses:</p>
@@ -230,7 +249,7 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
       )}
 
       {/* Input */}
-      {conversationState.phase !== 'ready_to_create' && (
+      {conversationState.phase !== 'recommend_behaviors' && (
         <div className="fixed bottom-0 left-0 right-0 md:relative md:bottom-auto border-t border-border bg-card p-4">
           <div className="max-w-4xl mx-auto flex space-x-2">
             <Input

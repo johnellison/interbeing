@@ -43,8 +43,8 @@ CRITICAL: Always respond with valid JSON in this format:
   }> {
     
     // Force transition logic - structured 3-message flow
-    if (conversationState.messageCount >= 2) {
-      // After 2 messages (welcome + clarify), always move to recommend_behaviors
+    if (conversationState.messageCount >= 1) {
+      // After 1 completed interaction (welcome + clarify), always move to recommend_behaviors
       const behaviors = await this.generateBehaviorRecommendations(
         conversationState.data.aspiration || "general wellness",
         userMessage
@@ -116,6 +116,15 @@ Remember:
         updatedData.selectedBehaviors = []; // They'll create habits manually
       }
       
+      // Generate behaviors if AI transitions to recommend_behaviors naturally
+      if (result.nextPhase === 'recommend_behaviors' && !updatedData.recommendedBehaviors) {
+        const behaviors = await this.generateBehaviorRecommendations(
+          updatedData.aspiration || "general wellness",
+          userMessage
+        );
+        updatedData.recommendedBehaviors = behaviors;
+      }
+      
       return {
         response: result.message || "I'm here to help you get started with your first habit.",
         nextPhase: result.nextPhase || conversationState.phase,
@@ -153,9 +162,10 @@ Remember:
   static async generateBehaviorRecommendations(aspiration: string, context: string): Promise<Behavior[]> {
     const prompt = `Based on this user aspiration: "${aspiration}" and their context: "${context}", generate exactly 3 specific, actionable habit recommendations.
 
-Return a JSON array of 3 behaviors with this exact structure:
-[
-  {
+Return a JSON object with a 'behaviors' property containing an array of 3 behaviors with this exact structure:
+{
+  "behaviors": [
+    {
     "name": "specific habit name (e.g., 'Take a 10-minute morning walk')",
     "whyEffective": "brief explanation of how this helps their aspiration",
     "abilityScore": 4,
@@ -164,8 +174,9 @@ Return a JSON array of 3 behaviors with this exact structure:
     "icon": "lucide icon name (e.g., 'footprints', 'book', 'smile')",
     "impactAction": "plant_tree|rescue_plastic|offset_carbon|plant_kelp|provide_water|sponsor_bees",
     "impactAmount": 1
-  }
-]
+    }
+  ]
+}
 
 Requirements:
 - Each behavior must have a DIFFERENT impactAction (3 different environmental impacts)  
