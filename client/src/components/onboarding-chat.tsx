@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Send, Loader2 } from "lucide-react";
+import { Send, Loader2, TreePine, Recycle, Waves, Flower2, Droplets, Bug } from "lucide-react";
 import johnEllison from "@assets/john-ellison-health-hacked-flipchart_1758018126559.webp";
 import type { OnboardingProfile, Behavior, CelebrationPrefs } from "@shared/schema";
 
@@ -25,6 +25,50 @@ interface OnboardingChatProps {
   onComplete: (profile: OnboardingProfile, prefs: CelebrationPrefs) => void;
 }
 
+// Helper function to get icon for impact actions
+const getImpactIcon = (action: string) => {
+  switch (action) {
+    case 'plant_tree': return TreePine;
+    case 'rescue_plastic': return Recycle;
+    case 'offset_carbon': return Waves;
+    case 'plant_kelp': return Flower2;
+    case 'provide_water': return Droplets;
+    case 'sponsor_bees': return Bug;
+    default: return TreePine;
+  }
+}
+
+// Component to display behavior recommendations nicely
+const BehaviorRecommendations = ({ behaviors }: { behaviors: Behavior[] }) => {
+  return (
+    <div className="space-y-4 mt-4">
+      {behaviors.map((behavior, index) => {
+        const IconComponent = getImpactIcon(behavior.impactAction);
+        return (
+          <div key={index} className="border border-border rounded-lg p-4 bg-muted/30">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0 mt-0.5">
+                <IconComponent className="h-5 w-5 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground text-sm mb-1">
+                  {behavior.name}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {behavior.whyEffective}
+                </p>
+                <div className="mt-2 flex items-center text-xs text-primary">
+                  <span>Environmental impact: {behavior.impactAmount} {behavior.impactAction.replace('_', ' ')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -42,6 +86,9 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
   });
 
   const handleOnboardingChoice = (choice: 'manual' | 'automatic') => {
+    console.log('[ONBOARDING] User clicked choice button:', choice);
+    console.log('[ONBOARDING] Conversation state data:', conversationState.data);
+    
     // Complete onboarding with the collected data and user's choice
     const celebrationPrefs: CelebrationPrefs = {
       personalityTone: 'warm',
@@ -62,6 +109,10 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
       choice: choice
     };
 
+    console.log('[ONBOARDING] Profile data being sent:', profile);
+    console.log('[ONBOARDING] Celebration prefs being sent:', celebrationPrefs);
+    console.log('[ONBOARDING] Calling onComplete callback...');
+    
     onComplete(profile, celebrationPrefs);
   };
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -160,7 +211,9 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 pb-24 md:pb-6">
+      <div className={`flex-1 overflow-y-auto p-4 ${
+        conversationState.phase === 'recommend_behaviors' ? 'pb-32' : 'pb-24 md:pb-6'
+      }`}>
         <div className="max-w-4xl mx-auto space-y-4">
           {messages.map((message) => (
             <div
@@ -174,7 +227,23 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
                   : 'bg-card'
               }`}>
                 <CardContent className="p-4">
-                  <p className="text-sm leading-relaxed">{message.content}</p>
+                  {message.role === 'assistant' && conversationState.phase === 'recommend_behaviors' && 
+                   conversationState.data.recommendedBehaviors && conversationState.data.recommendedBehaviors.length > 0 && 
+                   message === messages[messages.length - 1] ? (
+                    // Show custom behavior recommendations for the last AI message in recommend_behaviors phase
+                    <div>
+                      <p className="text-sm leading-relaxed mb-4">
+                        Perfect! Based on what you've shared, here are 3 habits I recommend for you:
+                      </p>
+                      <BehaviorRecommendations behaviors={conversationState.data.recommendedBehaviors} />
+                      <p className="text-sm text-muted-foreground mt-4">
+                        Would you like me to create these habits for you automatically, or would you prefer to add them manually yourself?
+                      </p>
+                    </div>
+                  ) : (
+                    // Show regular message content
+                    <p className="text-sm leading-relaxed">{message.content}</p>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -197,13 +266,14 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
 
       {/* Behavior Choice Buttons */}
       {conversationState.phase === 'recommend_behaviors' && (
-        <div className="border-t border-border bg-card p-4">
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card p-4 pointer-events-auto">
           <div className="max-w-4xl mx-auto">
             <p className="text-sm text-muted-foreground mb-4 text-center">
               Choose how you'd like to proceed:
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Button
+                type="button"
                 onClick={() => handleOnboardingChoice('automatic')}
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-8"
@@ -212,6 +282,7 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
                 Create These Habits for Me
               </Button>
               <Button
+                type="button"
                 onClick={() => handleOnboardingChoice('manual')}
                 variant="outline"
                 size="lg"

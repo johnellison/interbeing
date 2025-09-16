@@ -29,6 +29,12 @@ export default function OnboardingPage() {
     onError: (error) => {
       console.error('Onboarding completion error:', error);
       setIsCompleting(false);
+      // Add more detailed error logging
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+        console.error('Error stack:', error.stack);
+      }
+      // TODO: Show error toast to user
     }
   });
 
@@ -62,7 +68,10 @@ export default function OnboardingPage() {
   });
 
   const handleComplete = (profile: OnboardingProfile, prefs: CelebrationPrefs) => {
+    console.log('[ONBOARDING] handleComplete called with profile:', profile);
+    console.log('[ONBOARDING] handleComplete called with prefs:', prefs);
     setIsCompleting(true);
+    console.log('[ONBOARDING] Starting mutation...');
     completeOnboardingMutation.mutate({ profile, prefs });
   };
 
