@@ -39,6 +39,7 @@ export default function OnboardingPage() {
           aspiration: "Get started with habit tracking",
           motivations: ["Personal growth"],
           obstacles: [],
+          context: "User chose to skip onboarding conversation",
           selectedBehaviors: []
         },
         celebrationPrefs: {
