@@ -117,6 +117,8 @@ export const onboardingProfileSchema = z.object({
   obstacles: z.array(z.string()),
   context: z.string(),
   selectedBehaviors: z.array(behaviorSchema).max(3),
+  recommendedBehaviors: z.array(behaviorSchema).max(3).optional(), // AI-generated recommendations
+  choice: z.enum(["manual", "automatic"]).optional(), // User's habit creation choice
   conversationId: z.string().optional(),
   completedAt: z.string().optional()
 });
