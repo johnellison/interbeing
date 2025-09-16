@@ -116,7 +116,9 @@
   }
 
   .habit-checkbox.completed {
-    @apply bg-tiempo-success border-tiempo-success text-primary-foreground;
+    background-color: #121212 !important;
+    border-color: #121212 !important;
+    color: white !important;
   }
 
   .habit-checkbox.incomplete {

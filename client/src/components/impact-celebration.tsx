@@ -27,8 +27,8 @@ const impactConfig = {
     title: "Tree Planted!",
     description: "You've helped reforest our planet",
     unit: "tree",
-    color: "text-green-600",
-    bgColor: "bg-green-50",
+    color: "text-success",
+    bgColor: "bg-card",
     particleColor: "#22c55e"
   },
   rescue_plastic: {
@@ -36,8 +36,8 @@ const impactConfig = {
     title: "Plastic Rescued!",
     description: "You've helped remove plastic waste from our oceans",
     unit: "bottle rescued",
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
+    color: "text-secondary",
+    bgColor: "bg-card",
     particleColor: "#3b82f6"
   },
   offset_carbon: {
@@ -45,8 +45,8 @@ const impactConfig = {
     title: "Carbon Offset!",
     description: "You've helped offset CO₂ emissions",
     unit: "kg of CO₂ offset",
-    color: "text-gray-600",
-    bgColor: "bg-gray-50",
+    color: "text-muted-foreground",
+    bgColor: "bg-card",
     particleColor: "#6b7280"
   },
   plant_kelp: {
@@ -54,8 +54,8 @@ const impactConfig = {
     title: "Kelp Planted!",
     description: "You've helped restore marine ecosystems",
     unit: "kelp plant",
-    color: "text-green-600",
-    bgColor: "bg-green-50",
+    color: "text-success",
+    bgColor: "bg-card",
     particleColor: "#10b981"
   },
   provide_water: {
@@ -63,8 +63,8 @@ const impactConfig = {
     title: "Clean Water Provided!",
     description: "You've supported clean water access worldwide",
     unit: "liter provided",
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
+    color: "text-secondary",
+    bgColor: "bg-card",
     particleColor: "#3b82f6"
   },
   sponsor_bees: {
@@ -72,8 +72,8 @@ const impactConfig = {
     title: "Bees Protected!",
     description: "You've supported pollinator habitats in Kenya through EarthLungs",
     unit: "bees protected",
-    color: "text-yellow-600",
-    bgColor: "bg-yellow-50",
+    color: "text-accent",
+    bgColor: "bg-card",
     particleColor: "#eab308"
   }
 };
@@ -247,7 +247,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
 
       {/* Main modal */}
       <div 
-        className={`relative max-w-lg w-full mx-4 ${config.bgColor} rounded-3xl shadow-2xl border-2 border-white/20 transform transition-all duration-500 ${
+        className={`relative max-w-lg w-full mx-4 ${config.bgColor} rounded-3xl shadow-2xl border-2 border-border transform transition-all duration-500 ${
           animationPhase === 'enter' ? 'scale-50 opacity-0 rotate-12' :
           animationPhase === 'celebrate' ? 'scale-100 opacity-100 rotate-0' :
           'scale-75 opacity-0 -rotate-6'
@@ -259,7 +259,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
           variant="ghost"
           size="sm"
           onClick={handleClose}
-          className="absolute top-4 right-4 z-10 rounded-full bg-white/80 hover:bg-white/90 transition-colors"
+          className="absolute top-4 right-4 z-10 rounded-full bg-secondary/80 hover:bg-secondary/90 transition-colors text-foreground"
           data-testid="button-close-celebration"
         >
           <X className="h-4 w-4" />
@@ -276,32 +276,32 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             <h2 className={`text-3xl font-bold ${config.color} mb-2`} data-testid="text-celebration-title">
               {config.title}
             </h2>
-            <p className="text-lg text-gray-600" data-testid="text-celebration-description">
+            <p className="text-lg text-muted-foreground" data-testid="text-celebration-description">
               {config.description}
             </p>
           </div>
 
           {/* Impact details */}
-          <div className="bg-white/60 rounded-2xl p-6 mb-6">
+          <div className="bg-secondary/20 rounded-2xl p-6 mb-6 border border-border">
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
-                <p className="text-2xl font-bold text-forest-primary" data-testid="text-habit-name">
+                <p className="text-2xl font-bold text-primary" data-testid="text-habit-name">
                   {data.habitName}
                 </p>
-                <p className="text-sm text-gray-600">Habit Completed</p>
+                <p className="text-sm text-muted-foreground">Habit Completed</p>
               </div>
               <div>
                 <p className={`text-2xl font-bold ${config.color}`} data-testid="text-impact-amount">
                   {impactValue}
                 </p>
-                <p className="text-sm text-gray-600">{config.unit}</p>
+                <p className="text-sm text-muted-foreground">{config.unit}</p>
               </div>
             </div>
             
-            <div className="mt-4 pt-4 border-t border-gray-200">
+            <div className="mt-4 pt-4 border-t border-border">
               <div className="flex items-center justify-center space-x-2">
                 <span className="text-lg">🔥</span>
-                <span className="text-lg font-semibold text-forest-accent" data-testid="text-streak-count">
+                <span className="text-lg font-semibold text-primary" data-testid="text-streak-count">
                   {data.streak} day streak!
                 </span>
               </div>
@@ -310,7 +310,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
 
           {/* Project Information */}
           {data?.projectInfo && (
-            <div className="bg-white/80 rounded-2xl p-4 mb-6 text-left">
+            <div className="bg-secondary/20 rounded-2xl p-4 mb-6 text-left border border-border">
               <div className="flex items-start space-x-3">
                 {data.projectInfo.imageUrl && (
                   <img 
@@ -320,13 +320,13 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
                   />
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-2" data-testid="text-project-name">
+                  <h3 className="font-semibold text-sm text-foreground mb-1 line-clamp-2" data-testid="text-project-name">
                     {data.projectInfo.name}
                   </h3>
-                  <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
                     {data.projectInfo.description}
                   </p>
-                  <div className="flex items-center text-xs text-gray-500">
+                  <div className="flex items-center text-xs text-muted-foreground">
                     <MapPin className="w-3 h-3 mr-1" />
                     <span>{data.projectInfo.location}</span>
                   </div>
@@ -337,7 +337,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
 
           {/* How do you feel? */}
           <div className="mb-6">
-            <p className="text-sm text-gray-700 mb-3 font-medium">How do you feel?</p>
+            <p className="text-sm text-foreground mb-3 font-medium">How do you feel?</p>
             <div className="flex justify-center space-x-3">
               {emotions.map((emotion) => (
                 <button
@@ -345,8 +345,8 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
                   onClick={() => handleEmotionSelect(emotion.value)}
                   className={`text-2xl p-2 rounded-full transition-all duration-200 hover:scale-110 ${
                     selectedEmotion === emotion.value 
-                      ? 'bg-white/90 shadow-lg ring-2 ring-forest-primary' 
-                      : 'hover:bg-white/60'
+                      ? 'bg-secondary/90 shadow-lg ring-2 ring-primary' 
+                      : 'hover:bg-secondary/60'
                   }`}
                   title={emotion.label}
                   data-testid={`button-emotion-${emotion.value}`}
@@ -356,7 +356,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
               ))}
             </div>
             {selectedEmotion && (
-              <p className="text-xs text-green-600 mt-2 opacity-75">
+              <p className="text-xs text-success mt-2 opacity-75">
                 Thank you for sharing how this made you feel!
               </p>
             )}
@@ -367,7 +367,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             <Button
               onClick={handleViewImpact}
               variant="outline"
-              className="w-full bg-white/70 hover:bg-white/90 border-forest-primary/30"
+              className="w-full bg-secondary/70 hover:bg-secondary/90 border-border text-foreground"
               data-testid="button-view-impact"
             >
               <MapPin className="w-4 h-4 mr-2" />
@@ -376,7 +376,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             
             <Button
               onClick={handleClose}
-              className="w-full bg-forest-primary text-white hover:bg-forest-primary/90 transition-colors"
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
               data-testid="button-continue-journey"
             >
               Continue Your Journey
