@@ -1,7 +1,6 @@
 import OpenAI from "openai";
 import { OnboardingProfile, Behavior, behaviorSchema } from "@shared/schema";
 
-// the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 interface ConversationState {
@@ -83,7 +82,7 @@ Suggest behaviors that connect personal growth with environmental impact.
 
     try {
       const response = await openai.chat.completions.create({
-        model: "gpt-5",
+        model: "gpt-4o",
         messages: [
           { role: "system", content: AIOnboardingService.systemPrompt },
           { role: "user", content: contextPrompt }
@@ -123,22 +122,27 @@ Suggest behaviors that connect personal growth with environmental impact.
         suggestedBehaviors
       };
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('AI service error:', error);
       
-      // Fallback responses based on phase
-      const fallbacks = {
-        welcome: "Hi! I'm John, and I'm excited to help you create meaningful habits that align with your aspirations. What change would you like to make in your life?",
-        aspiration: "That's interesting! Tell me more about why this matters to you right now.",
-        motivations: "What would achieving this mean for you personally?",
-        obstacles: "What challenges do you think might come up as you work toward this?",
-        behaviors: "Based on what you've shared, let me suggest some behaviors that could help.",
-        selection: "Which of these behaviors feels most exciting and doable for you?",
-        complete: "Excellent choices! I'll help you turn these into trackable habits."
-      };
+      // Handle specific OpenAI errors
+      let errorMessage = "I'm having trouble right now. Could you try again in a moment?";
+      
+      if (error.status === 429) {
+        errorMessage = "I'm temporarily unavailable due to high demand. Please try again in a few minutes, or contact support if this persists.";
+      } else if (error.status === 401) {
+        errorMessage = "There's an authentication issue with my AI service. Please contact support.";
+      } else if (error.status >= 500) {
+        errorMessage = "My AI service is experiencing issues. Please try again in a few minutes.";
+      }
+      
+      // For the welcome phase, provide a more specific fallback
+      if (conversationState.phase === 'welcome') {
+        errorMessage = "Hi! I'm John Ellison, and I'm here to help you create meaningful habits. Unfortunately, I'm having technical difficulties right now. " + errorMessage;
+      }
       
       return {
-        response: fallbacks[conversationState.phase] || "Let's keep exploring your aspirations together.",
+        response: errorMessage,
         nextPhase: conversationState.phase,
         updatedData: conversationState.data
       };
