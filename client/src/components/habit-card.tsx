@@ -181,8 +181,8 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
         
         {/* Center section: Impact per completion */}
         <div className="flex items-center justify-center text-center mx-4">
-          <p className="text-sm font-medium text-forest-accent whitespace-nowrap" data-testid={`text-habit-impact-${habit.id}`}>
-            {getImpactEmoji(habit.impactAction)} +{habit.impactAmount} {getImpactUnit(habit.impactAction)} per completion
+          <p className="text-sm font-medium text-white whitespace-nowrap" data-testid={`text-habit-impact-${habit.id}`}>
+            {getImpactEmoji(habit.impactAction)} +{habit.impactAmount} {getImpactUnit(habit.impactAction)}
           </p>
         </div>
         

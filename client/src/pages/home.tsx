@@ -129,6 +129,53 @@ export default function Home() {
       <Navigation currentPage="/" />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Mobile-First: Today's Habits Section */}
+        <div className="block lg:hidden mb-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-foreground tracking-tight">Today's Habits</h2>
+            <Button
+              onClick={() => setIsAddHabitModalOpen(true)}
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors font-medium"
+              data-testid="button-add-habit"
+            >
+              <span className="text-lg mr-2">+</span>
+              <span>Add Habit</span>
+            </Button>
+          </div>
+
+          {/* Habit Cards */}
+          <div className="space-y-4">
+            {dashboardData.habits.map((habit) => (
+              <HabitCard
+                key={habit.id}
+                habit={habit}
+                onComplete={handleHabitComplete}
+                onRefresh={refetch}
+                onEdit={handleEditHabit}
+              />
+            ))}
+            
+            {dashboardData.habits.length === 0 && (
+              <div className="text-center py-12" data-testid="empty-habits-state">
+                <Sprout className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-foreground mb-2">
+                  No habits yet!
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  Start your environmental journey by adding your first habit.
+                </p>
+                <Button
+                  onClick={() => setIsAddHabitModalOpen(true)}
+                  className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 font-medium"
+                  data-testid="button-add-first-habit"
+                >
+                  Add Your First Habit
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Environmental Impact Dashboard */}
         <ImpactDashboard 
           totalImpact={dashboardData.user.totalImpact}
@@ -140,8 +187,8 @@ export default function Home() {
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-          {/* Daily Habits Section */}
-          <div className="lg:col-span-2">
+          {/* Desktop: Daily Habits Section */}
+          <div className="lg:col-span-2 hidden lg:block">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold text-foreground tracking-tight">Today's Habits</h2>
               <Button
@@ -187,12 +234,14 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Progress Sidebar */}
-          <ProgressSidebar
-            weeklyProgress={dashboardData.weeklyProgress}
-            monthlyTrees={dashboardData.monthlyTrees}
-            co2Offset={dashboardData.co2Offset}
-          />
+          {/* Progress Sidebar - Hidden on Mobile */}
+          <div className="hidden lg:block">
+            <ProgressSidebar
+              weeklyProgress={dashboardData.weeklyProgress}
+              monthlyTrees={dashboardData.monthlyTrees}
+              co2Offset={dashboardData.co2Offset}
+            />
+          </div>
         </div>
       </main>
 
