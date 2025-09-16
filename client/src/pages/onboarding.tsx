@@ -32,6 +32,34 @@ export default function OnboardingPage() {
     }
   });
 
+  const skipOnboardingMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/onboarding/complete", {
+        onboardingProfile: {
+          aspiration: "Get started with habit tracking",
+          motivations: ["Personal growth"],
+          obstacles: [],
+          selectedBehaviors: []
+        },
+        celebrationPrefs: {
+          personalityTone: 'warm',
+          style: 'standard',
+          emojiLevel: 2,
+          surpriseLevel: 2,
+          themes: [],
+          soundEnabled: true
+        }
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      setLocation("/");
+    },
+    onError: (error) => {
+      console.error('Skip onboarding error:', error);
+    }
+  });
+
   const handleComplete = (profile: OnboardingProfile, prefs: CelebrationPrefs) => {
     setIsCompleting(true);
     completeOnboardingMutation.mutate({ profile, prefs });
@@ -150,14 +178,26 @@ export default function OnboardingPage() {
             <p className="text-sm text-muted-foreground mb-4">
               This conversation typically takes 5-7 minutes and will fast-track your habit tracking journey.
             </p>
-            <Button
-              onClick={() => setShowChat(true)}
-              size="lg"
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
-              data-testid="button-start-onboarding"
-            >
-              Start Conversation with John
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button
+                onClick={() => setShowChat(true)}
+                size="lg"
+                className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+                data-testid="button-start-onboarding"
+              >
+                Start Conversation with John
+              </Button>
+              <Button
+                onClick={() => skipOnboardingMutation.mutate()}
+                size="lg"
+                variant="outline"
+                className="flex-1 border-border hover:bg-muted"
+                disabled={skipOnboardingMutation.isPending}
+                data-testid="button-skip-onboarding"
+              >
+                {skipOnboardingMutation.isPending ? "Skipping..." : "Skip"}
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
