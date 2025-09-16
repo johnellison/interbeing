@@ -29,12 +29,12 @@ export default function Navigation({ currentPage }: NavigationProps) {
   };
 
   return (
-    <nav className="bg-forest-primary text-white shadow-lg sticky top-0 z-40">
+    <nav className="bg-card text-white shadow-lg sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-4">
             <div className="flex-shrink-0">
-              <Sprout className="h-8 w-8 text-forest-secondary" />
+              <Sprout className="h-8 w-8 text-primary" />
             </div>
             <h1 className="text-xl font-bold font-inter" data-testid="app-title">
               Interbeing
@@ -55,8 +55,8 @@ export default function Navigation({ currentPage }: NavigationProps) {
                   onClick={() => setLocation(item.path)}
                   className={`flex items-center space-x-2 px-3 py-2 rounded-organic transition-colors ${
                     active 
-                      ? 'bg-forest-secondary/30 text-white' 
-                      : 'text-white hover:bg-forest-secondary/20'
+                      ? 'bg-primary/20 text-primary' 
+                      : 'text-white hover:bg-primary/10'
                   }`}
                   data-testid={item.testId}
                 >
@@ -66,13 +66,13 @@ export default function Navigation({ currentPage }: NavigationProps) {
               );
             })}
             
-            <div className="h-6 w-px bg-forest-secondary/30 mx-2" />
+            <div className="h-6 w-px bg-primary/30 mx-2" />
             
             <Button
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-forest-secondary/20 transition-colors text-white"
+              className="flex items-center space-x-2 px-3 py-2 rounded-organic hover:bg-primary/10 transition-colors text-white"
               data-testid="button-logout"
             >
               <span className="text-sm font-medium">Logout</span>
