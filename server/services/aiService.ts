@@ -87,8 +87,7 @@ Suggest behaviors that connect personal growth with environmental impact.
           { role: "system", content: AIOnboardingService.systemPrompt },
           { role: "user", content: contextPrompt }
         ],
-        response_format: { type: "json_object" },
-        temperature: 0.7
+        response_format: { type: "json_object" }
       });
 
       const result = JSON.parse(response.choices[0].message.content || '{}');
