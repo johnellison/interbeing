@@ -128,76 +128,102 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
         </div>
       </nav>
 
-      {/* Mobile Bottom Navigation - Sticky Bottom with Circular Add Button */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border">
-        <div className="flex items-center justify-around px-4 py-2">
-          {/* Left Navigation Items */}
-          <div className="flex flex-1 justify-around items-center">
-            {navigationItems.slice(0, 2).map((item) => {
-              const IconComponent = item.icon;
-              const active = isActive(item.path);
-              
-              return (
-                <Button
-                  key={item.path}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setLocation(item.path)}
-                  className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors ${
-                    active 
-                      ? 'text-primary' 
-                      : 'text-muted-foreground hover:text-primary'
-                  }`}
-                  data-testid={item.testId}
-                >
-                  <IconComponent className="h-5 w-5 mb-1" />
-                  <span className="text-xs font-medium">{item.label}</span>
-                </Button>
-              );
-            })}
-          </div>
-
-          {/* Center Add Button - Circular */}
-          <div className="flex justify-center px-4">
-            <Button
-              onClick={onAddHabitClick}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-14 h-14 p-0 shadow-lg transition-all duration-200 hover:scale-105"
-              data-testid="button-add-habit-mobile"
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
-          </div>
-
-          {/* Right Navigation Items */}
-          <div className="flex flex-1 justify-around items-center">
-            {navigationItems.slice(2, 4).map((item) => {
-              const IconComponent = item.icon;
-              const active = isActive(item.path);
-              
-              return (
-                <Button
-                  key={item.path}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setLocation(item.path)}
-                  className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors ${
-                    active 
-                      ? 'text-primary' 
-                      : 'text-muted-foreground hover:text-primary'
-                  }`}
-                  data-testid={item.testId}
-                >
-                  <IconComponent className="h-5 w-5 mb-1" />
-                  <span className="text-xs font-medium">{item.label}</span>
-                </Button>
-              );
-            })}
-          </div>
+      {/* Mobile Bottom Navigation - Curved with Floating Add Button */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+        {/* Floating Add Button */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 -top-6 z-10">
+          <Button
+            onClick={onAddHabitClick}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-12 h-12 p-0 shadow-xl transition-all duration-200 hover:scale-105"
+            data-testid="button-add-habit-mobile"
+          >
+            <Plus className="h-5 w-5" />
+          </Button>
         </div>
-        
-        {/* Safe area for phones with home indicators */}
-        <div className="h-safe-area-inset-bottom bg-card" />
-      </nav>
+
+        {/* Curved Navigation Bar */}
+        <nav className="relative">
+          {/* Navigation Background with Curve */}
+          <div 
+            className="bg-card mx-3 mb-2 rounded-t-3xl shadow-2xl relative overflow-hidden"
+            style={{
+              height: '80px',
+              background: 'hsl(var(--card))',
+            }}
+          >
+            {/* Curved Notch for Button */}
+            <div 
+              className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-8 bg-background rounded-b-full"
+              style={{
+                clipPath: 'ellipse(32px 16px at 50% 0%)'
+              }}
+            ></div>
+            
+            {/* Navigation Content */}
+            <div className="flex items-end justify-around px-4 py-4 h-full">
+              {/* Left Navigation Items */}
+              <div className="flex flex-1 justify-around items-center">
+                {navigationItems.slice(0, 2).map((item) => {
+                  const IconComponent = item.icon;
+                  const active = isActive(item.path);
+                  
+                  return (
+                    <Button
+                      key={item.path}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setLocation(item.path)}
+                      className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors ${
+                        active 
+                          ? 'text-primary' 
+                          : 'text-muted-foreground hover:text-[#D9FF00]'
+                      }`}
+                      data-testid={item.testId}
+                    >
+                      <IconComponent className="h-5 w-5 mb-1" />
+                      <span className="text-xs font-medium">{item.label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+
+              {/* Center Space for Floating Button */}
+              <div className="flex justify-center px-6">
+                {/* Empty space for floating button */}
+              </div>
+
+              {/* Right Navigation Items */}
+              <div className="flex flex-1 justify-around items-center">
+                {navigationItems.slice(2, 4).map((item) => {
+                  const IconComponent = item.icon;
+                  const active = isActive(item.path);
+                  
+                  return (
+                    <Button
+                      key={item.path}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setLocation(item.path)}
+                      className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors ${
+                        active 
+                          ? 'text-primary' 
+                          : 'text-muted-foreground hover:text-[#D9FF00]'
+                      }`}
+                      data-testid={item.testId}
+                    >
+                      <IconComponent className="h-5 w-5 mb-1" />
+                      <span className="text-xs font-medium">{item.label}</span>
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* Home indicator safe area */}
+            <div className="absolute bottom-0 left-0 right-0 h-2 bg-card"></div>
+          </div>
+        </nav>
+      </div>
     </>
   );
 }
