@@ -2,8 +2,9 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { greensparkService } from "./services/greensparkService";
-import { insertHabitSchema, updateHabitSchema, insertHabitCompletionSchema } from "@shared/schema";
+import { insertHabitSchema, updateHabitSchema, insertHabitCompletionSchema, onboardingProfileSchema, celebrationPrefsSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { AIOnboardingService } from "./services/aiService";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -578,6 +579,95 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     console.log('=== Greenspark API Diagnostic Completed ===');
     res.json(diagnosticResult);
+  });
+
+  // Onboarding conversation endpoints
+  app.post("/api/onboarding/message", isAuthenticated, async (req: any, res) => {
+    try {
+      const { message, conversationState } = req.body;
+      const userId = req.user.claims.sub;
+      
+      // Process the message with AI service
+      const result = await AIOnboardingService.processMessage(message, conversationState);
+      
+      res.json(result);
+    } catch (error: any) {
+      console.error('Onboarding message error:', error);
+      res.status(500).json({ 
+        error: 'Failed to process message',
+        fallback: "I'm having trouble right now. Could you try again?"
+      });
+    }
+  });
+
+  app.post("/api/onboarding/complete", isAuthenticated, async (req: any, res) => {
+    try {
+      const { onboardingProfile, celebrationPrefs } = req.body;
+      const userId = req.user.claims.sub;
+      
+      // Validate the data
+      const validatedProfile = onboardingProfileSchema.parse(onboardingProfile);
+      const validatedPrefs = celebrationPrefsSchema.parse(celebrationPrefs || {});
+      
+      // Update user profile
+      await storage.updateUser(userId, {
+        onboardingCompleted: true,
+        onboardingProfile: validatedProfile,
+        celebrationPrefs: validatedPrefs
+      });
+      
+      // Generate habits from selected behaviors
+      if (validatedProfile.selectedBehaviors && validatedProfile.selectedBehaviors.length > 0) {
+        const habitData = await AIOnboardingService.generateHabitsFromBehaviors(validatedProfile.selectedBehaviors);
+        
+        const createdHabits = [];
+        for (const habit of habitData) {
+          const createdHabit = await storage.createHabit({
+            userId,
+            name: habit.name,
+            description: habit.description,
+            icon: habit.icon,
+            category: habit.category,
+            impactAction: habit.impactAction as any,
+            impactAmount: habit.impactAmount,
+            isActive: true
+          });
+          createdHabits.push(createdHabit);
+        }
+        
+        res.json({ 
+          success: true, 
+          habitsCreated: createdHabits.length,
+          habits: createdHabits
+        });
+      } else {
+        res.json({ success: true, habitsCreated: 0 });
+      }
+      
+    } catch (error: any) {
+      console.error('Onboarding completion error:', error);
+      res.status(500).json({ error: 'Failed to complete onboarding' });
+    }
+  });
+
+  app.get("/api/user/profile", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUserById(userId);
+      
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      
+      res.json({
+        onboardingCompleted: user.onboardingCompleted,
+        onboardingProfile: user.onboardingProfile,
+        celebrationPrefs: user.celebrationPrefs
+      });
+    } catch (error: any) {
+      console.error('Get user profile error:', error);
+      res.status(500).json({ error: 'Failed to get user profile' });
+    }
   });
 
   // Get impact locations for global map (enhanced with real project data)

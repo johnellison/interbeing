@@ -23,6 +23,9 @@ export const users = pgTable("users", {
   treesPlanted: integer("trees_planted").notNull().default(0),
   currentStreak: integer("current_streak").notNull().default(0),
   longestStreak: integer("longest_streak").notNull().default(0),
+  onboardingCompleted: boolean("onboarding_completed").notNull().default(false),
+  onboardingProfile: jsonb("onboarding_profile"), // aspiration, motivations, obstacles, selectedBehaviors
+  celebrationPrefs: jsonb("celebration_prefs"), // personalityTone, style, themes, etc
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -96,6 +99,37 @@ export const insertHabitCompletionSchema = createInsertSchema(habitCompletions).
   impactAmount: true,
 });
 
+// Onboarding and celebration schemas
+export const behaviorSchema = z.object({
+  name: z.string(),
+  whyEffective: z.string(),
+  abilityScore: z.number().min(1).max(5),
+  trigger: z.string(),
+  category: z.enum(["wellness", "fitness", "mindfulness", "productivity", "learning", "creativity", "social", "environmental"]),
+  icon: z.string(),
+  impactAction: z.enum(["plant_tree", "rescue_plastic", "offset_carbon", "plant_kelp", "provide_water", "sponsor_bees"]),
+  impactAmount: z.number().min(1)
+});
+
+export const onboardingProfileSchema = z.object({
+  aspiration: z.string(),
+  motivations: z.array(z.string()),
+  obstacles: z.array(z.string()),
+  context: z.string(),
+  selectedBehaviors: z.array(behaviorSchema).max(3),
+  conversationId: z.string().optional(),
+  completedAt: z.string().optional()
+});
+
+export const celebrationPrefsSchema = z.object({
+  personalityTone: z.enum(["warm", "direct", "playful", "scientist"]).default("warm"),
+  style: z.enum(["minimal", "standard", "hype"]).default("standard"),
+  emojiLevel: z.number().min(1).max(3).default(2),
+  surpriseLevel: z.number().min(1).max(3).default(2),
+  themes: z.array(z.string()).default([]),
+  soundEnabled: z.boolean().default(true)
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type UpsertUser = z.infer<typeof upsertUserSchema>;
@@ -104,3 +138,6 @@ export type InsertHabit = z.infer<typeof insertHabitSchema>;
 export type UpdateHabit = z.infer<typeof updateHabitSchema>;
 export type HabitCompletion = typeof habitCompletions.$inferSelect;
 export type InsertHabitCompletion = z.infer<typeof insertHabitCompletionSchema>;
+export type Behavior = z.infer<typeof behaviorSchema>;
+export type OnboardingProfile = z.infer<typeof onboardingProfileSchema>;
+export type CelebrationPrefs = z.infer<typeof celebrationPrefsSchema>;

@@ -7,18 +7,23 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/home";
 import Landing from "@/pages/Landing";
+import OnboardingPage from "@/pages/onboarding";
 import ImpactTimeline from "@/pages/impact-timeline";
 import Analytics from "@/pages/analytics";
 import ImpactMap from "@/pages/impact-map";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
+      {isLoading ? (
         <Route path="/" component={Landing} />
+      ) : !isAuthenticated ? (
+        <Route path="/" component={Landing} />
+      ) : !user?.onboardingCompleted ? (
+        <Route path="/" component={OnboardingPage} />
       ) : (
         <>
           <Route path="/" component={Home} />
