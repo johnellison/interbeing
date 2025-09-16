@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import OnboardingChat from "@/components/onboarding-chat";
@@ -21,10 +21,19 @@ export default function OnboardingPage() {
       });
       return response.json();
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
+      console.log('[ONBOARDING] Mutation successful, data received:', data);
+      console.log('[ONBOARDING] Refetching auth data to get updated user info...');
+      
+      // Refresh auth cache to ensure updated user data with onboardingCompleted: true
+      await queryClient.refetchQueries({ queryKey: ["/api/auth/user"] });
+      
+      console.log('[ONBOARDING] Fresh auth data loaded, navigating to dashboard...');
       setIsCompleting(false);
-      // Navigate to home dashboard where they can see their new habits
+      
+      // Navigate to home dashboard where they can see their new habits  
       setLocation("/");
+      console.log('[ONBOARDING] setLocation("/") called');
     },
     onError: (error) => {
       console.error('Onboarding completion error:', error);
@@ -59,7 +68,11 @@ export default function OnboardingPage() {
       });
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      console.log('[ONBOARDING] Skip successful, invalidating auth cache...');
+      // Refresh auth cache to ensure updated user data with onboardingCompleted: true
+      await queryClient.refetchQueries({ queryKey: ["/api/auth/user"] });
+      console.log('[ONBOARDING] Auth cache invalidated, navigating to dashboard...');
       setLocation("/");
     },
     onError: (error) => {

@@ -70,6 +70,7 @@ const BehaviorRecommendations = ({ behaviors }: { behaviors: Behavior[] }) => {
 };
 
 export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
+  const [isCompleting, setIsCompleting] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -86,8 +87,15 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
   });
 
   const handleOnboardingChoice = (choice: 'manual' | 'automatic') => {
+    if (isCompleting) {
+      console.log('[ONBOARDING] Already completing, ignoring click');
+      return;
+    }
+    
     console.log('[ONBOARDING] User clicked choice button:', choice);
     console.log('[ONBOARDING] Conversation state data:', conversationState.data);
+    
+    setIsCompleting(true);
     
     // Complete onboarding with the collected data and user's choice
     const celebrationPrefs: CelebrationPrefs = {
@@ -278,8 +286,16 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
                 size="lg"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-8"
                 data-testid="button-create-automatic"
+                disabled={isCompleting}
               >
-                Create These Habits for Me
+                {isCompleting ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Creating Habits...</span>
+                  </div>
+                ) : (
+                  "Create These Habits for Me"
+                )}
               </Button>
               <Button
                 type="button"
@@ -288,8 +304,16 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
                 size="lg"
                 className="font-medium px-8"
                 data-testid="button-create-manual"
+                disabled={isCompleting}
               >
-                I'll Add Habits Manually
+                {isCompleting ? (
+                  <div className="flex items-center space-x-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>Completing...</span>
+                  </div>
+                ) : (
+                  "I'll Add Habits Manually"
+                )}
               </Button>
             </div>
           </div>
