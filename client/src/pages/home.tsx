@@ -126,21 +126,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navigation currentPage="/" />
+      <Navigation currentPage="/" onAddHabitClick={() => setIsAddHabitModalOpen(true)} />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
         {/* Mobile-First: Today's Habits Section */}
         <div className="block lg:hidden mb-8">
-          <div className="flex justify-between items-center mb-6">
+          <div className="mb-6">
             <h2 className="text-2xl font-bold text-foreground tracking-tight">Today's Habits</h2>
-            <Button
-              onClick={() => setIsAddHabitModalOpen(true)}
-              className="bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors font-medium"
-              data-testid="button-add-habit"
-            >
-              <span className="text-lg mr-2">+</span>
-              <span>Add Habit</span>
-            </Button>
           </div>
 
           {/* Habit Cards */}
