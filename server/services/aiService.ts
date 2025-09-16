@@ -82,7 +82,7 @@ Suggest behaviors that connect personal growth with environmental impact.
 
     try {
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-5-nano-2025-08-07",
         messages: [
           { role: "system", content: AIOnboardingService.systemPrompt },
           { role: "user", content: contextPrompt }
