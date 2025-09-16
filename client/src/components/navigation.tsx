@@ -131,13 +131,13 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
       {/* Mobile Bottom Navigation - Curved with Floating Add Button */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
         {/* Floating Add Button */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 -top-6 z-10">
+        <div className="absolute left-1/2 transform -translate-x-1/2 -top-8 z-10">
           <Button
             onClick={onAddHabitClick}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-12 h-12 p-0 shadow-xl transition-all duration-200 hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-16 h-16 p-0 shadow-xl transition-all duration-200 hover:scale-105"
             data-testid="button-add-habit-mobile"
           >
-            <Plus className="h-5 w-5" />
+            <Plus className="h-8 w-8" />
           </Button>
         </div>
 
@@ -145,17 +145,18 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
         <nav className="relative">
           {/* Navigation Background with Curve */}
           <div 
-            className="bg-card mx-3 mb-2 rounded-t-3xl shadow-2xl relative overflow-hidden"
+            className="mx-3 mb-2 rounded-t-3xl shadow-2xl relative overflow-hidden"
             style={{
               height: '80px',
-              background: 'hsl(var(--card))',
+              background: '#1C1C1E',
             }}
           >
             {/* Curved Notch for Button */}
             <div 
-              className="absolute top-0 left-1/2 transform -translate-x-1/2 w-16 h-8 bg-background rounded-b-full"
+              className="absolute top-0 left-1/2 transform -translate-x-1/2 w-20 h-10 rounded-b-full"
               style={{
-                clipPath: 'ellipse(32px 16px at 50% 0%)'
+                background: '#121212',
+                clipPath: 'ellipse(40px 20px at 50% 0%)'
               }}
             ></div>
             
@@ -173,10 +174,10 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
                       variant="ghost"
                       size="sm"
                       onClick={() => setLocation(item.path)}
-                      className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors ${
+                      className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors hover:bg-transparent ${
                         active 
-                          ? 'text-primary' 
-                          : 'text-muted-foreground hover:text-[#D9FF00]'
+                          ? 'text-[#D9FF00]' 
+                          : 'text-gray-400 hover:!text-[#D9FF00]'
                       }`}
                       data-testid={item.testId}
                     >
@@ -204,10 +205,10 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
                       variant="ghost"
                       size="sm"
                       onClick={() => setLocation(item.path)}
-                      className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors ${
+                      className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors hover:bg-transparent ${
                         active 
-                          ? 'text-primary' 
-                          : 'text-muted-foreground hover:text-[#D9FF00]'
+                          ? 'text-[#D9FF00]' 
+                          : 'text-gray-400 hover:!text-[#D9FF00]'
                       }`}
                       data-testid={item.testId}
                     >
@@ -220,7 +221,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
             </div>
             
             {/* Home indicator safe area */}
-            <div className="absolute bottom-0 left-0 right-0 h-2 bg-card"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-2" style={{ background: '#1C1C1E' }}></div>
           </div>
         </nav>
       </div>
