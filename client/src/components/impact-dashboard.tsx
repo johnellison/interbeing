@@ -94,58 +94,58 @@ export default function ImpactDashboard({
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border">
-              <span className="text-lg">🌳</span>
-              <div>
+            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+              <span className="text-lg flex-shrink-0">🌳</span>
+              <div className="min-w-0 flex-1">
                 <p className="text-lg font-bold text-success" data-testid="text-total-trees">
                   {totalImpact.treesPlanted}
                 </p>
-                <p className="text-xs text-muted-foreground">trees planted</p>
+                <p className="text-xs text-muted-foreground leading-tight">trees<br />planted</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border">
-              <span className="text-lg">🐋</span>
-              <div>
+            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+              <span className="text-lg flex-shrink-0">🐋</span>
+              <div className="min-w-0 flex-1">
                 <p className="text-lg font-bold text-blue-500" data-testid="text-total-plastic">
                   {totalImpact.plasticRescued}
                 </p>
-                <p className="text-xs text-muted-foreground">bottles rescued</p>
+                <p className="text-xs text-muted-foreground leading-tight">bottles<br />rescued</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border">
-              <span className="text-lg">☁️</span>
-              <div>
+            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+              <span className="text-lg flex-shrink-0">☁️</span>
+              <div className="min-w-0 flex-1">
                 <p className="text-lg font-bold text-muted-foreground" data-testid="text-total-carbon">
                   {totalImpact.carbonOffset}kg
                 </p>
-                <p className="text-xs text-muted-foreground">CO₂ offset</p>
+                <p className="text-xs text-muted-foreground leading-tight">CO₂<br />offset</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border">
-              <span className="text-lg">🌿</span>
-              <div>
+            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+              <span className="text-lg flex-shrink-0">🌿</span>
+              <div className="min-w-0 flex-1">
                 <p className="text-lg font-bold text-emerald-500" data-testid="text-total-kelp">
                   {totalImpact.kelpPlanted}
                 </p>
-                <p className="text-xs text-muted-foreground">kelp planted</p>
+                <p className="text-xs text-muted-foreground leading-tight">kelp<br />planted</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border">
-              <span className="text-lg">💧</span>
-              <div>
+            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+              <span className="text-lg flex-shrink-0">💧</span>
+              <div className="min-w-0 flex-1">
                 <p className="text-lg font-bold text-cyan-500" data-testid="text-total-water">
                   {totalImpact.waterProvided}L
                 </p>
-                <p className="text-xs text-muted-foreground">water provided</p>
+                <p className="text-xs text-muted-foreground leading-tight">water<br />provided</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border">
-              <span className="text-lg">🐝</span>
-              <div>
+            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+              <span className="text-lg flex-shrink-0">🐝</span>
+              <div className="min-w-0 flex-1">
                 <p className="text-lg font-bold text-primary" data-testid="text-total-bees">
                   {totalImpact.beesSponsored}
                 </p>
-                <p className="text-xs text-muted-foreground">bees protected</p>
+                <p className="text-xs text-muted-foreground leading-tight">bees<br />protected</p>
               </div>
             </div>
           </div>
