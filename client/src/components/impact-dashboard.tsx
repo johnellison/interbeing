@@ -100,7 +100,7 @@ export default function ImpactDashboard({
                 <p className="text-lg font-bold text-success" data-testid="text-total-trees">
                   {totalImpact.treesPlanted}
                 </p>
-                <p className="text-xs text-muted-foreground leading-tight">trees<br />planted</p>
+                <p className="text-xs text-muted-foreground">trees planted</p>
               </div>
             </div>
             <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
@@ -109,7 +109,7 @@ export default function ImpactDashboard({
                 <p className="text-lg font-bold text-blue-500" data-testid="text-total-plastic">
                   {totalImpact.plasticRescued}
                 </p>
-                <p className="text-xs text-muted-foreground leading-tight">bottles<br />rescued</p>
+                <p className="text-xs text-muted-foreground">bottles rescued</p>
               </div>
             </div>
             <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
@@ -118,7 +118,7 @@ export default function ImpactDashboard({
                 <p className="text-lg font-bold text-muted-foreground" data-testid="text-total-carbon">
                   {totalImpact.carbonOffset}kg
                 </p>
-                <p className="text-xs text-muted-foreground leading-tight">CO₂<br />offset</p>
+                <p className="text-xs text-muted-foreground">CO₂ offset</p>
               </div>
             </div>
             <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
@@ -127,7 +127,7 @@ export default function ImpactDashboard({
                 <p className="text-lg font-bold text-emerald-500" data-testid="text-total-kelp">
                   {totalImpact.kelpPlanted}
                 </p>
-                <p className="text-xs text-muted-foreground leading-tight">kelp<br />planted</p>
+                <p className="text-xs text-muted-foreground">kelp planted</p>
               </div>
             </div>
             <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
@@ -136,7 +136,7 @@ export default function ImpactDashboard({
                 <p className="text-lg font-bold text-cyan-500" data-testid="text-total-water">
                   {totalImpact.waterProvided}L
                 </p>
-                <p className="text-xs text-muted-foreground leading-tight">water<br />provided</p>
+                <p className="text-xs text-muted-foreground">water</p>
               </div>
             </div>
             <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
@@ -145,7 +145,7 @@ export default function ImpactDashboard({
                 <p className="text-lg font-bold text-primary" data-testid="text-total-bees">
                   {totalImpact.beesSponsored}
                 </p>
-                <p className="text-xs text-muted-foreground leading-tight">bees<br />protected</p>
+                <p className="text-xs text-muted-foreground">bees</p>
               </div>
             </div>
           </div>
