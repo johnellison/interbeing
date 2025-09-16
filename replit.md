@@ -10,6 +10,21 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
+**September 16, 2025**: Implemented comprehensive AI-powered onboarding system with John Ellison coach:
+- Built intelligent 3-message conversational flow: welcome → clarify_aspiration → recommend_behaviors
+- Integrated OpenAI gpt-5-nano-2025-08-07 model for personalized behavior recommendations
+- Created John Ellison AI coach persona with headshot display and personalized guidance
+- Implemented smart habit creation system with automatic and manual options
+- Added user choice system: "Create These Habits for Me" vs "I'll Add Habits Manually"
+- Enhanced database schema with recommendedBehaviors and choice fields in onboardingProfile
+- Built robust behavior recommendation engine generating 3 tailored habits with environmental impact
+- Solved infinite questioning loop issue with structured message count gating (messageCount >= 1)
+- Added comprehensive error handling with fallback behaviors and JSON format consistency
+- Updated existing /api/onboarding/complete endpoint to handle both automatic and manual completion
+- Implemented reliable behavior generation with distinct environmental impact actions per habit
+- Enhanced onboarding chat component with choice buttons and improved user experience
+- Ensured seamless integration between AI recommendations, user choices, and habit creation workflow
+
 **August 19, 2025**: Enhanced celebration modal with project information and emotional feedback system:
 - Built comprehensive impact celebration modal with authentic Greenspark project details
 - Added project information display including images, names, descriptions, and locations from real environmental initiatives
