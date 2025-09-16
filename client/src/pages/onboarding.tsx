@@ -152,7 +152,7 @@ export default function OnboardingPage() {
                   1
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  <strong className="text-foreground">Clarify your aspiration</strong> - What change do you want to make and why?
+                  <strong className="text-foreground">Share your aspiration</strong> - Tell John what change you want to make in your life
                 </p>
               </div>
               <div className="flex items-center space-x-4">
@@ -160,7 +160,7 @@ export default function OnboardingPage() {
                   2
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  <strong className="text-foreground">Explore potential behaviors</strong> - I'll suggest actions that align with your goals
+                  <strong className="text-foreground">Quick clarification</strong> - John will ask one or two questions to understand your goal
                 </p>
               </div>
               <div className="flex items-center space-x-4">
@@ -168,7 +168,7 @@ export default function OnboardingPage() {
                   3
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  <strong className="text-foreground">Choose your top 3</strong> - Select behaviors you want to do, can do, and are effective
+                  <strong className="text-foreground">Create your first habit</strong> - Start building positive habits that align with your goals
                 </p>
               </div>
             </div>
@@ -177,7 +177,7 @@ export default function OnboardingPage() {
           {/* CTA */}
           <div className="text-center pt-4">
             <p className="text-sm text-muted-foreground mb-4">
-              This conversation typically takes 5-7 minutes and will fast-track your habit tracking journey.
+              This quick conversation takes 1-2 minutes and gets you started with your first habit right away.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button

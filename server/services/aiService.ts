@@ -4,32 +4,30 @@ import { OnboardingProfile, Behavior, behaviorSchema } from "@shared/schema";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 interface ConversationState {
-  phase: 'welcome' | 'aspiration' | 'motivations' | 'obstacles' | 'behaviors' | 'selection' | 'complete';
+  phase: 'welcome' | 'clarify_aspiration' | 'ready_to_create';
   data: Partial<OnboardingProfile>;
-  suggestedBehaviors?: Behavior[];
 }
 
 export class AIOnboardingService {
-  private static systemPrompt = `You are John Ellison, a behavior change coach inspired by BJ Fogg's methodology. You help people clarify their aspirations and choose effective behaviors.
+  private static systemPrompt = `You are John Ellison, a warm behavior change coach. Your goal is to quickly understand what the user wants to achieve and help them get started with their first habit.
 
-Key principles:
-1. Help people do what they already want to do
-2. Help them feel successful
-3. Use BJ Fogg's "Swarm of Bs" approach to clarify aspirations before selecting behaviors
+Keep the conversation brief and focused:
+- Welcome them warmly
+- Understand their main aspiration in 1-2 exchanges
+- Once you understand what they want, encourage them to create their first habit
 
 Your conversation style:
-- Warm, encouraging, and insightful
-- Ask thoughtful follow-up questions
-- Help users dig deeper into their "why"
-- Keep responses conversational and supportive (2-3 sentences max)
-- Use "you" and speak directly to them
+- Warm and encouraging
+- Ask ONE clear question at a time
+- Keep responses short (1-2 sentences max)
+- Focus on understanding their main goal, not deep analysis
 
 CRITICAL: Always respond with valid JSON in this format:
 {
   "message": "your response to the user",
-  "nextPhase": "welcome|aspiration|motivations|obstacles|behaviors|selection|complete",
-  "suggestions": ["optional array of suggested responses for user"],
-  "data": "any data to capture from this interaction"
+  "nextPhase": "welcome|clarify_aspiration|ready_to_create",
+  "suggestions": ["helpful responses the user could give to your question"],
+  "data": "brief summary of their aspiration if clear"
 }`;
 
   static async processMessage(
@@ -40,23 +38,14 @@ CRITICAL: Always respond with valid JSON in this format:
     nextPhase: ConversationState['phase'];
     suggestions?: string[];
     updatedData: Partial<OnboardingProfile>;
-    suggestedBehaviors?: Behavior[];
   }> {
     
     const phasePrompts = {
-      welcome: "Welcome the user and explain you'll help them clarify their aspirations and choose 3 effective behaviors. Ask what change they want to make in their life.",
+      welcome: "Welcome the user briefly and ask what change they want to make in their life. Keep it simple and warm.",
       
-      aspiration: "Help them clarify their aspiration. Ask follow-up questions about WHY this matters to them, what success would look like, and what's driving this desire.",
+      clarify_aspiration: "Ask ONE clarifying question to better understand their aspiration. Once you understand their main goal, move to ready_to_create phase.",
       
-      motivations: "Explore their deeper motivations. Ask about what's most important to them about this aspiration and what would achieving it mean for their life.",
-      
-      obstacles: "Gently explore potential obstacles or challenges they might face. Ask what has made this difficult in the past or what concerns them.",
-      
-      behaviors: "Based on their aspiration, suggest 3-5 specific behaviors they could do. Focus on behaviors that are: 1) Aligned with what they want, 2) Something they can realistically do, 3) Effective for their aspiration.",
-      
-      selection: "Help them choose their top 3 behaviors from the suggestions. Ask which ones feel most doable and exciting to them.",
-      
-      complete: "Celebrate their clarity and confirm their 3 chosen behaviors. Let them know you'll create their habits now."
+      ready_to_create: "Acknowledge their aspiration and encourage them to create their first habit using the app. Be encouraging and positive."
     };
 
     const contextPrompt = `
@@ -65,19 +54,11 @@ Phase instruction: ${phasePrompts[conversationState.phase]}
 Current data: ${JSON.stringify(conversationState.data)}
 User's message: "${userMessage}"
 
-${conversationState.phase === 'behaviors' ? `
-When suggesting behaviors, include these fields for each:
-- name: clear behavior description
-- whyEffective: brief explanation of why this helps their aspiration  
-- category: wellness|fitness|mindfulness|productivity|learning|creativity|social|environmental
-- icon: emoji or icon name
-- impactAction: plant_tree|rescue_plastic|offset_carbon|plant_kelp|provide_water|sponsor_bees
-- impactAmount: positive integer
-- trigger: when/how they'll do this behavior
-- abilityScore: rate 1-5 how easy this is for them to do
-
-Suggest behaviors that connect personal growth with environmental impact.
-` : ''}
+Remember:
+- Keep responses short and focused
+- Ask only ONE question at a time
+- Provide helpful user response suggestions
+- Move to ready_to_create once you understand their main aspiration
 `;
 
     try {
@@ -94,31 +75,20 @@ Suggest behaviors that connect personal growth with environmental impact.
       
       // Update conversation data based on phase
       let updatedData = { ...conversationState.data };
-      let suggestedBehaviors = conversationState.suggestedBehaviors;
       
-      if (conversationState.phase === 'aspiration' && result.data) {
+      if (result.data && (conversationState.phase === 'clarify_aspiration' || result.nextPhase === 'ready_to_create')) {
         updatedData.aspiration = result.data;
-      } else if (conversationState.phase === 'motivations' && result.data) {
-        updatedData.motivations = Array.isArray(result.data) ? result.data : [result.data];
-      } else if (conversationState.phase === 'obstacles' && result.data) {
-        updatedData.obstacles = Array.isArray(result.data) ? result.data : [result.data];
-        updatedData.context = userMessage; // Store their context/situation
-      } else if (conversationState.phase === 'behaviors' && result.suggestedBehaviors) {
-        try {
-          suggestedBehaviors = result.suggestedBehaviors.map((b: any) => behaviorSchema.parse(b));
-        } catch (e) {
-          console.error('Error parsing suggested behaviors:', e);
-        }
-      } else if (conversationState.phase === 'selection' && result.selectedBehaviors) {
-        updatedData.selectedBehaviors = result.selectedBehaviors;
+        updatedData.context = userMessage; // Store their context for celebration personalization
+        updatedData.motivations = []; // Will be inferred from aspiration for celebrations
+        updatedData.obstacles = []; // Not collecting detailed obstacles in simplified flow
+        updatedData.selectedBehaviors = []; // They'll create habits manually
       }
       
       return {
-        response: result.message || "I'm here to help you clarify your aspirations.",
+        response: result.message || "I'm here to help you get started with your first habit.",
         nextPhase: result.nextPhase || conversationState.phase,
         suggestions: result.suggestions,
-        updatedData,
-        suggestedBehaviors
+        updatedData
       };
       
     } catch (error: any) {

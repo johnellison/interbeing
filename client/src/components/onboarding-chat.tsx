@@ -16,9 +16,8 @@ interface Message {
 }
 
 interface ConversationState {
-  phase: 'welcome' | 'aspiration' | 'motivations' | 'obstacles' | 'behaviors' | 'selection' | 'complete';
+  phase: 'welcome' | 'clarify_aspiration' | 'ready_to_create';
   data: Partial<OnboardingProfile>;
-  suggestedBehaviors?: Behavior[];
 }
 
 interface OnboardingChatProps {
@@ -39,6 +38,28 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
     phase: 'welcome',
     data: {}
   });
+
+  const handleCreateFirstHabit = () => {
+    // Complete onboarding with the aspiration data we've collected
+    const celebrationPrefs: CelebrationPrefs = {
+      personalityTone: 'warm',
+      style: 'standard',
+      emojiLevel: 2,
+      surpriseLevel: 2,
+      themes: [],
+      soundEnabled: true
+    };
+
+    const profile: OnboardingProfile = {
+      aspiration: conversationState.data.aspiration || "Personal growth and positive change",
+      motivations: conversationState.data.motivations || [],
+      obstacles: conversationState.data.obstacles || [],
+      context: conversationState.data.context || "User wants to start building positive habits",
+      selectedBehaviors: []
+    };
+
+    onComplete(profile, celebrationPrefs);
+  };
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -68,26 +89,10 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
       // Update conversation state
       setConversationState(prev => ({
         phase: data.nextPhase,
-        data: data.updatedData,
-        suggestedBehaviors: data.suggestedBehaviors || prev.suggestedBehaviors
+        data: data.updatedData
       }));
 
       setSuggestions(data.suggestions || []);
-
-      // If we've reached the completion phase, trigger onboarding completion
-      if (data.nextPhase === 'complete' && data.updatedData.selectedBehaviors) {
-        setTimeout(() => {
-          const celebrationPrefs: CelebrationPrefs = {
-            personalityTone: 'warm',
-            style: 'standard',
-            emojiLevel: 2,
-            surpriseLevel: 2,
-            themes: [],
-            soundEnabled: true
-          };
-          onComplete(data.updatedData as OnboardingProfile, celebrationPrefs);
-        }, 1500);
-      }
     },
     onError: (error) => {
       console.error('Chat error:', error);
@@ -185,8 +190,24 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
         </div>
       </div>
 
+      {/* Add First Habit Button */}
+      {conversationState.phase === 'ready_to_create' && (
+        <div className="border-t border-border bg-card p-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <Button
+              onClick={handleCreateFirstHabit}
+              size="lg"
+              className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-8"
+              data-testid="button-add-first-habit"
+            >
+              Add First Habit
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Suggestions */}
-      {suggestions.length > 0 && (
+      {suggestions.length > 0 && conversationState.phase !== 'ready_to_create' && (
         <div className="border-t border-border bg-card p-4">
           <div className="max-w-4xl mx-auto">
             <p className="text-sm text-muted-foreground mb-2">Quick responses:</p>
@@ -209,27 +230,29 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
       )}
 
       {/* Input */}
-      <div className="fixed bottom-0 left-0 right-0 md:relative md:bottom-auto border-t border-border bg-card p-4">
-        <div className="max-w-4xl mx-auto flex space-x-2">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Type your response..."
-            disabled={sendMessageMutation.isPending}
-            className="flex-1"
-            data-testid="input-message"
-          />
-          <Button
-            onClick={handleSend}
-            disabled={!input.trim() || sendMessageMutation.isPending}
-            size="icon"
-            data-testid="button-send"
-          >
-            <Send className="h-4 w-4" />
-          </Button>
+      {conversationState.phase !== 'ready_to_create' && (
+        <div className="fixed bottom-0 left-0 right-0 md:relative md:bottom-auto border-t border-border bg-card p-4">
+          <div className="max-w-4xl mx-auto flex space-x-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Type your response..."
+              disabled={sendMessageMutation.isPending}
+              className="flex-1"
+              data-testid="input-message"
+            />
+            <Button
+              onClick={handleSend}
+              disabled={!input.trim() || sendMessageMutation.isPending}
+              size="icon"
+              data-testid="button-send"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
