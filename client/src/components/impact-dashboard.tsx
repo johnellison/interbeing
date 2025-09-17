@@ -186,41 +186,16 @@ export default function ImpactDashboard({
             </div>
           </div>
           
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <p className="text-3xl font-bold text-primary mb-2" data-testid="text-today-progress">
-                {todayCompletions}/{totalHabits}
-              </p>
-              
-              {/* Completed Habits List */}
-              {completedHabits.length > 0 && (
-                <div className="space-y-1">
-                  {completedHabits.slice(0, 3).map((habit) => {
-                    const IconComponent = iconMap[habit.icon as keyof typeof iconMap] || Leaf;
-                    return (
-                      <div key={habit.id} className="flex items-center space-x-2">
-                        <div 
-                          className="p-1.5 rounded-lg" 
-                          style={{ backgroundColor: `${categoryColors[habit.category as keyof typeof categoryColors] || "#22c55e"}20` }}
-                        >
-                          <IconComponent 
-                            className="h-3 w-3" 
-                            style={{ color: categoryColors[habit.category as keyof typeof categoryColors] || "#22c55e" }}
-                          />
-                        </div>
-                        <span className="text-xs text-muted-foreground truncate">{habit.name}</span>
-                      </div>
-                    );
-                  })}
-                  {completedHabits.length > 3 && (
-                    <p className="text-xs text-muted-foreground/70">+{completedHabits.length - 3} more</p>
-                  )}
-                </div>
-              )}
-            </div>
-            
-            {/* Donut Chart */}
-            <div className="w-20 h-20 relative">
+          {/* Progress Summary */}
+          <div className="text-center mb-6">
+            <p className="text-sm text-muted-foreground" data-testid="text-habits-completed-summary">
+              {todayCompletions} of {totalHabits} habits completed
+            </p>
+          </div>
+          
+          {/* Centered Donut Chart */}
+          <div className="flex justify-center">
+            <div className="w-32 h-32 relative">
               {totalHabits > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -228,8 +203,8 @@ export default function ImpactDashboard({
                       data={chartData}
                       cx="50%"
                       cy="50%"
-                      innerRadius={25}
-                      outerRadius={35}
+                      innerRadius={40}
+                      outerRadius={60}
                       paddingAngle={chartData.length > 1 ? 2 : 0}
                       dataKey="value"
                       startAngle={90}
@@ -243,14 +218,14 @@ export default function ImpactDashboard({
                 </ResponsiveContainer>
               ) : (
                 <div className="w-full h-full rounded-full bg-muted flex items-center justify-center">
-                  <span className="text-xs text-muted-foreground">No habits</span>
+                  <span className="text-sm text-muted-foreground">No habits</span>
                 </div>
               )}
               
               {/* Center completion percentage */}
               {totalHabits > 0 && (
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-xs font-bold text-foreground">
+                  <span className="text-lg font-bold text-foreground">
                     {Math.round(progressPercentage)}%
                   </span>
                 </div>
