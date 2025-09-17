@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(253 41% 11%);
+  --background: transparent;
   --foreground: hsl(0 0% 98%);
-  --card: hsl(260 20% 15%);
+  --card: hsla(260, 20%, 15%, 0.4);
   --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(260 20% 15%);
+  --popover: hsla(260, 20%, 15%, 0.8);
   --popover-foreground: hsl(0 0% 98%);
   --primary: hsl(70 100% 50%);
   --primary-foreground: hsl(253 41% 11%);
@@ -37,11 +37,11 @@
 }
 
 .dark {
-  --background: hsl(253 41% 11%);
+  --background: transparent;
   --foreground: hsl(0 0% 98%);
-  --card: hsl(260 20% 15%);
+  --card: hsla(260, 20%, 15%, 0.4);
   --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(260 20% 15%);
+  --popover: hsla(260, 20%, 15%, 0.8);
   --popover-foreground: hsl(0 0% 98%);
   --primary: hsl(70 100% 50%);
   --primary-foreground: hsl(253 41% 11%);
@@ -80,7 +80,13 @@
 
   body {
     @apply font-sans antialiased text-foreground;
-    background: linear-gradient(135deg, hsl(253 41% 11%) 0%, hsl(260 35% 8%) 50%, hsl(270 45% 6%) 100%);
+    background: linear-gradient(135deg, 
+      hsl(253 50% 15%) 0%, 
+      hsl(260 45% 10%) 25%, 
+      hsl(270 55% 8%) 50%, 
+      hsl(280 60% 6%) 75%, 
+      hsl(290 45% 8%) 100%);
+    background-attachment: fixed;
     min-height: 100vh;
   }
 }
