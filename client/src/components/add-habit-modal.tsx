@@ -100,9 +100,9 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" data-testid="modal-add-habit">
-      <div className="bg-white rounded-organic p-8 mx-4 max-w-md w-full">
+      <div className="bg-card border border-border rounded-3xl p-8 mx-4 max-w-md w-full shadow-2xl">
         <div className="flex justify-between items-center mb-6">
-          <h3 className="text-xl font-bold text-forest-text">Add New Habit</h3>
+          <h3 className="text-xl font-bold text-foreground">Add New Habit</h3>
           <Button
             variant="ghost"
             size="sm"
@@ -116,7 +116,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-forest-text mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Habit Name
             </label>
             <Input
@@ -124,13 +124,13 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
               value={formData.name}
               onChange={(e) => handleInputChange("name", e.target.value)}
               placeholder="e.g., Morning Meditation"
-              className="rounded-organic"
+              className="rounded-xl"
               data-testid="input-habit-name"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-forest-text mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Description
             </label>
             <Textarea
@@ -138,13 +138,13 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
               onChange={(e) => handleInputChange("description", e.target.value)}
               placeholder="Brief description of your habit..."
               rows={3}
-              className="rounded-organic"
+              className="rounded-xl"
               data-testid="input-habit-description"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-forest-text mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Category
             </label>
             <Select value={formData.category} onValueChange={(value) => handleInputChange("category", value)}>
@@ -162,7 +162,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-forest-text mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Icon
             </label>
             <div className="grid grid-cols-6 gap-2">
@@ -173,7 +173,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
                   variant={selectedIcon === value ? "default" : "outline"}
                   size="sm"
                   onClick={() => setSelectedIcon(value)}
-                  className="p-2 rounded-organic"
+                  className="p-2 rounded-xl"
                   data-testid={`button-icon-${value}`}
                 >
                   <Icon className="h-4 w-4" />
@@ -183,7 +183,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-forest-text mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Environmental Impact Action
             </label>
             <Select value={formData.impactAction} onValueChange={(value: any) => handleInputChange("impactAction", value)}>
@@ -202,7 +202,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-forest-text mb-2">
+            <label className="block text-sm font-medium text-foreground mb-2">
               Impact Amount Per Completion
             </label>
             <Input
@@ -211,10 +211,10 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
               value={formData.impactAmount}
               onChange={(e) => handleInputChange("impactAmount", e.target.value)}
               placeholder="1"
-              className="rounded-organic"
+              className="rounded-xl"
               data-testid="input-impact-amount"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               {formData.impactAction === 'plant_tree' && 'Number of trees to plant'}
               {formData.impactAction === 'rescue_plastic' && 'Number of plastic bottles to rescue'}
               {formData.impactAction === 'offset_carbon' && 'Kilograms of CO₂ to offset'}
@@ -229,7 +229,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
               type="button"
               variant="outline"
               onClick={onClose}
-              className="flex-1 rounded-organic"
+              className="flex-1 rounded-xl"
               data-testid="button-cancel"
             >
               Cancel
@@ -237,7 +237,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
             <Button
               type="submit"
               disabled={createMutation.isPending}
-              className="flex-1 bg-forest-primary text-white rounded-organic hover:bg-forest-primary/90"
+              className="flex-1 bg-primary text-primary-foreground rounded-3xl hover:bg-primary/90"
               data-testid="button-create-habit"
             >
               {createMutation.isPending ? "Creating..." : "Create Habit"}
