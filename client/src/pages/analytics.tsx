@@ -195,7 +195,7 @@ export default function Analytics() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-foreground" data-testid={`metric-${item.name.toLowerCase().replace(/\s+/g, '-')}`}>
-                {item.value.toLocaleString()}
+                {(item.value || 0).toLocaleString()}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
                 Total generated
