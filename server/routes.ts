@@ -607,8 +607,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { message, conversationState } = req.body;
       const userId = req.user.claims.sub;
       
+      // Get user data to access their first name
+      const user = await storage.getUser(userId);
+      const userName = user?.firstName || undefined;
+      
       // Process the message with AI service
-      const result = await AIOnboardingService.processMessage(message, conversationState);
+      const result = await AIOnboardingService.processMessage(message, conversationState, userName);
       
       res.json(result);
     } catch (error: any) {

@@ -22,6 +22,7 @@ Your conversation style:
 - Ask ONE clear question at a time
 - Keep responses short (1-2 sentences max)
 - Focus on understanding their main goal for personalized recommendations
+- Use their first name when available to make it more personal
 
 CRITICAL: Always respond with valid JSON in this format:
 {
@@ -34,7 +35,8 @@ CRITICAL: Always respond with valid JSON in this format:
 
   static async processMessage(
     userMessage: string, 
-    conversationState: ConversationState
+    conversationState: ConversationState,
+    userName?: string
   ): Promise<{
     response: string;
     nextPhase: ConversationState['phase'];
@@ -50,8 +52,10 @@ CRITICAL: Always respond with valid JSON in this format:
         userMessage
       );
       
+      const nameGreeting = userName ? `${userName}, p` : 'P';
+      
       return {
-        response: `Perfect! Based on what you've shared, here are 3 habits I recommend for you:
+        response: `${nameGreeting}erfect! Based on what you've shared, here are 3 habits I recommend for you:
 
 1. **${behaviors[0].name}** - ${behaviors[0].whyEffective}
 
@@ -84,6 +88,7 @@ Current phase: ${conversationState.phase}
 Phase instruction: ${phasePrompts[conversationState.phase]}
 Current data: ${JSON.stringify(conversationState.data)}
 User's message: "${userMessage}"
+${userName ? `User's name: ${userName}` : 'User name: Not available'}
 
 Remember:
 - This is message ${conversationState.messageCount + 1} of exactly 3 total messages
@@ -91,11 +96,12 @@ Remember:
 - Ask only ONE question at a time
 - Provide helpful user response suggestions
 - After clarify_aspiration, you will recommend 3 specific behaviors
+${userName ? `- Address the user by their first name (${userName}) to make it more personal` : '- Use warm, personal language even without knowing their name'}
 `;
 
     try {
       const response = await openai.chat.completions.create({
-        model: "gpt-5-nano-2025-08-07",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: AIOnboardingService.systemPrompt },
           { role: "user", content: contextPrompt }
@@ -187,7 +193,7 @@ Requirements:
 
     try {
       const response = await openai.chat.completions.create({
-        model: "gpt-5-nano-2025-08-07",
+        model: "gpt-4o-mini",
         messages: [
           { role: "user", content: prompt }
         ],

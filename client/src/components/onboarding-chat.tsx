@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Send, Loader2, TreePine, Recycle, Waves, Flower2, Droplets, Bug } from "lucide-react";
 import johnEllison from "@assets/john-ellison-health-hacked-flipchart_1758018126559.webp";
+import { useAuth } from "@/hooks/useAuth";
 import type { OnboardingProfile, Behavior, CelebrationPrefs } from "@shared/schema";
 
 interface Message {
@@ -70,6 +71,7 @@ const BehaviorRecommendations = ({ behaviors }: { behaviors: Behavior[] }) => {
 };
 
 export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
+  const { user } = useAuth();
   const [isCompleting, setIsCompleting] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -203,18 +205,41 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="border-b border-border bg-card p-4">
-        <div className="max-w-4xl mx-auto flex items-center space-x-4">
-          <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-            <img
-              src={johnEllison}
-              alt="John Ellison"
-              className="w-full h-full object-cover"
-            />
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+              <img
+                src={johnEllison}
+                alt="John Ellison"
+                className="w-full h-full object-cover"
+                data-testid="img-john-ellison"
+              />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-foreground">John Ellison</h1>
+              <p className="text-sm text-muted-foreground">Behavior Change Coach</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-semibold text-foreground">John Ellison</h1>
-            <p className="text-sm text-muted-foreground">Behavior Change Coach</p>
-          </div>
+          
+          {/* User Profile Image */}
+          {user?.profileImageUrl && (
+            <div className="flex items-center space-x-3">
+              <div className="text-right">
+                <p className="text-sm font-medium text-foreground">
+                  {user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.email}
+                </p>
+                <p className="text-xs text-muted-foreground">You</p>
+              </div>
+              <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <img
+                  src={user.profileImageUrl}
+                  alt={user.firstName ? `${user.firstName}'s profile` : "Your profile"}
+                  className="w-full h-full object-cover"
+                  data-testid="img-user-profile"
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

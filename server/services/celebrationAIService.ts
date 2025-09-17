@@ -17,6 +17,7 @@ interface CelebrationContext {
   userContext?: string;
   emotionalFeedbackHistory?: number[]; // Recent emotional ratings 1-5
   celebrationPrefs?: CelebrationPrefs;
+  userName?: string; // User's first name for personalization
 }
 
 interface CelebrationMessage {
@@ -87,7 +88,7 @@ STYLE: ${stylePrompt}
 
 EMOJI LEVEL: ${prefs.emojiLevel === 1 ? 'Minimal emojis (0-1)' : prefs.emojiLevel === 2 ? 'Moderate emojis (1-3)' : 'Rich emojis (3-5)'}
 
-Your task: Create a personalized celebration message that connects their daily habit to their bigger life aspiration and acknowledges their environmental impact.
+Your task: Create a personalized celebration message that connects their daily habit to their bigger life aspiration and acknowledges their environmental impact. ${context.userName ? `Address the user by their first name (${context.userName}) to make it more personal.` : 'Use warm, personal language even without knowing their name.'}
 
 Always respond with valid JSON in this format:
 {
@@ -103,6 +104,7 @@ Always respond with valid JSON in this format:
 - Environmental Impact: ${impactContext}
 
 USER CONTEXT:
+${context.userName ? `- Name: ${context.userName}` : '- Name: Not available'}
 - Life Aspiration: ${context.userAspiration || 'building healthy habits'}
 - Background Context: ${context.userContext || 'working on personal growth'}
 
@@ -165,7 +167,7 @@ CELEBRATION GUIDELINES:
     if (context.streak >= 7) title = "Week Streak Champion!";
     if (context.streak >= 30) title = "Monthly Milestone Master!";
 
-    let message = `Fantastic job with "${context.habitName}"! ${emoji} You just ${impactText}`;
+    let message = `${context.userName ? `${context.userName}, f` : 'F'}antastic job with "${context.habitName}"! ${emoji} You just ${impactText}`;
     if (context.userAspiration) {
       message += ` and you're making real progress toward ${context.userAspiration.toLowerCase()}.`;
     } else {
@@ -217,7 +219,8 @@ CELEBRATION GUIDELINES:
         userAspiration: onboardingProfile?.aspiration,
         userContext: onboardingProfile?.context,
         emotionalFeedbackHistory: emotionalFeedback,
-        celebrationPrefs: celebrationPrefs || undefined
+        celebrationPrefs: celebrationPrefs || undefined,
+        userName: user?.firstName // Add user's first name for personalization
       };
       
     } catch (error) {
