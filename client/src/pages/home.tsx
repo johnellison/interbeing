@@ -70,14 +70,20 @@ export default function Home() {
       imageUrl?: string;
       registryLink?: string;
     };
+    celebrationMessage?: {
+      title: string;
+      message: string;
+      motivationalNote: string;
+      progressInsight?: string;
+    };
   } | null>(null);
 
   const { data: dashboardData, isLoading, refetch } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
   });
 
-  const handleHabitComplete = (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any) => {
-    setCelebrationData({ habitName, streak, impactAction, impactAmount, projectInfo });
+  const handleHabitComplete = (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any, celebrationMessage?: any) => {
+    setCelebrationData({ habitName, streak, impactAction, impactAmount, projectInfo, celebrationMessage });
     setShowImpactCelebration(true);
     refetch(); // Refresh dashboard data
   };
