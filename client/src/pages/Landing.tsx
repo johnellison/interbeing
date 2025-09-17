@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Target, TreePine, Users } from "lucide-react";
+import { Leaf, Target, TreePine, Users, Brain, Sparkles, Bot, GraduationCap, BookOpen, Award, TrendingUp, Zap } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "wouter";
@@ -182,6 +182,200 @@ export default function Landing() {
               <p className="text-muted-foreground text-lg leading-relaxed">
                 Every completion triggers authentic environmental action through our Greenspark partnership with verified global projects.
               </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Science-Backed Approach Section */}
+        <div className="bg-card rounded-3xl p-12 mb-24 border border-border">
+          <div className="text-center mb-16">
+            <div className="flex justify-center items-center space-x-4 mb-8">
+              <Brain className="h-12 w-12 text-primary" />
+              <GraduationCap className="h-12 w-12 text-success" />
+              <BookOpen className="h-12 w-12 text-accent" />
+            </div>
+            <h3 className="text-4xl font-bold text-foreground mb-6">
+              Science-Backed <span className="gradient-bg">Behavior Design</span>
+            </h3>
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+              Built on proven methodologies from <strong className="text-foreground">Dr. BJ Fogg's Behavior Design Lab</strong> at Stanford University. 
+              Our approach leverages decades of behavioral science research to help you build lasting habits that create meaningful planetary impact.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <div className="text-center p-6 bg-secondary/20 rounded-2xl border border-border">
+              <TrendingUp className="h-16 w-16 text-success mx-auto mb-4" />
+              <h4 className="text-xl font-semibold text-foreground mb-3">Tiny Habits Method</h4>
+              <p className="text-muted-foreground leading-relaxed">
+                Start with micro-behaviors that naturally grow into transformative routines. 
+                Small changes, massive environmental impact.
+              </p>
+            </div>
+            
+            <div className="text-center p-6 bg-secondary/20 rounded-2xl border border-border">
+              <Sparkles className="h-16 w-16 text-primary mx-auto mb-4" />
+              <h4 className="text-xl font-semibold text-foreground mb-3">Motivation + Ability</h4>
+              <p className="text-muted-foreground leading-relaxed">
+                Scientifically-designed prompts that align with your capability and motivation 
+                to ensure sustainable habit formation.
+              </p>
+            </div>
+            
+            <div className="text-center p-6 bg-secondary/20 rounded-2xl border border-border md:col-span-2 lg:col-span-1">
+              <Award className="h-16 w-16 text-accent mx-auto mb-4" />
+              <h4 className="text-xl font-semibold text-foreground mb-3">Behavioral Science</h4>
+              <p className="text-muted-foreground leading-relaxed">
+                Proven frameworks from Stanford's leading behavior change research 
+                applied to environmental action.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* John Ellison Coach Section */}
+        <div className="bg-secondary/30 rounded-3xl p-12 mb-24 border border-border">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                  <Users className="h-8 w-8 text-primary-foreground" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Your AI Coach</h4>
+                  <h3 className="text-3xl font-bold text-foreground">Meet John Ellison</h3>
+                </div>
+              </div>
+              
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    <strong className="text-foreground">Certified Behavior Design Teacher</strong> on Dr. BJ Fogg's teaching team at Stanford
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-success rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    Expert in translating behavioral science into practical, <strong className="text-foreground">actionable habit strategies</strong>
+                  </p>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="w-2 h-2 bg-accent rounded-full mt-2 flex-shrink-0"></div>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    Specializes in <strong className="text-foreground">environmental behavior change</strong> and sustainable impact creation
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-primary/10 p-6 rounded-xl border border-primary/20">
+                <p className="text-lg italic text-foreground leading-relaxed">
+                  "Every small action, when designed scientifically and sustained consistently, 
+                  becomes a powerful force for planetary transformation."
+                </p>
+                <p className="text-sm text-muted-foreground mt-2 font-medium">— John Ellison, Behavior Design Coach</p>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <div className="relative">
+                <div className="w-80 h-80 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/20 border border-border flex items-center justify-center">
+                  <div className="text-8xl">👨‍🏫</div>
+                </div>
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-success rounded-full flex items-center justify-center border-4 border-background">
+                  <GraduationCap className="h-12 w-12 text-background" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Features Section */}
+        <div className="bg-card rounded-3xl p-12 mb-24 border border-border">
+          <div className="text-center mb-16">
+            <div className="flex justify-center items-center space-x-4 mb-8">
+              <Bot className="h-12 w-12 text-primary animate-pulse" />
+              <Sparkles className="h-12 w-12 text-secondary" />
+              <Zap className="h-12 w-12 text-accent" />
+            </div>
+            <h3 className="text-4xl font-bold text-foreground mb-6">
+              Powered by <span className="gradient-bg">Advanced AI</span>
+            </h3>
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed mb-8">
+              Experience personalized coaching, adaptive recommendations, and intelligent habit optimization 
+              powered by cutting-edge artificial intelligence.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 mb-12">
+            <div className="p-8 bg-secondary/20 rounded-2xl border border-border">
+              <div className="flex items-center space-x-3 mb-4">
+                <Bot className="h-8 w-8 text-primary" />
+                <h4 className="text-2xl font-semibold text-foreground">Intelligent Coaching</h4>
+              </div>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-4">
+                John Ellison AI provides personalized guidance based on your unique goals, 
+                preferences, and behavioral patterns.
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-center space-x-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                  <span>Personalized habit recommendations</span>
+                </li>
+                <li className="flex items-center space-x-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 bg-success rounded-full"></div>
+                  <span>Adaptive difficulty adjustment</span>
+                </li>
+                <li className="flex items-center space-x-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full"></div>
+                  <span>Science-backed motivation techniques</span>
+                </li>
+              </ul>
+            </div>
+            
+            <div className="p-8 bg-secondary/20 rounded-2xl border border-border">
+              <div className="flex items-center space-x-3 mb-4">
+                <TrendingUp className="h-8 w-8 text-success" />
+                <h4 className="text-2xl font-semibold text-foreground">Smart Analytics</h4>
+              </div>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-4">
+                Advanced pattern recognition identifies what works best for you and 
+                optimizes your habit-building journey.
+              </p>
+              <ul className="space-y-2">
+                <li className="flex items-center space-x-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 bg-primary rounded-full"></div>
+                  <span>Behavioral pattern analysis</span>
+                </li>
+                <li className="flex items-center space-x-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 bg-success rounded-full"></div>
+                  <span>Predictive success modeling</span>
+                </li>
+                <li className="flex items-center space-x-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 bg-accent rounded-full"></div>
+                  <span>Impact optimization suggestions</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="text-center bg-primary/5 p-8 rounded-2xl border border-primary/20">
+            <h4 className="text-2xl font-semibold text-foreground mb-4">
+              🚀 Coming Soon: Next-Generation AI Features
+            </h4>
+            <div className="grid md:grid-cols-3 gap-6 text-muted-foreground">
+              <div className="flex items-center space-x-2">
+                <Sparkles className="h-5 w-5 text-primary" />
+                <span>Real-time habit coaching</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Brain className="h-5 w-5 text-success" />
+                <span>Emotional intelligence insights</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Zap className="h-5 w-5 text-accent" />
+                <span>Automated habit optimization</span>
+              </div>
             </div>
           </div>
         </div>
