@@ -57,9 +57,9 @@ export default function Landing() {
         {/* Hero Section */}
         <div className="text-center mb-24">
           <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-8 tracking-tight leading-tight">
-            A simple and delightful<br />
-            <span className="text-primary">habit tracker for</span><br />
-            environmental impact.
+            An <span className="text-primary">AI-powered</span><br />
+            habit tracker for<br />
+            <span className="text-primary">planetary impact</span>.
           </h1>
           <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
             Every habit you complete triggers real environmental action through our partnership with <strong className="text-foreground">Greenspark</strong>. 
