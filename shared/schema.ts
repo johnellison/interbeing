@@ -56,6 +56,7 @@ export const habitCompletions = pgTable("habit_completions", {
   impactId: text("impact_id"), // Track 1ClickImpact action ID
   impactAction: text("impact_action"),
   impactAmount: integer("impact_amount"),
+  emotionalFeedback: integer("emotional_feedback"), // 1-5 rating from celebration modal
 });
 
 export const insertUserSchema = createInsertSchema(users).omit({

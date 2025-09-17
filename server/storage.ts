@@ -24,6 +24,7 @@ export interface IStorage {
   getHabitCompletionsByUserId(userId: string): Promise<HabitCompletion[]>;
   getTodayCompletions(userId: string): Promise<HabitCompletion[]>;
   getCompletionsByDateRange(userId: string, startDate: Date, endDate: Date): Promise<HabitCompletion[]>;
+  getRecentHabitCompletions(userId: string, limit: number): Promise<HabitCompletion[]>;
   createHabitCompletion(completion: InsertHabitCompletion): Promise<HabitCompletion>;
   updateHabitCompletion(id: string, updates: Partial<HabitCompletion>): Promise<HabitCompletion | undefined>;
   deleteHabitCompletion(id: string): Promise<boolean>;
@@ -171,6 +172,13 @@ export class DatabaseStorage implements IStorage {
         lte(habitCompletions.completedAt, endDate)
       )
     );
+  }
+
+  async getRecentHabitCompletions(userId: string, limit: number): Promise<HabitCompletion[]> {
+    return await db.select().from(habitCompletions)
+      .where(eq(habitCompletions.userId, userId))
+      .orderBy(desc(habitCompletions.completedAt))
+      .limit(limit);
   }
 
   async createHabitCompletion(insertCompletion: InsertHabitCompletion): Promise<HabitCompletion> {

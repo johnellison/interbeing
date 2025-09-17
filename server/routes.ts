@@ -5,6 +5,7 @@ import { greensparkService } from "./services/greensparkService";
 import { insertHabitSchema, updateHabitSchema, insertHabitCompletionSchema, onboardingProfileSchema, celebrationPrefsSchema } from "@shared/schema";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { AIOnboardingService } from "./services/aiService";
+import { CelebrationAIService } from "./services/celebrationAIService";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -361,6 +362,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
+        // Generate personalized AI celebration message
+        let celebrationMessage = null;
+        try {
+          const celebrationContext = await CelebrationAIService.getCelebrationContext(
+            habit.name,
+            newStreak,
+            habit.impactAction,
+            habit.impactAmount,
+            projectInfo,
+            userId,
+            storage
+          );
+          celebrationMessage = await CelebrationAIService.generateCelebrationMessage(celebrationContext);
+        } catch (celebrationError) {
+          console.error("Failed to generate AI celebration:", celebrationError);
+          // Continue without AI message - fallback handled in frontend
+        }
+
         res.json({ 
           completed: true, 
           impactCreated,
@@ -369,6 +388,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactAmount: habit.impactAmount,
           streak: newStreak,
           projectInfo,
+          celebrationMessage, // Add AI-generated personalized message
           message: impactCreated ? `Habit completed and ${habit.impactAction.replace('_', ' ')} impact created!` : "Habit completed (impact creation failed)"
         });
       }
