@@ -3,31 +3,31 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(0 0% 7%);
+  --background: hsl(253 41% 11%);
   --foreground: hsl(0 0% 98%);
-  --card: hsl(240 3% 12%);
+  --card: hsl(260 20% 15%);
   --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(240 3% 12%);
+  --popover: hsl(260 20% 15%);
   --popover-foreground: hsl(0 0% 98%);
   --primary: hsl(70 100% 50%);
-  --primary-foreground: hsl(0 0% 7%);
+  --primary-foreground: hsl(253 41% 11%);
   --secondary: hsl(290 93% 68%);
   --secondary-foreground: hsl(0 0% 98%);
-  --muted: hsl(240 3% 12%);
-  --muted-foreground: hsl(240 5% 64.9%);
+  --muted: hsl(260 20% 15%);
+  --muted-foreground: hsl(240 15% 70%);
   --accent: hsl(49 85% 52%);
-  --accent-foreground: hsl(0 0% 7%);
+  --accent-foreground: hsl(253 41% 11%);
   --destructive: hsl(343 96% 53%);
   --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(240 3% 20%);
-  --input: hsl(240 3% 12%);
+  --border: hsl(260 15% 25%);
+  --input: hsl(260 20% 15%);
   --ring: hsl(70 100% 50%);
   --success: hsl(142 100% 45%);
-  --success-foreground: hsl(0 0% 7%);
+  --success-foreground: hsl(253 41% 11%);
   --tiempo-primary: hsl(70 100% 50%);
-  --tiempo-secondary: hsl(240 3% 12%);
+  --tiempo-secondary: hsl(260 20% 15%);
   --tiempo-accent: hsl(49 85% 52%);
-  --tiempo-bg: hsl(0 0% 7%);
+  --tiempo-bg: hsl(253 41% 11%);
   --tiempo-success: hsl(142 100% 45%);
   --tiempo-text: hsl(0 0% 98%);
   --font-sans: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -37,31 +37,31 @@
 }
 
 .dark {
-  --background: hsl(0 0% 7%);
+  --background: hsl(253 41% 11%);
   --foreground: hsl(0 0% 98%);
-  --card: hsl(240 3% 12%);
+  --card: hsl(260 20% 15%);
   --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(240 3% 12%);
+  --popover: hsl(260 20% 15%);
   --popover-foreground: hsl(0 0% 98%);
   --primary: hsl(70 100% 50%);
-  --primary-foreground: hsl(0 0% 7%);
+  --primary-foreground: hsl(253 41% 11%);
   --secondary: hsl(290 93% 68%);
   --secondary-foreground: hsl(0 0% 98%);
-  --muted: hsl(240 3% 12%);
-  --muted-foreground: hsl(240 5% 64.9%);
+  --muted: hsl(260 20% 15%);
+  --muted-foreground: hsl(240 15% 70%);
   --accent: hsl(49 85% 52%);
-  --accent-foreground: hsl(0 0% 7%);
+  --accent-foreground: hsl(253 41% 11%);
   --destructive: hsl(343 96% 53%);
   --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(240 3% 20%);
-  --input: hsl(240 3% 12%);
+  --border: hsl(260 15% 25%);
+  --input: hsl(260 20% 15%);
   --ring: hsl(70 100% 50%);
   --success: hsl(142 100% 45%);
-  --success-foreground: hsl(0 0% 7%);
+  --success-foreground: hsl(253 41% 11%);
   --tiempo-primary: hsl(70 100% 50%);
-  --tiempo-secondary: hsl(240 3% 12%);
+  --tiempo-secondary: hsl(260 20% 15%);
   --tiempo-accent: hsl(49 85% 52%);
-  --tiempo-bg: hsl(0 0% 7%);
+  --tiempo-bg: hsl(253 41% 11%);
   --tiempo-success: hsl(142 100% 45%);
   --tiempo-text: hsl(0 0% 98%);
   
@@ -79,7 +79,9 @@
   }
 
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased text-foreground;
+    background: linear-gradient(135deg, hsl(253 41% 11%) 0%, hsl(260 35% 8%) 50%, hsl(270 45% 6%) 100%);
+    min-height: 100vh;
   }
 }
 
