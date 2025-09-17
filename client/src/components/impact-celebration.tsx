@@ -18,6 +18,12 @@ interface ImpactCelebrationProps {
       imageUrl?: string;
       registryLink?: string;
     };
+    celebrationMessage?: {
+      title: string;
+      message: string;
+      motivationalNote: string;
+      progressInsight?: string;
+    };
   } | null;
 }
 
@@ -125,10 +131,13 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
       // Animation sequence
       setTimeout(() => setAnimationPhase('celebrate'), 300);
       
-      // Auto-close after 4 seconds
+      // Auto-close with extended time for AI content
+      const hasAIContent = data?.celebrationMessage?.motivationalNote || data?.celebrationMessage?.progressInsight;
+      const autoCloseDelay = hasAIContent ? 9000 : 4000; // 9s for AI content, 4s for standard
+      
       const autoCloseTimer = setTimeout(() => {
         handleClose();
-      }, 4000);
+      }, autoCloseDelay);
 
       return () => clearTimeout(autoCloseTimer);
     } else {
@@ -271,14 +280,43 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             {config.emoji}
           </div>
 
-          {/* Success message */}
+          {/* Success message - AI personalized or fallback */}
           <div className="mb-6">
             <h2 className={`text-3xl font-bold ${config.color} mb-2`} data-testid="text-celebration-title">
-              {config.title}
+              {data.celebrationMessage?.title || config.title}
             </h2>
-            <p className="text-lg text-muted-foreground" data-testid="text-celebration-description">
-              {config.description}
+            <p className="text-lg text-muted-foreground mb-3" data-testid="text-celebration-description">
+              {data.celebrationMessage?.message || config.description}
             </p>
+            
+            {/* John Ellison motivational note */}
+            {data.celebrationMessage?.motivationalNote && (
+              <div className="bg-primary/10 rounded-xl p-4 border border-primary/20 mt-4">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-sm">🎯</span>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-primary mb-1">John Ellison says:</p>
+                    <p className="text-sm text-foreground leading-relaxed" data-testid="text-motivational-note">
+                      {data.celebrationMessage.motivationalNote}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Progress insight from AI */}
+            {data.celebrationMessage?.progressInsight && (
+              <div className="bg-secondary/30 rounded-lg p-3 mt-3 border border-border">
+                <p className="text-xs font-medium text-muted-foreground mb-1">Progress Insight</p>
+                <p className="text-sm text-foreground" data-testid="text-progress-insight">
+                  {data.celebrationMessage.progressInsight}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Impact details */}
