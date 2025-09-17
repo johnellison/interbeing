@@ -121,6 +121,10 @@ CELEBRATION GUIDELINES:
 6. Use appropriate emoji level for their preference`;
 
     try {
+      console.log("🤖 Calling OpenAI API for celebration message...");
+      console.log("System prompt:", systemPrompt.substring(0, 200) + "...");
+      console.log("Context prompt:", contextPrompt.substring(0, 200) + "...");
+      
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -133,17 +137,23 @@ CELEBRATION GUIDELINES:
         timeout: 10000 // 10 second timeout to prevent API delays
       });
 
+      console.log("🎊 OpenAI response received:", response.choices[0].message.content);
       const result = JSON.parse(response.choices[0].message.content || '{}');
+      console.log("📝 Parsed celebration result:", JSON.stringify(result, null, 2));
       
-      return {
+      const celebrationMessage = {
         title: result.title || "Fantastic Work!",
         message: result.message || `Great job completing "${context.habitName}"! You're building momentum toward your goals.`,
         motivationalNote: result.motivationalNote || "Keep up this amazing consistency!",
         progressInsight: result.progressInsight || undefined
       };
+      
+      console.log("🎯 Final celebration message:", JSON.stringify(celebrationMessage, null, 2));
+      return celebrationMessage;
 
     } catch (error: any) {
-      console.error('Celebration AI service error:', error);
+      console.error('❌ Celebration AI service error:', error);
+      console.log("🔄 Falling back to static celebration message");
       
       // Fallback to a personalized but static celebration
       return this.generateFallbackCelebration(context);

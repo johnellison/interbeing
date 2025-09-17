@@ -365,6 +365,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Generate personalized AI celebration message
         let celebrationMessage = null;
         try {
+          console.log("🎉 Starting celebration AI generation for habit:", habit.name);
           const celebrationContext = await CelebrationAIService.getCelebrationContext(
             habit.name,
             newStreak,
@@ -374,9 +375,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
             userId,
             storage
           );
+          console.log("🎯 Celebration context generated:", JSON.stringify(celebrationContext, null, 2));
           celebrationMessage = await CelebrationAIService.generateCelebrationMessage(celebrationContext);
+          console.log("✅ Celebration message generated:", JSON.stringify(celebrationMessage, null, 2));
         } catch (celebrationError) {
-          console.error("Failed to generate AI celebration:", celebrationError);
+          console.error("❌ Failed to generate AI celebration:", celebrationError);
           // Continue without AI message - fallback handled in frontend
         }
 
