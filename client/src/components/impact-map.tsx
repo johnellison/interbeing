@@ -107,8 +107,8 @@ export default function ImpactMap() {
         <div className="flex items-center gap-3">
           <Globe className="h-8 w-8 text-green-600" />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Global Impact Map</h1>
-            <p className="text-gray-600">
+            <h1 className="text-2xl font-bold text-foreground">Global Impact Map</h1>
+            <p className="text-muted-foreground">
               Your environmental impact is creating real change across {allLocations.length} locations worldwide
             </p>
           </div>
@@ -116,7 +116,7 @@ export default function ImpactMap() {
         
         {/* Filter Controls */}
         <div className="flex items-center gap-3">
-          <Filter className="h-5 w-5 text-gray-500" />
+          <Filter className="h-5 w-5 text-muted-foreground" />
           <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger className="w-48" data-testid="select-impact-filter">
               <SelectValue placeholder="Filter by impact type" />
@@ -137,7 +137,7 @@ export default function ImpactMap() {
               variant="ghost"
               size="sm"
               onClick={() => setFilterType("all")}
-              className="text-gray-500 hover:text-gray-700"
+              className="text-muted-foreground hover:text-foreground"
               data-testid="button-clear-filter"
             >
               <X className="h-4 w-4" />
@@ -185,18 +185,18 @@ export default function ImpactMap() {
                           <span className="text-lg">
                             {impactEmojis[location.impactType]}
                           </span>
-                          <h3 className="font-semibold text-gray-900 flex-1">
+                          <h3 className="font-semibold text-foreground flex-1">
                             {location.projectName}
                           </h3>
                         </div>
                         
                         <div className="space-y-2">
-                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <MapPin className="h-3 w-3" />
                             <span>{location.region}, {location.country}</span>
                           </div>
                           
-                          <p className="text-sm text-gray-700">
+                          <p className="text-sm text-muted-foreground">
                             {location.projectDescription}
                           </p>
                           
@@ -208,13 +208,13 @@ export default function ImpactMap() {
                               {location.totalAmount} {location.unit}
                             </Badge>
                             
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-muted-foreground">
                               {location.completionCount} completions
                             </span>
                           </div>
                           
                           {/* Registry Link */}
-                          <div className="pt-2 border-t border-gray-100">
+                          <div className="pt-2 border-t border-border">
                             <a
                               href={location.registryLink}
                               target="_blank"
@@ -235,10 +235,10 @@ export default function ImpactMap() {
             )}
             
             {isLoading && (
-              <div className="h-full flex items-center justify-center bg-gray-50">
+              <div className="h-full flex items-center justify-center bg-muted">
                 <div className="text-center space-y-3">
                   <Globe className="h-12 w-12 text-green-600 mx-auto animate-spin" />
-                  <p className="text-gray-600">Loading global impact locations...</p>
+                  <p className="text-muted-foreground">Loading global impact locations...</p>
                 </div>
               </div>
             )}
@@ -279,10 +279,10 @@ export default function ImpactMap() {
                         <IconComponent className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900 capitalize">
+                        <p className="text-sm font-medium text-foreground capitalize">
                           {type.replace('_', ' ')}
                         </p>
-                        <p className="text-xs text-gray-600">
+                        <p className="text-xs text-muted-foreground">
                           {data.total} {data.unit} • {data.count} projects
                         </p>
                       </div>
@@ -302,10 +302,10 @@ export default function ImpactMap() {
           {locations.length > 0 && (
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-900">
+                <h2 className="text-xl font-semibold text-foreground">
                   {filterType === "all" ? "All Projects" : `${filterType.replace('_', ' ')} Projects`}
                 </h2>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-muted-foreground">
                   {locations.length} project{locations.length !== 1 ? 's' : ''}
                 </span>
               </div>
@@ -328,17 +328,17 @@ export default function ImpactMap() {
                           {impactEmojis[location.impactType]}
                         </span>
                         <div className="flex-1">
-                          <h3 className="font-semibold text-gray-900 text-lg leading-tight">
+                          <h3 className="font-semibold text-foreground text-lg leading-tight">
                             {location.projectName}
                           </h3>
-                          <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                             <MapPin className="h-3 w-3" />
                             <span>{location.region}, {location.country}</span>
                           </div>
                         </div>
                       </div>
                       
-                      <p className="text-sm text-gray-700 line-clamp-3">
+                      <p className="text-sm text-muted-foreground line-clamp-3">
                         {location.projectDescription}
                       </p>
                       
@@ -350,12 +350,12 @@ export default function ImpactMap() {
                           {location.totalAmount} {location.unit}
                         </Badge>
                         
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-muted-foreground">
                           {location.completionCount} completions
                         </span>
                       </div>
                       
-                      <div className="pt-3 border-t border-gray-100">
+                      <div className="pt-3 border-t border-border">
                         <a
                           href={location.registryLink}
                           target="_blank"

@@ -8,7 +8,7 @@ export default function ImpactMapPage() {
   const [, setLocation] = useLocation();
 
   return (
-    <div className="min-h-screen bg-forest-bg font-nunito text-forest-text">
+    <div className="min-h-screen bg-background font-nunito text-foreground">
       <Navigation currentPage="/impact-map" onAddHabitClick={() => {}} />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-24 md:pb-8">
