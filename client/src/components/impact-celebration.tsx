@@ -114,6 +114,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
   const [typedText, setTypedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [showTypingDots, setShowTypingDots] = useState(true);
+  const [showEmotionFeedback, setShowEmotionFeedback] = useState(false);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const autoCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
@@ -124,12 +125,16 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
   });
 
   const impactTypeConfig = data ? impactConfig[data.impactAction] : null;
-  const fallbackMessage = data ? `Excellent work! Your "${data.habitName}" habit just helped ${impactTypeConfig?.title.toLowerCase().replace('!', '')} - that's ${data.impactAmount} ${impactTypeConfig?.unit} while building your ${data.streak}-day streak. Keep this positive momentum going!` : "Great job!";
-  const aiMessage = aiData?.message ?? fallbackMessage;
+  const fallbackMessage = data ? `Excellent work! Your "${data.habitName}" habit just helped ${impactTypeConfig?.title.toLowerCase().replace('!', '')} - that's ${data.impactAmount} ${impactTypeConfig?.unit} while building your ${data.streak}-day streak. Keep this positive momentum going! How are you feeling now?` : "Great job! How are you feeling now?";
+  const aiMessage = (aiData?.message ?? fallbackMessage) + (aiData?.message && !aiData.message.includes("How are you feeling now?") ? " How are you feeling now?" : "");
 
   useEffect(() => {
     if (isOpen && data) {
       setAnimationPhase('enter');
+      // Reset emotion feedback state
+      setShowEmotionFeedback(false);
+      setShowTypingDots(true);
+      setSelectedEmotion(null);
       
       // Create initial particles
       const initialParticles: Particle[] = [];
@@ -198,14 +203,13 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
       if (currentIndex < aiMessage.length) {
         setTypedText(aiMessage.slice(0, currentIndex + 1));
         currentIndex++;
-        typingTimeoutRef.current = setTimeout(typeNextCharacter, 50); // 50ms per character
+        typingTimeoutRef.current = setTimeout(typeNextCharacter, 15); // 15ms per character - much faster
       } else {
         setIsTyping(false);
-        // Start auto-close timer after typing finishes
-        const readingTime = 5000; // 5 seconds to read the message
-        autoCloseTimeoutRef.current = setTimeout(() => {
-          handleClose();
-        }, readingTime);
+        // Show emotion feedback after typing finishes
+        setTimeout(() => {
+          setShowEmotionFeedback(true);
+        }, 500);
       }
     };
 
@@ -224,7 +228,10 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
     setTimeout(() => {
       onClose();
       setAnimationPhase('enter');
-      setSelectedEmotion(null); // Reset emotion selection
+      // Reset all modal state
+      setSelectedEmotion(null);
+      setShowEmotionFeedback(false);
+      setShowTypingDots(true);
     }, 300);
   };
 
@@ -236,21 +243,16 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
   const handleEmotionSelect = async (emotionValue: number) => {
     setSelectedEmotion(emotionValue);
     
-    // Store emotion feedback (you could send this to your backend)
+    // Store emotion feedback for the most recent completion of this habit
     try {
-      // Optional: Store emotion feedback in backend
-      // await fetch('/api/emotion-feedback', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     habitName: data?.habitName,
-      //     impactAction: data?.impactAction,
-      //     emotion: emotionValue,
-      //     timestamp: new Date().toISOString()
-      //   })
-      // });
-      
-      console.log(`Emotion feedback recorded: ${emotionValue} for ${data?.habitName}`);
+      if (data?.habitId) {
+        await fetch(`/api/habits/${data.habitId}/emotion-feedback`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ emotionalFeedback: emotionValue })
+        });
+        console.log(`Emotion feedback ${emotionValue} saved for habit ${data.habitId}`);
+      }
     } catch (error) {
       console.error('Failed to store emotion feedback:', error);
     }
@@ -311,7 +313,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
           <X className="h-4 w-4" />
         </Button>
 
-        <div className="p-8 text-center">
+        <div className="p-8">
           {/* Large emoji with bounce animation */}
           <div className={`text-8xl mb-6 animate-bounce`} style={{ animationDuration: '1s' }}>
             {config.emoji}
@@ -324,7 +326,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             </h2>
             
             {/* Single personalized message from John Ellison */}
-            <div className="bg-secondary/20 rounded-2xl p-6 border border-border">
+            <div className="bg-secondary/20 rounded-2xl p-6 border border-border text-left">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <img 
@@ -346,7 +348,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
                       </div>
                     </div>
                   ) : (
-                    <div className="text-base text-foreground leading-relaxed" data-testid="text-ai-celebration-message">
+                    <div className="text-base text-foreground leading-relaxed text-left" data-testid="text-ai-celebration-message">
                       <span>{typedText}</span>
                       {isTyping && <span className="animate-pulse">|</span>}
                     </div>
@@ -371,14 +373,41 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             </div>
           </div>
 
-          {/* Single action button */}
-          <Button
-            onClick={handleClose}
-            className="w-full bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary/80 transition-all duration-200 font-medium py-3 rounded-xl"
-            data-testid="button-continue"
-          >
-            Keep Going! 🚀
-          </Button>
+          {/* Emotion feedback section */}
+          {showEmotionFeedback && (
+            <div className="mb-6" data-testid="section-emotion-feedback">
+              <div className="text-center space-y-4">
+                <div className="flex justify-center space-x-3">
+                  {emotions.map((emotion) => (
+                    <button
+                      key={emotion.value}
+                      onClick={() => handleEmotionSelect(emotion.value)}
+                      className={`text-4xl p-3 rounded-full transition-all duration-200 ${
+                        selectedEmotion === emotion.value
+                          ? 'bg-primary/20 scale-110 ring-2 ring-primary'
+                          : 'hover:bg-secondary/50 hover:scale-105'
+                      }`}
+                      data-testid={`button-emotion-${emotion.value}`}
+                      title={emotion.label}
+                    >
+                      {emotion.emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Single action button - shows after emotion is selected or when emotion feedback is not shown */}
+          {(!showEmotionFeedback || selectedEmotion) && (
+            <Button
+              onClick={handleClose}
+              className="w-full bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary/80 transition-all duration-200 font-medium py-3 rounded-xl"
+              data-testid="button-continue"
+            >
+              {selectedEmotion ? "Thanks for sharing! 💚" : "Keep Going! 🚀"}
+            </Button>
+          )}
         </div>
 
         {/* Decorative elements */}
