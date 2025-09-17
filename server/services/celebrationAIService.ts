@@ -80,45 +80,31 @@ export class CelebrationAIService {
     const stylePrompt = this.getStylePrompt(prefs.style);
     const impactContext = this.getImpactActionContext(context.impactAction, context.impactAmount, context.projectInfo);
     
-    const systemPrompt = `You are John Ellison, a warm behavior change coach celebrating a user's habit completion.
+    const systemPrompt = `You are John Ellison, a warm and encouraging habit coach. Create a single, focused celebration message.
 
-PERSONALITY: ${personalityPrompt}
-
-STYLE: ${stylePrompt}
-
-EMOJI LEVEL: ${prefs.emojiLevel === 1 ? 'Minimal emojis (0-1)' : prefs.emojiLevel === 2 ? 'Moderate emojis (1-3)' : 'Rich emojis (3-5)'}
-
-Your task: Create a personalized celebration message that connects their daily habit to their bigger life aspiration and acknowledges their environmental impact. ${context.userName ? `Address the user by their first name (${context.userName}) to make it more personal.` : 'Use warm, personal language even without knowing their name.'}
-
-Always respond with valid JSON in this format:
+Return JSON with ONE field only:
 {
-  "title": "Celebration headline (e.g. 'Amazing Progress!' or impact-specific title)",
-  "message": "Main celebration message connecting their habit to their aspiration and impact",
-  "motivationalNote": "Forward-looking encouragement tied to their goals",
-  "progressInsight": "Brief insight about their streak or consistency pattern (optional)"
-}`;
+  "message": "Complete personalized celebration (3-4 sentences max) that includes: greeting with name + specific habit praise + environmental impact + brief motivation"
+}
 
-    const contextPrompt = `HABIT COMPLETION DETAILS:
+Example: "Great work, Sarah! Your morning meditation habit is helping you build mindful awareness while offsetting 1kg of CO₂. This consistency shows real commitment to both personal growth and our planet. Keep this positive momentum going!"
+
+Guidelines:
+- Use their first name naturally
+- Reference their specific habit and environmental impact
+- Keep under 60 words total
+- Warm, encouraging tone
+- Minimal emojis (0-2 max)
+- Connect personal growth to planetary benefit`;
+
+    const contextPrompt = `Create a celebration for:
+
+- User: ${context.userName || 'there'}
 - Habit: "${context.habitName}"
-- Current Streak: ${context.streak} day${context.streak !== 1 ? 's' : ''}
-- Environmental Impact: ${impactContext}
+- Streak: ${context.streak} day${context.streak !== 1 ? 's' : ''}
+- Impact: ${impactContext}
 
-USER CONTEXT:
-${context.userName ? `- Name: ${context.userName}` : '- Name: Not available'}
-- Life Aspiration: ${context.userAspiration || 'building healthy habits'}
-- Background Context: ${context.userContext || 'working on personal growth'}
-
-PROGRESS PATTERNS:
-- This is day ${context.streak} of their streak
-- Recent emotional feedback: ${context.emotionalFeedbackHistory?.length ? `Average feeling: ${(context.emotionalFeedbackHistory.reduce((a, b) => a + b, 0) / context.emotionalFeedbackHistory.length).toFixed(1)}/5` : 'No recent feedback'}
-
-CELEBRATION GUIDELINES:
-1. Make it personal by connecting to their aspiration
-2. Acknowledge the environmental impact meaningfully
-3. Celebrate the streak milestone appropriately
-4. Keep tone consistent with their personality preference
-5. Look forward to continued progress
-6. Use appropriate emoji level for their preference`;
+Make it personal, acknowledge their environmental contribution, and encourage continued progress.`;
 
     try {
       const response = await openai.chat.completions.create({
@@ -136,10 +122,10 @@ CELEBRATION GUIDELINES:
       const result = JSON.parse(response.choices[0].message.content || '{}');
       
       return {
-        title: result.title || "Fantastic Work!",
-        message: result.message || `Great job completing "${context.habitName}"! You're building momentum toward your goals.`,
-        motivationalNote: result.motivationalNote || "Keep up this amazing consistency!",
-        progressInsight: result.progressInsight || undefined
+        title: "Great Work!",
+        message: result.message || `Great job completing "${context.habitName}"! You're building momentum toward your goals while making a positive environmental impact. Keep up this amazing consistency!`,
+        motivationalNote: "Keep going!",
+        progressInsight: undefined
       };
 
     } catch (error: any) {
@@ -167,23 +153,19 @@ CELEBRATION GUIDELINES:
     if (context.streak >= 7) title = "Week Streak Champion!";
     if (context.streak >= 30) title = "Monthly Milestone Master!";
 
-    let message = `${context.userName ? `${context.userName}, f` : 'F'}antastic job with "${context.habitName}"! ${emoji} You just ${impactText}`;
-    if (context.userAspiration) {
-      message += ` and you're making real progress toward ${context.userAspiration.toLowerCase()}.`;
+    let message = `${context.userName ? `Excellent work, ${context.userName}!` : 'Excellent work!'} Your "${context.habitName}" habit just ${impactText} while building your ${context.streak}-day streak.`;
+    
+    if (context.streak >= 7) {
+      message += ` This consistent commitment shows real dedication to both personal growth and environmental impact.`;
     } else {
-      message += ` while building consistency with your daily habits.`;
-    }
-
-    let motivationalNote = "Every single day counts - you're building something amazing!";
-    if (context.streak >= 3) {
-      motivationalNote = `${context.streak} days strong! You're proving you can stick with meaningful changes.`;
+      message += ` Keep building this positive momentum!`;
     }
 
     return {
       title,
       message,
-      motivationalNote,
-      progressInsight: context.streak >= 5 ? `Your ${context.streak}-day streak shows real commitment to growth!` : undefined
+      motivationalNote: "Keep going!",
+      progressInsight: undefined
     };
   }
 

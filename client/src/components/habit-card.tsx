@@ -83,7 +83,7 @@ interface HabitCardProps {
     totalImpactEarned: number;
     completedToday: boolean;
   };
-  onComplete: (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any, celebrationMessage?: any) => void;
+  onComplete: (habitId: string, habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any, celebrationMessage?: any) => void;
   onRefresh: () => void;
   onEdit?: (habit: any) => void;
 }
@@ -106,7 +106,7 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
     },
     onSuccess: (data) => {
       if (data.completed && data.impactCreated) {
-        onComplete(habit.name, data.streak, habit.impactAction, habit.impactAmount, data.projectInfo, data.celebrationMessage);
+        onComplete(habit.id, habit.name, data.streak, habit.impactAction, habit.impactAmount, data.projectInfo, data.celebrationMessage);
         const impactTypeText = data.impactAction.replace('_', ' ');
         const unitText = getImpactUnit(data.impactAction);
         toast({
@@ -114,7 +114,7 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
           description: `Completed "${habit.name}" and created ${data.impactAmount} ${unitText} ${impactTypeText} impact!`,
         });
       } else if (data.completed) {
-        onComplete(habit.name, data.streak, habit.impactAction, habit.impactAmount, undefined, data.celebrationMessage);
+        onComplete(habit.id, habit.name, data.streak, habit.impactAction, habit.impactAmount, undefined, data.celebrationMessage);
         toast({
           title: "✅ Habit Completed!",
           description: `Great job completing "${habit.name}"!`,

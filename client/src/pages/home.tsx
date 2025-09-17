@@ -59,6 +59,7 @@ export default function Home() {
   const [editingHabit, setEditingHabit] = useState<any>(null);
   const [showImpactCelebration, setShowImpactCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{
+    habitId: string;
     habitName: string;
     streak: number;
     impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
@@ -82,8 +83,8 @@ export default function Home() {
     queryKey: ["/api/dashboard"],
   });
 
-  const handleHabitComplete = (habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any, celebrationMessage?: any) => {
-    setCelebrationData({ habitName, streak, impactAction, impactAmount, projectInfo, celebrationMessage });
+  const handleHabitComplete = (habitId: string, habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any, celebrationMessage?: any) => {
+    setCelebrationData({ habitId, habitName, streak, impactAction, impactAmount, projectInfo, celebrationMessage });
     setShowImpactCelebration(true);
     refetch(); // Refresh dashboard data
   };

@@ -362,24 +362,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        // Generate personalized AI celebration message
-        let celebrationMessage = null;
-        try {
-          const celebrationContext = await CelebrationAIService.getCelebrationContext(
-            habit.name,
-            newStreak,
-            habit.impactAction,
-            habit.impactAmount,
-            projectInfo,
-            userId,
-            storage
-          );
-          celebrationMessage = await CelebrationAIService.generateCelebrationMessage(celebrationContext);
-        } catch (celebrationError) {
-          console.error("Failed to generate AI celebration:", celebrationError);
-          // Continue without AI message - fallback handled in frontend
-        }
-
+        // Return immediate response for instant modal
         res.json({ 
           completed: true, 
           impactCreated,
@@ -388,13 +371,98 @@ export async function registerRoutes(app: Express): Promise<Server> {
           impactAmount: habit.impactAmount,
           streak: newStreak,
           projectInfo,
-          celebrationMessage, // Add AI-generated personalized message
           message: impactCreated ? `Habit completed and ${habit.impactAction.replace('_', ' ')} impact created!` : "Habit completed (impact creation failed)"
+        });
+
+        // Generate personalized AI celebration message asynchronously (non-blocking)
+        setImmediate(async () => {
+          try {
+            const celebrationContext = await CelebrationAIService.getCelebrationContext(
+              habit.name,
+              newStreak,
+              habit.impactAction,
+              habit.impactAmount,
+              projectInfo,
+              userId,
+              storage
+            );
+            const celebrationMessage = await CelebrationAIService.generateCelebrationMessage(celebrationContext);
+            
+            // Store the generated message for potential future retrieval or real-time updates
+            // For now, we'll rely on the frontend's fallback approach
+            console.log('AI celebration generated:', celebrationMessage.title);
+          } catch (celebrationError) {
+            console.error("Failed to generate AI celebration:", celebrationError);
+          }
         });
       }
     } catch (error) {
       console.error("Toggle habit error:", error);
       res.status(500).json({ message: "Failed to toggle habit completion" });
+    }
+  });
+
+  // Get AI celebration message for recent habit completion (protected route)
+  app.get("/api/habits/:habitId/celebration", isAuthenticated, async (req, res) => {
+    try {
+      const { habitId } = req.params;
+      const userId = (req.user as any)?.claims?.sub;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      const habit = await storage.getHabit(habitId);
+      if (!habit || habit.userId !== userId) {
+        return res.status(404).json({ message: "Habit not found" });
+      }
+
+      // Get the most recent completion for streak calculation
+      const completions = await storage.getHabitCompletions(habitId);
+      const currentStreak = habit.streak || 1;
+
+      // Fetch project information
+      let projectInfo = null;
+      try {
+        const projects = await greensparkService.getProjectsByType(habit.impactAction);
+        if (projects.length > 0) {
+          const project = projects[0];
+          projectInfo = {
+            name: project.name,
+            description: project.description,
+            location: project.countries?.length > 0 ? project.countries[0] : 'Global',
+            imageUrl: project.imageUrl,
+            registryLink: project.link
+          };
+        }
+      } catch (projectError) {
+        console.error("Failed to fetch project info:", projectError);
+      }
+
+      // Generate personalized AI celebration message
+      try {
+        const celebrationContext = await CelebrationAIService.getCelebrationContext(
+          habit.name,
+          currentStreak,
+          habit.impactAction,
+          habit.impactAmount,
+          projectInfo,
+          userId,
+          storage
+        );
+        const celebrationMessage = await CelebrationAIService.generateCelebrationMessage(celebrationContext);
+        
+        res.json({ 
+          celebrationMessage,
+          projectInfo 
+        });
+      } catch (celebrationError) {
+        console.error("Failed to generate AI celebration:", celebrationError);
+        res.status(500).json({ message: "Failed to generate celebration message" });
+      }
+    } catch (error) {
+      console.error("Get celebration error:", error);
+      res.status(500).json({ message: "Failed to get celebration" });
     }
   });
 

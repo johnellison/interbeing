@@ -2,11 +2,13 @@ import { useEffect, useState } from "react";
 import { X, Sparkles, MapPin, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 
 interface ImpactCelebrationProps {
   isOpen: boolean;
   onClose: () => void;
   data: {
+    habitId: string;
     habitName: string;
     streak: number;
     impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees';
@@ -280,146 +282,55 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             {config.emoji}
           </div>
 
-          {/* Success message - AI personalized or fallback */}
-          <div className="mb-6">
-            <h2 className={`text-3xl font-bold ${config.color} mb-2`} data-testid="text-celebration-title">
-              {data.celebrationMessage?.title || config.title}
+          {/* Simplified AI message */}
+          <div className="mb-8">
+            <h2 className={`text-3xl font-bold ${config.color} mb-4`} data-testid="text-celebration-title">
+              Great Work! 🎉
             </h2>
-            <p className="text-lg text-muted-foreground mb-3" data-testid="text-celebration-description">
-              {data.celebrationMessage?.message || config.description}
-            </p>
             
-            {/* John Ellison motivational note */}
-            {data.celebrationMessage?.motivationalNote && (
-              <div className="bg-primary/10 rounded-xl p-4 border border-primary/20 mt-4">
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                      <span className="text-sm">🎯</span>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-primary mb-1">John Ellison says:</p>
-                    <p className="text-sm text-foreground leading-relaxed" data-testid="text-motivational-note">
-                      {data.celebrationMessage.motivationalNote}
-                    </p>
+            {/* Single personalized message from John Ellison */}
+            <div className="bg-secondary/20 rounded-2xl p-6 border border-border">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/30 flex items-center justify-center border border-primary/20">
+                    <span className="text-lg">🎯</span>
                   </div>
                 </div>
-              </div>
-            )}
-            
-            {/* Progress insight from AI */}
-            {data.celebrationMessage?.progressInsight && (
-              <div className="bg-secondary/30 rounded-lg p-3 mt-3 border border-border">
-                <p className="text-xs font-medium text-muted-foreground mb-1">Progress Insight</p>
-                <p className="text-sm text-foreground" data-testid="text-progress-insight">
-                  {data.celebrationMessage.progressInsight}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* Impact details */}
-          <div className="bg-secondary/20 rounded-2xl p-6 mb-6 border border-border">
-            <div className="grid grid-cols-2 gap-4 text-center">
-              <div>
-                <p className="text-2xl font-bold text-primary" data-testid="text-habit-name">
-                  {data.habitName}
-                </p>
-                <p className="text-sm text-muted-foreground">Habit Completed</p>
-              </div>
-              <div>
-                <p className={`text-2xl font-bold ${config.color}`} data-testid="text-impact-amount">
-                  {impactValue}
-                </p>
-                <p className="text-sm text-muted-foreground">{config.unit}</p>
-              </div>
-            </div>
-            
-            <div className="mt-4 pt-4 border-t border-border">
-              <div className="flex items-center justify-center space-x-2">
-                <span className="text-lg">🔥</span>
-                <span className="text-lg font-semibold text-primary" data-testid="text-streak-count">
-                  {data.streak} day streak!
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Project Information */}
-          {data?.projectInfo && (
-            <div className="bg-secondary/20 rounded-2xl p-4 mb-6 text-left border border-border">
-              <div className="flex items-start space-x-3">
-                {data.projectInfo.imageUrl && (
-                  <img 
-                    src={data.projectInfo.imageUrl} 
-                    alt={data.projectInfo.name}
-                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
-                  />
-                )}
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-sm text-foreground mb-1 line-clamp-2" data-testid="text-project-name">
-                    {data.projectInfo.name}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
-                    {data.projectInfo.description}
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-primary mb-2">John Ellison, your habit coach:</p>
+                  <p className="text-base text-foreground leading-relaxed" data-testid="text-ai-celebration-message">
+                    {data.celebrationMessage?.message || 
+                      `Excellent work! Your "${data.habitName}" habit just helped ${config.title.toLowerCase().replace('!', '')} - that's ${impactValue} ${config.unit} while building your ${data.streak}-day streak. Keep this positive momentum going!`
+                    }
                   </p>
-                  <div className="flex items-center text-xs text-muted-foreground">
-                    <MapPin className="w-3 h-3 mr-1" />
-                    <span>{data.projectInfo.location}</span>
-                  </div>
                 </div>
               </div>
             </div>
-          )}
+          </div>
 
-          {/* How do you feel? */}
-          <div className="mb-6">
-            <p className="text-sm text-foreground mb-3 font-medium">How do you feel?</p>
-            <div className="flex justify-center space-x-3">
-              {emotions.map((emotion) => (
-                <button
-                  key={emotion.value}
-                  onClick={() => handleEmotionSelect(emotion.value)}
-                  className={`text-2xl p-2 rounded-full transition-all duration-200 hover:scale-110 ${
-                    selectedEmotion === emotion.value 
-                      ? 'bg-secondary/90 shadow-lg ring-2 ring-primary' 
-                      : 'hover:bg-secondary/60'
-                  }`}
-                  title={emotion.label}
-                  data-testid={`button-emotion-${emotion.value}`}
-                >
-                  {emotion.emoji}
-                </button>
-              ))}
-            </div>
-            {selectedEmotion && (
-              <p className="text-xs text-success mt-2 opacity-75">
-                Thank you for sharing how this made you feel!
+          {/* Simple impact summary */}
+          <div className="flex items-center justify-center space-x-6 mb-8 text-center">
+            <div>
+              <p className={`text-xl font-bold ${config.color}`} data-testid="text-impact-amount">
+                {impactValue} {config.unit}
               </p>
-            )}
+            </div>
+            <div className="text-muted-foreground">•</div>
+            <div>
+              <p className="text-xl font-bold text-primary" data-testid="text-streak-count">
+                {data.streak} day streak! 🔥
+              </p>
+            </div>
           </div>
 
-          {/* Action buttons */}
-          <div className="space-y-3">
-            <Button
-              onClick={handleViewImpact}
-              variant="outline"
-              className="w-full bg-secondary/70 hover:bg-secondary/90 border-border text-foreground"
-              data-testid="button-view-impact"
-            >
-              <MapPin className="w-4 h-4 mr-2" />
-              View Impact on Map
-            </Button>
-            
-            <Button
-              onClick={handleClose}
-              className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              data-testid="button-continue-journey"
-            >
-              Continue Your Journey
-            </Button>
-          </div>
+          {/* Single action button */}
+          <Button
+            onClick={handleClose}
+            className="w-full bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary/80 transition-all duration-200 font-medium py-3 rounded-xl"
+            data-testid="button-continue"
+          >
+            Keep Going! 🚀
+          </Button>
         </div>
 
         {/* Decorative elements */}
