@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useLocation } from "wouter";
+import { useLocation, Link } from "wouter";
 import { Sprout, Home as HomeIcon, BarChart, Globe, Clock, Settings, Plus, LogOut, ChevronDown } from "lucide-react";
 import interbeingLogo from "@assets/interbeing-app-logo-color-bg_1758122829010.png";
+import interbeingWordmark from "@assets/interbeing-logo-wordmark-no-bg_1758123725926.png";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
@@ -37,12 +38,10 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
       {/* Top Navigation - Mobile Settings Bar */}
       <nav className="bg-card text-white shadow-sm sticky top-0 z-40 md:hidden">
         <div className="flex justify-between items-center px-4 py-3">
-          <div className="flex items-center space-x-3">
-            <img src={interbeingLogo} alt="Interbeing" className="h-6 w-6" />
-            <h1 className="text-lg font-semibold" data-testid="app-title">
-              Interbeing
-            </h1>
-          </div>
+          <Link href="/" aria-label="Interbeing" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+            <img src={interbeingLogo} alt="" aria-hidden="true" className="h-6 w-6" />
+            <img src={interbeingWordmark} alt="Interbeing" className="h-5" data-testid="app-title" />
+          </Link>
           
           {/* Settings Dropdown */}
           <DropdownMenu>
@@ -70,14 +69,12 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
       <nav className="hidden md:block bg-card text-white shadow-lg sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
+            <Link href="/" aria-label="Interbeing" className="flex items-center space-x-4 hover:opacity-80 transition-opacity">
               <div className="flex-shrink-0">
-                <img src={interbeingLogo} alt="Interbeing" className="h-8 w-8" />
+                <img src={interbeingLogo} alt="" aria-hidden="true" className="h-8 w-8" />
               </div>
-              <h1 className="text-xl font-bold font-inter" data-testid="app-title">
-                Interbeing
-              </h1>
-            </div>
+              <img src={interbeingWordmark} alt="Interbeing" className="h-6" data-testid="app-title" />
+            </Link>
             
             <div className="flex items-center space-x-1">
               {/* Main Navigation Links */}

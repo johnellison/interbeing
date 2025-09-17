@@ -3,6 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Leaf, Target, TreePine, Users } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { Link } from "wouter";
+import interbeingWordmark from "@assets/interbeing-logo-wordmark-no-bg_1758123725926.png";
+import interbeingLogo from "@assets/interbeing-app-logo-color-bg_1758122829010.png";
 
 interface FeaturedProject {
   id: string;
@@ -38,10 +41,10 @@ export default function Landing() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-20">
-          <div className="flex items-center space-x-3">
-            <TreePine className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold text-foreground tracking-tight">Interbeing</h1>
-          </div>
+          <Link href="/" aria-label="Interbeing" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+            <img src={interbeingLogo} alt="" aria-hidden="true" className="h-8 w-8" />
+            <img src={interbeingWordmark} alt="Interbeing" className="h-6" />
+          </Link>
           <Button 
             onClick={handleLogin}
             className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-6 py-2.5 rounded-lg transition-all duration-200"
@@ -53,11 +56,11 @@ export default function Landing() {
 
         {/* Hero Section */}
         <div className="text-center mb-24">
-          <h2 className="text-5xl md:text-7xl font-bold text-foreground mb-8 tracking-tight leading-tight">
+          <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-8 tracking-tight leading-tight">
             A simple and delightful<br />
             <span className="text-primary">habit tracker for</span><br />
             environmental impact.
-          </h2>
+          </h1>
           <p className="text-xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
             Every habit you complete triggers real environmental action through our partnership with <strong className="text-foreground">Greenspark</strong>. 
             Plant trees, rescue plastic, offset carbon, plant kelp, provide clean water, or protect bees. 
