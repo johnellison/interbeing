@@ -104,6 +104,31 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Inter', sans-serif;
   }
+
+  /* Gradient text animation */
+  @keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .animated-gradient-text {
+    background: linear-gradient(135deg, 
+      hsl(49 85% 52%), 
+      hsl(70 100% 50%), 
+      hsl(142 100% 45%), 
+      hsl(290 93% 68%), 
+      hsl(343 96% 53%)
+    );
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease-in-out infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-weight: 700;
+  }
 }
 
 @layer components {
@@ -121,6 +146,35 @@
 
   .habit-checkbox {
     @apply w-8 h-8 border-2 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, 
+      hsl(49 85% 52%) 0%,
+      hsl(70 100% 50%) 25%, 
+      hsl(142 100% 45%) 50%, 
+      hsl(290 93% 68%) 75%,
+      hsl(343 96% 53%) 100%
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  .gradient-bg {
+    background: linear-gradient(135deg, 
+      hsl(49 85% 52%) 0%,
+      hsl(70 100% 50%) 25%, 
+      hsl(142 100% 45%) 50%, 
+      hsl(290 93% 68%) 75%,
+      hsl(343 96% 53%) 100%
+    );
+    padding: 4px 12px;
+    border-radius: 12px;
+    color: hsl(253 41% 11%);
+    font-weight: 700;
   }
 
   .habit-checkbox.completed {
