@@ -112,10 +112,10 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-forest-bg flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Sprout className="h-12 w-12 text-forest-primary animate-pulse mx-auto mb-4" />
-          <p className="text-forest-text">Loading your habits...</p>
+          <Sprout className="h-12 w-12 text-primary animate-pulse mx-auto mb-4" />
+          <p className="text-foreground">Loading your habits...</p>
         </div>
       </div>
     );
@@ -123,16 +123,16 @@ export default function Home() {
 
   if (!dashboardData) {
     return (
-      <div className="min-h-screen bg-forest-bg flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="text-forest-text">Failed to load dashboard data.</p>
+          <p className="text-foreground">Failed to load dashboard data.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-forest-bg font-nunito text-forest-text">
+    <div className="min-h-screen bg-background font-nunito text-foreground">
       <Navigation currentPage="/" />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
