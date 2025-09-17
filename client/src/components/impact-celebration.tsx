@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { X, Sparkles, MapPin, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 
@@ -110,6 +111,16 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
   const [animationPhase, setAnimationPhase] = useState<'enter' | 'celebrate' | 'exit'>('enter');
   const [selectedEmotion, setSelectedEmotion] = useState<number | null>(null);
   const [location, setLocation] = useLocation();
+  
+  const { data: aiData, isLoading: isAiLoading, isError: isAiError } = useQuery<{ message: string }>({
+    queryKey: [data?.habitId ? `/api/habits/${data.habitId}/celebration` : undefined],
+    enabled: isOpen && !!data?.habitId,
+    staleTime: 0,
+  });
+
+  const impactTypeConfig = data ? impactConfig[data.impactAction] : null;
+  const fallbackMessage = data ? `Excellent work! Your "${data.habitName}" habit just helped ${impactTypeConfig?.title.toLowerCase().replace('!', '')} - that's ${data.impactAmount} ${impactTypeConfig?.unit} while building your ${data.streak}-day streak. Keep this positive momentum going!` : "Great job!";
+  const aiMessage = aiData?.message ?? fallbackMessage;
 
   useEffect(() => {
     if (isOpen && data) {
@@ -298,11 +309,17 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-primary mb-2">John Ellison, your habit coach:</p>
-                  <p className="text-base text-foreground leading-relaxed" data-testid="text-ai-celebration-message">
-                    {data.celebrationMessage?.message || 
-                      `Excellent work! Your "${data.habitName}" habit just helped ${config.title.toLowerCase().replace('!', '')} - that's ${impactValue} ${config.unit} while building your ${data.streak}-day streak. Keep this positive momentum going!`
-                    }
-                  </p>
+                  {isAiLoading ? (
+                    <div className="space-y-2" data-testid="status-ai-loading">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-4 w-5/6" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                  ) : (
+                    <p className="text-base text-foreground leading-relaxed" data-testid="text-ai-celebration-message">
+                      {aiMessage}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

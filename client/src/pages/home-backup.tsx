@@ -43,6 +43,11 @@ interface DashboardData {
     completed: number;
     total: number;
     isToday: boolean;
+    completions: Array<{
+      habitId: string;
+      habitName: string;
+      category: string;
+    }>;
   }>;
   monthlyTrees: number;
   co2Offset: number;
