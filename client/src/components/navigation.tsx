@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { Sprout, Home as HomeIcon, BarChart, Globe, Clock, Settings, Plus, LogOut, ChevronDown } from "lucide-react";
+import interbeingLogo from "@assets/interbeing-app-logo-color-bg_1758122829010.png";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
@@ -37,7 +38,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
       <nav className="bg-card text-white shadow-sm sticky top-0 z-40 md:hidden">
         <div className="flex justify-between items-center px-4 py-3">
           <div className="flex items-center space-x-3">
-            <Sprout className="h-6 w-6 text-primary" />
+            <img src={interbeingLogo} alt="Interbeing" className="h-6 w-6" />
             <h1 className="text-lg font-semibold" data-testid="app-title">
               Interbeing
             </h1>
@@ -71,7 +72,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <div className="flex-shrink-0">
-                <Sprout className="h-8 w-8 text-primary" />
+                <img src={interbeingLogo} alt="Interbeing" className="h-8 w-8" />
               </div>
               <h1 className="text-xl font-bold font-inter" data-testid="app-title">
                 Interbeing
