@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { X, Sparkles, MapPin, ExternalLink } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import johnEllison from "@assets/john-ellison-health-hacked-flipchart_1758018126559.webp";
 
 interface ImpactCelebrationProps {
   isOpen: boolean;
@@ -111,6 +111,11 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
   const [animationPhase, setAnimationPhase] = useState<'enter' | 'celebrate' | 'exit'>('enter');
   const [selectedEmotion, setSelectedEmotion] = useState<number | null>(null);
   const [location, setLocation] = useLocation();
+  const [typedText, setTypedText] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [showTypingDots, setShowTypingDots] = useState(true);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const autoCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const { data: aiData, isLoading: isAiLoading, isError: isAiError } = useQuery<{ message: string }>({
     queryKey: [data?.habitId ? `/api/habits/${data.habitId}/celebration` : undefined],
@@ -144,15 +149,12 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
       // Animation sequence
       setTimeout(() => setAnimationPhase('celebrate'), 300);
       
-      // Auto-close with extended time for AI content
-      const hasAIContent = data?.celebrationMessage?.motivationalNote || data?.celebrationMessage?.progressInsight;
-      const autoCloseDelay = hasAIContent ? 9000 : 4000; // 9s for AI content, 4s for standard
-      
-      const autoCloseTimer = setTimeout(() => {
-        handleClose();
-      }, autoCloseDelay);
-
-      return () => clearTimeout(autoCloseTimer);
+      // Auto-close cleanup on unmount
+      return () => {
+        if (autoCloseTimeoutRef.current) {
+          clearTimeout(autoCloseTimeoutRef.current);
+        }
+      };
     } else {
       setParticles([]);
     }
@@ -178,6 +180,44 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
     const interval = setInterval(animateParticles, 16);
     return () => clearInterval(interval);
   }, [isOpen, particles.length]);
+
+  // Typewriter effect for AI message
+  useEffect(() => {
+    if (!isOpen || isAiLoading || !aiMessage) {
+      setTypedText("");
+      setIsTyping(false);
+      return;
+    }
+
+    setShowTypingDots(false);
+    setIsTyping(true);
+    setTypedText("");
+    
+    let currentIndex = 0;
+    const typeNextCharacter = () => {
+      if (currentIndex < aiMessage.length) {
+        setTypedText(aiMessage.slice(0, currentIndex + 1));
+        currentIndex++;
+        typingTimeoutRef.current = setTimeout(typeNextCharacter, 50); // 50ms per character
+      } else {
+        setIsTyping(false);
+        // Start auto-close timer after typing finishes
+        const readingTime = 5000; // 5 seconds to read the message
+        autoCloseTimeoutRef.current = setTimeout(() => {
+          handleClose();
+        }, readingTime);
+      }
+    };
+
+    // Start typing after a brief delay
+    typingTimeoutRef.current = setTimeout(typeNextCharacter, 500);
+
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [isOpen, isAiLoading, aiMessage]);
 
   const handleClose = () => {
     setAnimationPhase('exit');
@@ -250,22 +290,6 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
         ))}
       </div>
 
-      {/* Sparkle effects */}
-      <div className="fixed inset-0 pointer-events-none">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <Sparkles
-            key={i}
-            className={`absolute text-yellow-400 animate-pulse`}
-            style={{
-              left: `${20 + i * 10}%`,
-              top: `${30 + (i % 3) * 20}%`,
-              animationDelay: `${i * 0.2}s`,
-              animationDuration: '2s'
-            }}
-            size={16 + Math.random() * 8}
-          />
-        ))}
-      </div>
 
       {/* Main modal */}
       <div 
@@ -303,22 +327,29 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             <div className="bg-secondary/20 rounded-2xl p-6 border border-border">
               <div className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/30 flex items-center justify-center border border-primary/20">
-                    <span className="text-lg">🎯</span>
-                  </div>
+                  <img 
+                    src={johnEllison}
+                    alt="John Ellison, Habit Coach" 
+                    className="w-12 h-12 rounded-full object-cover border-2 border-primary/20"
+                    data-testid="img-coach-photo"
+                  />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-primary mb-2">John Ellison, your habit coach:</p>
-                  {isAiLoading ? (
-                    <div className="space-y-2" data-testid="status-ai-loading">
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-4 w-5/6" />
-                      <Skeleton className="h-4 w-2/3" />
+                  {isAiLoading || showTypingDots ? (
+                    <div className="flex items-center space-x-1" data-testid="status-ai-loading">
+                      <span className="text-base text-foreground">John is thinking</span>
+                      <div className="flex space-x-1">
+                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                        <div className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                      </div>
                     </div>
                   ) : (
-                    <p className="text-base text-foreground leading-relaxed" data-testid="text-ai-celebration-message">
-                      {aiMessage}
-                    </p>
+                    <div className="text-base text-foreground leading-relaxed" data-testid="text-ai-celebration-message">
+                      <span>{typedText}</span>
+                      {isTyping && <span className="animate-pulse">|</span>}
+                    </div>
                   )}
                 </div>
               </div>

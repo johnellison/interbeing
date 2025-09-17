@@ -107,18 +107,10 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
     onSuccess: (data) => {
       if (data.completed && data.impactCreated) {
         onComplete(habit.id, habit.name, data.streak, habit.impactAction, habit.impactAmount, data.projectInfo, data.celebrationMessage);
-        const impactTypeText = data.impactAction.replace('_', ' ');
-        const unitText = getImpactUnit(data.impactAction);
-        toast({
-          title: "🌍 Impact Created!",
-          description: `Completed "${habit.name}" and created ${data.impactAmount} ${unitText} ${impactTypeText} impact!`,
-        });
+        // Celebration modal now handles all feedback - no need for toast notifications
       } else if (data.completed) {
         onComplete(habit.id, habit.name, data.streak, habit.impactAction, habit.impactAmount, undefined, data.celebrationMessage);
-        toast({
-          title: "✅ Habit Completed!",
-          description: `Great job completing "${habit.name}"!`,
-        });
+        // Celebration modal now handles all feedback - no need for toast notifications
       } else {
         toast({
           title: "Habit Uncompleted",
