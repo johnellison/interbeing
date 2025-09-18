@@ -151,7 +151,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
         <nav className="relative">
           {/* Navigation Background with Curve */}
           <div 
-            className="mx-3 mb-2 rounded-t-3xl shadow-2xl relative overflow-hidden"
+            className="mx-3 rounded-t-3xl shadow-2xl relative overflow-hidden"
             style={{
               height: '80px',
               background: 'hsl(260 30% 20%)',
