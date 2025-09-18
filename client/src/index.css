@@ -171,10 +171,19 @@
       hsl(290 93% 68%) 75%,
       hsl(343 96% 53%) 100%
     );
-    padding: 4px 12px;
-    border-radius: 12px;
-    color: hsl(253 41% 11%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
     font-weight: 700;
+  }
+
+  /* Fallback for older browsers */
+  @supports not (background-clip: text) {
+    .gradient-bg {
+      color: hsl(70 100% 50%);
+      background: none;
+    }
   }
 
   .habit-checkbox.completed {
