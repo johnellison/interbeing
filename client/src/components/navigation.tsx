@@ -218,8 +218,6 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
               </div>
             </div>
             
-            {/* Home indicator safe area */}
-            <div className="absolute bottom-0 left-0 right-0 h-2" style={{ background: '#1C1C1E' }}></div>
           </div>
         </nav>
       </div>
