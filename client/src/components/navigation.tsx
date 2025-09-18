@@ -154,7 +154,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
             className="mx-3 rounded-t-3xl shadow-2xl relative overflow-hidden"
             style={{
               height: '80px',
-              background: 'hsl(260 30% 20%)',
+              background: 'hsl(280 60% 6%)',
             }}
           >
             {/* Curved Notch for Button */}
