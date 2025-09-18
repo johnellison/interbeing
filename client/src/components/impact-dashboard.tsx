@@ -250,6 +250,8 @@ export default function ImpactDashboard({
               </div>
             </CarouselItem>
           </CarouselContent>
+          <CarouselPrevious className="left-2" />
+          <CarouselNext className="right-2" />
           
           {/* Custom navigation indicators */}
           <div className="flex justify-center mt-4 space-x-2">
