@@ -99,8 +99,8 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" data-testid="modal-add-habit">
-      <div className="bg-card border border-border rounded-3xl p-8 mx-4 max-w-md w-full shadow-2xl">
+    <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50" data-testid="modal-add-habit">
+      <div className="bg-background border border-border rounded-3xl p-8 mx-4 max-w-md w-full shadow-2xl">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-bold text-foreground">Add New Habit</h3>
           <Button
