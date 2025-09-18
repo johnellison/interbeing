@@ -127,7 +127,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
       </nav>
 
       {/* Mobile Bottom Navigation - Curved with Floating Add Button */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+      <div className="md:hidden fixed left-0 right-0 z-50" style={{ bottom: 'env(safe-area-inset-bottom)' }}>
         {/* Floating Add Button */}
         <div className="absolute left-1/2 transform -translate-x-1/2 -top-8 z-10">
           <Button

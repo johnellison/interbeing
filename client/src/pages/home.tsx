@@ -166,15 +166,15 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground">
       <Navigation currentPage="/" onAddHabitClick={() => setIsAddHabitModalOpen(true)} />
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:pb-6" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
         {/* Mobile-First: Today's Habits Section */}
-        <div className="block lg:hidden mb-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-foreground tracking-tight">Today's Habits</h2>
+        <div className="block lg:hidden mb-6">
+          <div className="mb-4">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">Today's Habits</h2>
           </div>
 
-          {/* Habit Cards */}
-          <div className="space-y-4">
+          {/* Habit Cards - Optimized spacing for thumb interaction */}
+          <div className="space-y-3 md:space-y-4">
             {dashboardData.habits.map((habit) => (
               <HabitCard
                 key={habit.id}
@@ -244,17 +244,17 @@ export default function Home() {
               ))}
               
               {dashboardData.habits.length === 0 && (
-                <div className="text-center py-12" data-testid="empty-habits-state">
-                  <Sprout className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-foreground mb-2">
+                <div className="text-center py-8 md:py-12" data-testid="empty-habits-state">
+                  <Sprout className="h-12 w-12 md:h-16 md:w-16 text-muted-foreground mx-auto mb-3 md:mb-4" />
+                  <h3 className="text-lg md:text-xl font-semibold text-foreground mb-2">
                     No habits yet!
                   </h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-sm md:text-base text-muted-foreground mb-6">
                     Start your environmental journey by adding your first habit.
                   </p>
                   <Button
                     onClick={() => setIsAddHabitModalOpen(true)}
-                    className="bg-primary text-primary-foreground px-6 py-2 rounded-lg hover:bg-primary/90 font-medium"
+                    className="bg-primary text-primary-foreground px-8 py-3 md:px-6 md:py-2 rounded-lg hover:bg-primary/90 font-medium min-h-[44px] text-base md:text-sm"
                     data-testid="button-add-first-habit"
                   >
                     Add Your First Habit
