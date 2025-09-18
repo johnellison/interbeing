@@ -182,7 +182,7 @@ export default function ImpactTimeline() {
                                 {emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.emoji}
                               </span>
                               <span className="text-xs font-medium text-primary" data-testid={`text-emotion-${entry.id}`}>
-                                {emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.label}
+                                Feeling {emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.emoji}
                               </span>
                             </div>
                           )}
