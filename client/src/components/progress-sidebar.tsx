@@ -122,8 +122,8 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
 
   return (
     <div className="space-y-6">
-      {/* Weekly Progress Chart */}
-      <div className="forest-card p-6" data-testid="card-weekly-progress">
+      {/* Weekly Progress Chart - Hidden on Mobile */}
+      <div className="forest-card p-6 hidden md:block" data-testid="card-weekly-progress">
         <h3 className="text-lg font-semibold text-forest-text mb-4">This Week's Progress</h3>
         
         <div className="space-y-3">
@@ -177,15 +177,15 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
         </div>
       </div>
 
-      {/* Recent Impact Timeline */}
-      <div className="forest-card p-6" data-testid="card-recent-impact">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold text-forest-text">Recent Impact</h3>
+      {/* Recent Impact Timeline - Compact on Mobile */}
+      <div className="forest-card md:p-6 p-4" data-testid="card-recent-impact">
+        <div className="flex justify-between items-center md:mb-4 mb-3">
+          <h3 className="md:text-lg text-base font-semibold text-forest-text">Recent Impact</h3>
           <Button
             variant="ghost"
             size="sm"
             onClick={() => { window.location.href = "/impact-timeline"; }}
-            className="text-xs text-forest-primary hover:text-forest-primary/80"
+            className="text-xs text-forest-primary hover:text-forest-primary/80 min-h-[44px] min-w-[44px] md:min-h-0 md:min-w-0"
             data-testid="button-view-timeline"
           >
             View more →
@@ -195,45 +195,48 @@ export default function ProgressSidebar({ weeklyProgress, monthlyTrees, co2Offse
         <RecentImpactTimeline />
 
         <div className="mt-4 pt-4 border-t border-forest-secondary/20">
-          <p className="text-xs text-forest-text/70">
+          <p className="text-xs text-forest-text/70 md:block hidden">
             🌍 Your habits create real environmental impact through Greenspark's verified partners and transparent tracking.
+          </p>
+          <p className="text-xs text-forest-text/70 md:hidden">
+            🌍 Real impact through Greenspark partners
           </p>
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="forest-card p-6" data-testid="card-quick-actions">
-        <h3 className="text-lg font-semibold text-forest-text mb-4">Quick Actions</h3>
+      {/* Quick Actions - Touch-friendly on Mobile */}
+      <div className="forest-card md:p-6 p-4" data-testid="card-quick-actions">
+        <h3 className="md:text-lg text-base font-semibold text-forest-text md:mb-4 mb-3">Quick Actions</h3>
         
-        <div className="space-y-3">
+        <div className="md:space-y-3 space-y-2">
           <Button
             variant="ghost"
-            className="w-full justify-start p-3 hover:bg-forest-bg rounded-organic transition-colors"
+            className="w-full justify-start md:p-3 p-4 hover:bg-forest-bg rounded-organic transition-colors min-h-[44px]"
             onClick={() => { window.location.href = "/analytics"; }}
             data-testid="button-view-habits"
           >
             <BarChart3 className="h-4 w-4 mr-3 text-forest-primary" />
-            <span className="text-sm text-forest-text">View All Habits</span>
+            <span className="md:text-sm text-base text-forest-text">View All Habits</span>
           </Button>
           
           <Button
             variant="ghost"
-            className="w-full justify-start p-3 hover:bg-forest-bg rounded-organic transition-colors"
+            className="w-full justify-start md:p-3 p-4 hover:bg-forest-bg rounded-organic transition-colors min-h-[44px]"
             onClick={() => { window.location.href = "/analytics"; }}
             data-testid="button-progress-report"
           >
             <TrendingUp className="h-4 w-4 mr-3 text-forest-accent" />
-            <span className="text-sm text-forest-text">Progress Report</span>
+            <span className="md:text-sm text-base text-forest-text">Progress Report</span>
           </Button>
           
           <Button
             variant="ghost"
-            className="w-full justify-start p-3 hover:bg-forest-bg rounded-organic transition-colors"
+            className="w-full justify-start md:p-3 p-4 hover:bg-forest-bg rounded-organic transition-colors min-h-[44px]"
             onClick={() => { window.location.href = "/impact-map"; }}
             data-testid="button-impact-map"
           >
             <Globe className="h-4 w-4 mr-3 text-forest-success" />
-            <span className="text-sm text-forest-text">Global Impact Map</span>
+            <span className="md:text-sm text-base text-forest-text">Global Impact Map</span>
           </Button>
         </div>
       </div>
