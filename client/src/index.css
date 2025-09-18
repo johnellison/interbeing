@@ -188,16 +188,20 @@
 
   .gradient-button {
     background: transparent;
-    border: 3px solid;
-    border-image: linear-gradient(135deg, 
-      hsl(49 85% 52%) 0%,
-      hsl(70 100% 50%) 25%, 
-      hsl(142 100% 45%) 50%, 
-      hsl(290 93% 68%) 75%,
-      hsl(343 96% 53%) 100%
-    ) 1;
+    border: 3px solid transparent;
+    border-radius: 0.5rem; /* rounded-lg equivalent */
+    background-image: linear-gradient(transparent, transparent), 
+                     linear-gradient(135deg, 
+                       hsl(49 85% 52%) 0%,
+                       hsl(70 100% 50%) 25%, 
+                       hsl(142 100% 45%) 50%, 
+                       hsl(290 93% 68%) 75%,
+                       hsl(343 96% 53%) 100%);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
     color: white;
     font-weight: 600;
+    padding: 1rem 1.5rem; /* Increased vertical padding */
     transition: all 0.2s ease-in-out;
   }
 
