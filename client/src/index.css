@@ -5,7 +5,7 @@
 :root {
   --background: hsl(253 41% 11%);
   --foreground: hsl(0 0% 98%);
-  --card: hsla(260, 20%, 15%, 0.4);
+  --card: hsla(260, 20%, 15%, 0.1);
   --card-foreground: hsl(0 0% 98%);
   --modal: hsl(260 30% 20%);
   --modal-foreground: hsl(0 0% 98%);
@@ -41,7 +41,7 @@
 .dark {
   --background: hsl(253 41% 11%);
   --foreground: hsl(0 0% 98%);
-  --card: hsla(260, 20%, 15%, 0.4);
+  --card: hsla(260, 20%, 15%, 0.1);
   --card-foreground: hsl(0 0% 98%);
   --modal: hsl(260 30% 20%);
   --modal-foreground: hsl(0 0% 98%);
