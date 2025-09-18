@@ -11,6 +11,7 @@ interface TimelineEntry {
   impactAmount: number;
   completedAt: string;
   streak: number;
+  emotionalFeedback?: number; // 1-5 rating from celebration modal
 }
 
 const impactConfig = {
@@ -56,6 +57,15 @@ const impactConfig = {
     bgColor: "bg-secondary/30",
     unit: "bees protected"
   }
+};
+
+// Emotion mapping from celebration modal
+const emotionConfig = {
+  1: { emoji: '😞', label: 'Sad' },
+  2: { emoji: '😐', label: 'Neutral' },  
+  3: { emoji: '🙂', label: 'Happy' },
+  4: { emoji: '😊', label: 'Joyful' },
+  5: { emoji: '🤩', label: 'Ecstatic' }
 };
 
 export default function ImpactTimeline() {
@@ -165,6 +175,17 @@ export default function ImpactTimeline() {
                               {entry.streak} day streak
                             </span>
                           </div>
+                          {/* Emotion feedback badge */}
+                          {entry.emotionalFeedback && entry.emotionalFeedback >= 1 && entry.emotionalFeedback <= 5 && (
+                            <div className="flex items-center px-2 py-1 bg-primary/10 rounded-lg border border-primary/20">
+                              <span className="text-lg mr-1" title={emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.label}>
+                                {emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.emoji}
+                              </span>
+                              <span className="text-xs font-medium text-primary" data-testid={`text-emotion-${entry.id}`}>
+                                {emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.label}
+                              </span>
+                            </div>
+                          )}
                         </div>
                         
                         <div className="text-xs text-muted-foreground">

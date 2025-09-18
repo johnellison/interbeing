@@ -250,7 +250,8 @@ export class DatabaseStorage implements IStorage {
           impactAction: habits.impactAction, // Get from habits table since completion might not have it
           impactAmount: habits.impactAmount, // Get from habits table since completion might not have it
           completedAt: habitCompletions.completedAt,
-          streak: habits.streak // Get streak from habits table
+          streak: habits.streak, // Get streak from habits table
+          emotionalFeedback: habitCompletions.emotionalFeedback // Include emotion feedback
         })
         .from(habitCompletions)
         .innerJoin(habits, eq(habitCompletions.habitId, habits.id))
