@@ -339,8 +339,8 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
           </div>
 
           {/* Simplified AI message */}
-          <div className="mb-8">
-            <h2 className={`text-3xl font-bold ${config.color} mb-4`} data-testid="text-celebration-title">
+          <div className="mb-6">
+            <h2 className={`text-xl font-bold ${config.color} mb-3`} data-testid="text-celebration-title">
               Great Work! 🎉
             </h2>
             
@@ -378,15 +378,15 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
           </div>
 
           {/* Simple impact summary */}
-          <div className="flex items-center justify-center space-x-6 mb-8 text-center">
+          <div className="flex items-center justify-center space-x-4 mb-6 text-center">
             <div>
-              <p className={`text-xl font-bold ${config.color}`} data-testid="text-impact-amount">
+              <p className={`text-lg font-bold ${config.color}`} data-testid="text-impact-amount">
                 {impactValue} {config.unit}
               </p>
             </div>
             <div className="text-muted-foreground">•</div>
             <div>
-              <p className="text-xl font-bold text-primary" data-testid="text-streak-count">
+              <p className="text-lg font-bold text-primary" data-testid="text-streak-count">
                 {data.streak} day streak! 🔥
               </p>
             </div>
@@ -394,14 +394,14 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
 
           {/* Emotion feedback section */}
           {showEmotionFeedback && (
-            <div className="mb-6" data-testid="section-emotion-feedback">
+            <div className="mb-4" data-testid="section-emotion-feedback">
               <div className="text-center space-y-4">
-                <div className="flex justify-center space-x-3">
+                <div className="flex justify-center space-x-2">
                   {emotions.map((emotion) => (
                     <button
                       key={emotion.value}
                       onClick={() => handleEmotionSelect(emotion.value)}
-                      className={`text-4xl p-3 rounded-full transition-all duration-200 ${
+                      className={`text-3xl p-2 rounded-full transition-all duration-200 ${
                         selectedEmotion === emotion.value
                           ? 'bg-primary/20 scale-110 ring-2 ring-primary'
                           : 'hover:bg-secondary/50 hover:scale-105'
@@ -417,16 +417,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             </div>
           )}
 
-          {/* Single action button - shows after emotion is selected or when emotion feedback is not shown */}
-          {(!showEmotionFeedback || selectedEmotion) && (
-            <Button
-              onClick={handleClose}
-              className="w-full bg-gradient-to-r from-primary to-primary/90 text-primary-foreground hover:from-primary/90 hover:to-primary/80 transition-all duration-200 font-medium py-3 rounded-xl"
-              data-testid="button-continue"
-            >
-              {selectedEmotion ? "Thanks for sharing! 💚" : "Keep Going! 🚀"}
-            </Button>
-          )}
+          {/* Remove lime green button entirely */}
         </div>
 
         {/* Decorative elements */}

@@ -5,8 +5,10 @@
 :root {
   --background: hsl(253 41% 11%);
   --foreground: hsl(0 0% 98%);
-  --card: hsl(260 30% 20%);
+  --card: hsla(260, 20%, 15%, 0.4);
   --card-foreground: hsl(0 0% 98%);
+  --modal: hsl(260 30% 20%);
+  --modal-foreground: hsl(0 0% 98%);
   --popover: hsla(260, 20%, 15%, 0.8);
   --popover-foreground: hsl(0 0% 98%);
   --primary: hsl(70 100% 50%);
@@ -39,8 +41,10 @@
 .dark {
   --background: hsl(253 41% 11%);
   --foreground: hsl(0 0% 98%);
-  --card: hsl(260 30% 20%);
+  --card: hsla(260, 20%, 15%, 0.4);
   --card-foreground: hsl(0 0% 98%);
+  --modal: hsl(260 30% 20%);
+  --modal-foreground: hsl(0 0% 98%);
   --popover: hsla(260, 20%, 15%, 0.8);
   --popover-foreground: hsl(0 0% 98%);
   --primary: hsl(70 100% 50%);

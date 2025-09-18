@@ -36,7 +36,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
   return (
     <>
       {/* Top Navigation - Mobile Settings Bar */}
-      <nav className="bg-card text-white shadow-sm sticky top-0 z-40 md:hidden">
+      <nav className="bg-[hsl(260_30%_20%)] text-white shadow-sm sticky top-0 z-40 md:hidden">
         <div className="flex justify-between items-center px-4 py-3">
           <Link href="/" aria-label="Interbeing" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <img src={interbeingLogo} alt="" aria-hidden="true" className="h-6 w-6" />
@@ -66,7 +66,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
       </nav>
 
       {/* Desktop Navigation - Traditional Top Nav */}
-      <nav className="hidden md:block bg-card text-white shadow-lg sticky top-0 z-40">
+      <nav className="hidden md:block bg-[hsl(260_30%_20%)] text-white shadow-lg sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" aria-label="Interbeing" className="flex items-center space-x-4 hover:opacity-80 transition-opacity">
@@ -132,7 +132,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
         <div className="absolute left-1/2 transform -translate-x-1/2 -top-8 z-10">
           <Button
             onClick={onAddHabitClick}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-20 h-20 p-0 shadow-xl transition-all duration-200 hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-16 h-16 p-0 shadow-xl transition-all duration-200 hover:scale-105"
             data-testid="button-add-habit-mobile"
           >
             <Plus className="h-10 w-10 font-bold stroke-[3]" />
