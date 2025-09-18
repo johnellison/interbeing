@@ -466,6 +466,96 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Pre-load celebration messages for all user habits (protected route)
+  app.get("/api/habits/preload-celebrations", isAuthenticated, async (req, res) => {
+    try {
+      const userId = (req.user as any)?.claims?.sub;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      // Get all user habits
+      const habits = await storage.getHabitsByUserId(userId);
+      
+      if (!habits || habits.length === 0) {
+        return res.json({ preloadedCelebrations: {} });
+      }
+
+      // Generate celebration messages for all habits in parallel
+      const preloadedCelebrations: Record<string, any> = {};
+      const celebrationPromises = habits.map(async (habit: any) => {
+        try {
+          // Fetch project information
+          let projectInfo = null;
+          try {
+            const projects = await greensparkService.getProjectsByType(habit.impactAction);
+            if (projects.length > 0) {
+              const project = projects[0];
+              projectInfo = {
+                name: project.name,
+                description: project.description,
+                location: project.countries?.length > 0 ? project.countries[0] : 'Global',
+                imageUrl: project.imageUrl,
+                registryLink: project.link
+              };
+            }
+          } catch (projectError) {
+            console.error(`Failed to fetch project info for habit ${habit.id}:`, projectError);
+          }
+
+          // Generate celebration message
+          const currentStreak = habit.streak || 1;
+          const celebrationContext = await CelebrationAIService.getCelebrationContext(
+            habit.name,
+            currentStreak,
+            habit.impactAction,
+            habit.impactAmount,
+            projectInfo,
+            userId,
+            storage
+          );
+          
+          const celebrationMessage = await CelebrationAIService.generateCelebrationMessage(celebrationContext);
+          
+          return {
+            habitId: habit.id,
+            celebrationMessage,
+            projectInfo
+          };
+        } catch (error) {
+          console.error(`Failed to generate celebration for habit ${habit.id}:`, error);
+          return {
+            habitId: habit.id,
+            celebrationMessage: {
+              title: "Great Work!",
+              message: `Excellent work completing "${habit.name}"! You're making a positive impact while building great habits. 🌟`,
+              motivationalNote: "Keep going!",
+            },
+            projectInfo: null
+          };
+        }
+      });
+
+      const results = await Promise.all(celebrationPromises);
+      
+      // Convert to object keyed by habitId
+      results.forEach((result: any) => {
+        preloadedCelebrations[result.habitId] = {
+          celebrationMessage: result.celebrationMessage,
+          projectInfo: result.projectInfo
+        };
+      });
+
+      console.log(`Pre-loaded ${results.length} celebration messages for user ${userId}`);
+      res.json({ preloadedCelebrations });
+      
+    } catch (error) {
+      console.error("Pre-load celebrations error:", error);
+      res.status(500).json({ message: "Failed to pre-load celebration messages" });
+    }
+  });
+
   // Get habit history (protected route)
   app.get("/api/habits/:habitId/history", isAuthenticated, async (req, res) => {
     try {

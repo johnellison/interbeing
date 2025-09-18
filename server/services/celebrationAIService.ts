@@ -80,31 +80,44 @@ export class CelebrationAIService {
     const stylePrompt = this.getStylePrompt(prefs.style);
     const impactContext = this.getImpactActionContext(context.impactAction, context.impactAmount, context.projectInfo);
     
-    const systemPrompt = `You are John Ellison, a warm and encouraging habit coach. Create a single, focused celebration message.
+    const systemPrompt = `You are John Ellison, a warm and encouraging habit coach who celebrates with genuine enthusiasm and variety. Create a personalized celebration that STRONGLY emphasizes the user's aspiration and shows how this habit connects to their bigger dreams.
 
 Return JSON with ONE field only:
 {
-  "message": "Complete personalized celebration (3-4 sentences max) that includes: greeting with name + specific habit praise + environmental impact + brief motivation"
+  "message": "Complete celebration that PROMINENTLY features their aspiration + celebrates habit completion + mentions environmental impact + varies motivational language"
 }
 
-Example: "Great work, Sarah! Your morning meditation habit is helping you build mindful awareness while offsetting 1kg of CO₂. This consistency shows real commitment to both personal growth and our planet. Keep this positive momentum going!"
+CRITICAL REQUIREMENTS:
+- Use 3-5 emojis naturally throughout the message 🎉✨🌟
+- LEAD with their aspiration: "Your journey toward [ASPIRATION] is getting stronger!" 
+- Vary motivational endings - NEVER use "Keep this positive momentum going!" 
+- Connect habit → aspiration → environmental impact in that order
+- Use varied celebration starters: "Incredible!", "You're crushing it!", "This is amazing!", "So proud of you!", "Wow!"
+- Use diverse motivational endings: "You're unstoppable!", "This is your path to greatness!", "Every step matters!", "Your future self is cheering!", "You're building something beautiful!"
 
-Guidelines:
-- Use their first name naturally
-- Reference their specific habit and environmental impact
-- Keep under 60 words total
-- Warm, encouraging tone
-- Minimal emojis (0-2 max)
-- Connect personal growth to planetary benefit`;
+Varied opening patterns:
+1. "[NAME]! 🎉 Your [ASPIRATION] journey just got stronger with [HABIT]!"
+2. "Incredible work, [NAME]! ✨ Every [HABIT] brings you closer to [ASPIRATION]!"
+3. "You're crushing it, [NAME]! 🌟 This [HABIT] is building the [ASPIRATION] you dream of!"
+
+Personalization priority: ASPIRATION > NAME > HABIT > IMPACT > VARIED MOTIVATION`;
 
     const contextPrompt = `Create a celebration for:
 
-- User: ${context.userName || 'there'}
-- Habit: "${context.habitName}"
-- Streak: ${context.streak} day${context.streak !== 1 ? 's' : ''}
-- Impact: ${impactContext}
+- User: ${context.userName || 'there'}  
+- Their BIG ASPIRATION: "${context.userAspiration || 'personal growth and wellness'}" ← FEATURE THIS PROMINENTLY!
+- Habit completed: "${context.habitName}"
+- Current streak: ${context.streak} day${context.streak !== 1 ? 's' : ''}
+- Environmental impact: ${impactContext}
 
-Make it personal, acknowledge their environmental contribution, and encourage continued progress.`;
+INSTRUCTIONS:
+1. START by connecting this habit to their aspiration 
+2. Show excitement about their environmental contribution
+3. Use 3-5 emojis throughout
+4. End with fresh, varied motivational language (never \"keep this positive momentum going\")
+5. Make it feel like a personal coach celebrating their success
+
+Focus heavily on how "${context.habitName}" builds toward "${context.userAspiration || 'their dreams'}"!`;
 
     try {
       const response = await openai.chat.completions.create({
@@ -158,7 +171,7 @@ Make it personal, acknowledge their environmental contribution, and encourage co
     if (context.streak >= 7) {
       message += ` This consistent commitment shows real dedication to both personal growth and environmental impact.`;
     } else {
-      message += ` Keep building this positive momentum!`;
+      message += ` You're building something incredible!`;
     }
 
     return {

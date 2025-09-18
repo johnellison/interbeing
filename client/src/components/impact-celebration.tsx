@@ -27,6 +27,7 @@ interface ImpactCelebrationProps {
       motivationalNote: string;
       progressInsight?: string;
     };
+    isPreloaded?: boolean;
   } | null;
 }
 
@@ -119,8 +120,8 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
   const autoCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const { data: aiData, isLoading: isAiLoading, isError: isAiError } = useQuery<{ message: string }>({
-    queryKey: [data?.habitId ? `/api/habits/${data.habitId}/celebration` : undefined],
-    enabled: isOpen && !!data?.habitId,
+    queryKey: ['/api/habits', data?.habitId, 'celebration'].filter(Boolean),
+    enabled: isOpen && !!data?.habitId && !data?.isPreloaded, // Skip API call if we have pre-loaded data
     staleTime: 0,
   });
 
@@ -138,8 +139,12 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
     return actionMap[action as keyof typeof actionMap] || 'created positive impact';
   };
   
-  const fallbackMessage = data ? `Excellent work! Your "${data.habitName}" habit just ${getImpactText(data.impactAction, data.impactAmount)} while building your ${data.streak}-day streak. Keep this positive momentum going!\n\nHow are you feeling now?` : "Great job!\n\nHow are you feeling now?";
-  const aiMessage = (aiData?.message ?? fallbackMessage) + (aiData?.message && !aiData.message.includes("How are you feeling now?") ? "\n\nHow are you feeling now?" : "");
+  const fallbackMessage = data ? `Excellent work! Your "${data.habitName}" habit just ${getImpactText(data.impactAction, data.impactAmount)} while building your ${data.streak}-day streak. You're building something amazing! ✨\n\nHow are you feeling now?` : "Great job!\n\nHow are you feeling now?";
+  
+  // Use pre-loaded message if available, otherwise use API data or fallback
+  const preloadedMessage = data?.celebrationMessage?.message;
+  const finalMessage = preloadedMessage || aiData?.message || fallbackMessage;
+  const aiMessage = finalMessage + (finalMessage && !finalMessage.includes("How are you feeling now?") ? "\n\nHow are you feeling now?" : "");
 
   useEffect(() => {
     if (isOpen && data) {

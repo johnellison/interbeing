@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Sprout } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -77,14 +77,45 @@ export default function Home() {
       motivationalNote: string;
       progressInsight?: string;
     };
+    isPreloaded?: boolean;
   } | null>(null);
 
   const { data: dashboardData, isLoading, refetch } = useQuery<DashboardData>({
     queryKey: ["/api/dashboard"],
   });
 
+  // Pre-load celebration messages for instant celebrations
+  const [preloadedCelebrations, setPreloadedCelebrations] = useState<Record<string, { celebrationMessage: any; projectInfo: any }>>({});
+  const { data: preloadData } = useQuery({
+    queryKey: ['/api/habits', 'preload-celebrations'],
+    enabled: !!dashboardData?.habits?.length, // Only preload after dashboard loads with habits
+    staleTime: 1000 * 60 * 5, // Cache for 5 minutes
+  });
+
+  // Store preloaded celebrations when they arrive
+  useEffect(() => {
+    const celebrationsData = (preloadData as any)?.preloadedCelebrations;
+    if (celebrationsData) {
+      setPreloadedCelebrations(celebrationsData);
+    }
+  }, [preloadData]);
+
   const handleHabitComplete = (habitId: string, habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any, celebrationMessage?: any) => {
-    setCelebrationData({ habitId, habitName, streak, impactAction, impactAmount, projectInfo, celebrationMessage });
+    // Use pre-loaded celebration if available, otherwise use passed data
+    const preloaded = preloadedCelebrations[habitId];
+    const finalCelebrationMessage = preloaded?.celebrationMessage || celebrationMessage;
+    const finalProjectInfo = preloaded?.projectInfo || projectInfo;
+    
+    setCelebrationData({ 
+      habitId, 
+      habitName, 
+      streak, 
+      impactAction, 
+      impactAmount, 
+      projectInfo: finalProjectInfo, 
+      celebrationMessage: finalCelebrationMessage,
+      isPreloaded: !!preloaded // Flag to indicate instant availability
+    });
     setShowImpactCelebration(true);
     refetch(); // Refresh dashboard data
   };
