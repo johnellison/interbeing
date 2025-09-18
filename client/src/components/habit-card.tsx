@@ -140,10 +140,10 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
       style={{ borderLeftColor: categoryColor.bg }}
       data-testid={`card-habit-${habit.id}`}
     >
-      <div className="flex items-center justify-between w-full">
-        {/* Left section: Checkbox + Icon + Habit Name */}
-        <div className="flex items-center space-x-4 flex-1 min-w-0">
-          <div className="flex-shrink-0">
+      <div className="flex items-start justify-between w-full">
+        {/* Left section: Checkbox + Icon + Content */}
+        <div className="flex items-start space-x-4 flex-1 min-w-0">
+          <div className="flex-shrink-0 mt-1">
             <Button
               onClick={handleToggle}
               disabled={toggleMutation.isPending}
@@ -157,7 +157,7 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
           </div>
           
           <div 
-            className="p-2 rounded-organic flex-shrink-0"
+            className="p-2 rounded-organic flex-shrink-0 mt-1"
             style={{ backgroundColor: `${categoryColor.bg}20` }}
           >
             <IconComponent 
@@ -166,16 +166,17 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
             />
           </div>
           
-          <h3 className="font-semibold text-forest-text truncate" data-testid={`text-habit-name-${habit.id}`}>
-            {habit.name}
-          </h3>
-        </div>
-        
-        {/* Center section: Impact per completion */}
-        <div className="flex items-center justify-center text-center mx-4">
-          <p className="text-sm font-medium text-white whitespace-nowrap" data-testid={`text-habit-impact-${habit.id}`}>
-            {getImpactEmoji(habit.impactAction)} +{habit.impactAmount} {getImpactUnit(habit.impactAction)}
-          </p>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-forest-text text-base leading-tight mb-1" data-testid={`text-habit-name-${habit.id}`}>
+              {habit.name}
+            </h3>
+            <p className="text-sm text-muted-foreground mb-2">
+              {habit.streak} day streak
+            </p>
+            <p className="text-sm font-medium text-green-400 flex items-center" data-testid={`text-habit-impact-${habit.id}`}>
+              {getImpactEmoji(habit.impactAction)} {getImpactActionText(habit.impactAction).charAt(0).toUpperCase() + getImpactActionText(habit.impactAction).slice(1)} {habit.impactAmount} {getImpactUnit(habit.impactAction)}
+            </p>
+          </div>
         </div>
         
         {/* Right section: Edit button */}
