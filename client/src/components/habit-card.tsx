@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { format } from "date-fns";
 import { useMutation } from "@tanstack/react-query";
 import { 
   Leaf, 
@@ -84,12 +85,13 @@ interface HabitCardProps {
     totalImpactEarned: number;
     completedToday: boolean;
   };
+  selectedDate: Date;
   onComplete: (habitId: string, habitName: string, streak: number, impactAction: 'plant_tree' | 'rescue_plastic' | 'offset_carbon' | 'plant_kelp' | 'provide_water' | 'sponsor_bees', impactAmount: number, projectInfo?: any, celebrationMessage?: any) => void;
   onRefresh: () => void;
   onEdit?: (habit: any) => void;
 }
 
-export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: HabitCardProps) {
+export default function HabitCard({ habit, selectedDate, onComplete, onRefresh, onEdit }: HabitCardProps) {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [isOptimisticComplete, setIsOptimisticComplete] = useState(habit.completedToday);
@@ -108,7 +110,8 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
 
   const toggleMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("POST", `/api/habits/${habit.id}/toggle`);
+      const dateParam = format(selectedDate, 'yyyy-MM-dd');
+      const response = await apiRequest("POST", `/api/habits/${habit.id}/toggle?date=${dateParam}`);
       return response.json();
     },
     onMutate: () => {

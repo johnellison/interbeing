@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { startOfDay } from "date-fns";
+import { startOfDay, format } from "date-fns";
 import { Sprout } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ImpactDashboard from "@/components/impact-dashboard";
@@ -83,9 +83,9 @@ export default function Home() {
   } | null>(null);
 
   const { data: dashboardData, isLoading, refetch } = useQuery<DashboardData>({
-    queryKey: ["/api/dashboard", selectedDate.toISOString()],
+    queryKey: ["/api/dashboard", format(selectedDate, 'yyyy-MM-dd')],
     queryFn: async () => {
-      const dateParam = selectedDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      const dateParam = format(selectedDate, 'yyyy-MM-dd'); // Format as YYYY-MM-DD in local timezone
       const response = await fetch(`/api/dashboard?date=${dateParam}`, {
         credentials: 'include'
       });
@@ -196,6 +196,7 @@ export default function Home() {
               <HabitCard
                 key={habit.id}
                 habit={habit}
+                selectedDate={selectedDate}
                 onComplete={handleHabitComplete}
                 onRefresh={refetch}
                 onEdit={handleEditHabit}
@@ -254,6 +255,7 @@ export default function Home() {
                 <HabitCard
                   key={habit.id}
                   habit={habit}
+                  selectedDate={selectedDate}
                   onComplete={handleHabitComplete}
                   onRefresh={refetch}
                   onEdit={handleEditHabit}
