@@ -94,7 +94,7 @@ export default function OnboardingPage() {
 
   if (isCompleting) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <Card className="max-w-md mx-4">
           <CardContent className="p-8 text-center">
             <div className="flex justify-center mb-4">
@@ -114,7 +114,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <Card className="max-w-2xl w-full">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">

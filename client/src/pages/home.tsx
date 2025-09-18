@@ -176,7 +176,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen text-foreground">
       <Navigation 
         currentPage="/" 
         onAddHabitClick={() => setIsAddHabitModalOpen(true)}
