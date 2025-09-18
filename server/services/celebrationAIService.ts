@@ -28,6 +28,22 @@ interface CelebrationMessage {
 }
 
 export class CelebrationAIService {
+  private static enforceMessageLimits(message: string): string {
+    // Split into sentences and normalize whitespace
+    const sentences = message.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 0);
+    
+    // Take first 3-4 sentences
+    const limitedSentences = sentences.slice(0, 4);
+    let result = limitedSentences.join('. ') + '.';
+    
+    // If still over 280 characters, trim and add short ending
+    if (result.length > 280) {
+      const trimmed = result.substring(0, 240).trim();
+      result = trimmed + '... You\'re building something amazing! 🌟';
+    }
+    
+    return result;
+  }
   private static getPersonalityPrompt(personalityTone: string): string {
     const personalityMap = {
       warm: "Be warm, encouraging, and personally supportive. Use gentle language that feels like a caring friend celebrating with them.",
@@ -88,6 +104,7 @@ Return JSON with ONE field only:
 }
 
 CRITICAL REQUIREMENTS:
+- MOBILE-FRIENDLY: Keep message to exactly 3-4 sentences and under 280 characters total
 - Use 3-5 emojis naturally throughout the message 🎉✨🌟
 - LEAD with their aspiration: "Your journey toward [ASPIRATION] is getting stronger!" 
 - Vary motivational endings - NEVER use "Keep this positive momentum going!" 
@@ -95,12 +112,13 @@ CRITICAL REQUIREMENTS:
 - Use varied celebration starters: "Incredible!", "You're crushing it!", "This is amazing!", "So proud of you!", "Wow!"
 - Use diverse motivational endings: "You're unstoppable!", "This is your path to greatness!", "Every step matters!", "Your future self is cheering!", "You're building something beautiful!"
 
-Varied opening patterns:
+Varied opening patterns (keep concise):
 1. "[NAME]! 🎉 Your [ASPIRATION] journey just got stronger with [HABIT]!"
 2. "Incredible work, [NAME]! ✨ Every [HABIT] brings you closer to [ASPIRATION]!"
 3. "You're crushing it, [NAME]! 🌟 This [HABIT] is building the [ASPIRATION] you dream of!"
 
-Personalization priority: ASPIRATION > NAME > HABIT > IMPACT > VARIED MOTIVATION`;
+Personalization priority: ASPIRATION > NAME > HABIT > IMPACT > VARIED MOTIVATION
+IMPORTANT: Keep total message under 280 characters for mobile readability.`;
 
     const contextPrompt = `Create a celebration for:
 
@@ -134,9 +152,11 @@ Focus heavily on how "${context.habitName}" builds toward "${context.userAspirat
 
       const result = JSON.parse(response.choices[0].message.content || '{}');
       
+      const rawMessage = result.message || `Great job completing "${context.habitName}"! You're building momentum toward your goals while making a positive environmental impact. Keep up this amazing consistency!`;
+      
       return {
         title: "Great Work!",
-        message: result.message || `Great job completing "${context.habitName}"! You're building momentum toward your goals while making a positive environmental impact. Keep up this amazing consistency!`,
+        message: this.enforceMessageLimits(rawMessage),
         motivationalNote: "Keep going!",
         progressInsight: undefined
       };
@@ -166,17 +186,17 @@ Focus heavily on how "${context.habitName}" builds toward "${context.userAspirat
     if (context.streak >= 7) title = "Week Streak Champion!";
     if (context.streak >= 30) title = "Monthly Milestone Master!";
 
-    let message = `${context.userName ? `Excellent work, ${context.userName}!` : 'Excellent work!'} Your "${context.habitName}" habit ${impactText} while building your ${context.streak}-day streak.`;
+    let message = `${context.userName ? `Excellent work, ${context.userName}!` : 'Excellent work!'} ${emoji} Your "${context.habitName}" habit ${impactText}.`;
     
     if (context.streak >= 7) {
-      message += ` This consistent commitment shows real dedication to both personal growth and environmental impact.`;
+      message += ` Building this ${context.streak}-day streak shows real dedication!`;
     } else {
       message += ` You're building something incredible!`;
     }
 
     return {
       title,
-      message,
+      message: this.enforceMessageLimits(message),
       motivationalNote: "Keep going!",
       progressInsight: undefined
     };
