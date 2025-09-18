@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { startOfDay, format } from "date-fns";
 import { Sprout } from "lucide-react";
+import DatePicker from "@/components/date-picker";
 import { Button } from "@/components/ui/button";
 import ImpactDashboard from "@/components/impact-dashboard";
 import HabitCard from "@/components/habit-card";
@@ -179,9 +180,17 @@ export default function Home() {
       <Navigation 
         currentPage="/" 
         onAddHabitClick={() => setIsAddHabitModalOpen(true)}
-        selectedDate={selectedDate}
-        onDateSelect={setSelectedDate}
       />
+
+      {/* Date Picker - Now below navigation on dark background */}
+      <div className="bg-[hsl(253_41%_11%)]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <DatePicker 
+            selectedDate={selectedDate} 
+            onDateSelect={setSelectedDate} 
+          />
+        </div>
+      </div>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:pb-6" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
         {/* Mobile-First: Today's Habits Section */}

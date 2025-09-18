@@ -7,19 +7,17 @@ import interbeingWordmark from "@assets/interbeing-logo-wordmark-no-bg_175812372
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import DatePicker, { useDateTitle } from "@/components/date-picker";
+import { useDateTitle } from "@/components/date-picker";
 
 interface NavigationProps {
   currentPage?: string;
   onAddHabitClick?: () => void;
-  selectedDate?: Date;
-  onDateSelect?: (date: Date) => void;
 }
 
-export default function Navigation({ currentPage, onAddHabitClick, selectedDate = startOfDay(new Date()), onDateSelect }: NavigationProps) {
+export default function Navigation({ currentPage, onAddHabitClick }: NavigationProps) {
   const [location, setLocation] = useLocation();
   const { logout } = useAuth();
-  const dateTitle = useDateTitle(selectedDate);
+  const dateTitle = useDateTitle(startOfDay(new Date()));
 
   const handleLogout = async () => {
     await logout();
@@ -73,14 +71,6 @@ export default function Navigation({ currentPage, onAddHabitClick, selectedDate 
           </DropdownMenu>
         </div>
         
-        {/* Date Picker Row - Mobile Only */}
-        {onDateSelect && (
-          <DatePicker 
-            selectedDate={selectedDate} 
-            onDateSelect={onDateSelect} 
-            className="border-t border-white/10"
-          />
-        )}
       </nav>
 
       {/* Desktop Navigation - Traditional Top Nav */}
@@ -142,17 +132,6 @@ export default function Navigation({ currentPage, onAddHabitClick, selectedDate 
             </div>
           </div>
         </div>
-        
-        {/* Date Picker Row - Desktop */}
-        {onDateSelect && (
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <DatePicker 
-              selectedDate={selectedDate} 
-              onDateSelect={onDateSelect} 
-              className="border-t border-white/10"
-            />
-          </div>
-        )}
       </nav>
 
       {/* Mobile Bottom Navigation - Curved with Floating Add Button */}
