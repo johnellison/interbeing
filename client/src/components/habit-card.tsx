@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { apiRequest } from "@/lib/queryClient";
 
 const iconMap = {
@@ -90,6 +91,7 @@ interface HabitCardProps {
 
 export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: HabitCardProps) {
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [isOptimisticComplete, setIsOptimisticComplete] = useState(habit.completedToday);
   
   // Swipe gesture state
@@ -121,10 +123,13 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
         onComplete(habit.id, habit.name, data.streak, habit.impactAction, habit.impactAmount, undefined, data.celebrationMessage);
         // Celebration modal now handles all feedback - no need for toast notifications
       } else {
-        toast({
-          title: "Habit Uncompleted",
-          description: `Removed completion for "${habit.name}"`,
-        });
+        // Only show uncompletion toast on desktop, keep mobile seamless
+        if (!isMobile) {
+          toast({
+            title: "Habit Uncompleted",
+            description: `Removed completion for "${habit.name}"`,
+          });
+        }
       }
       onRefresh();
     },

@@ -36,9 +36,9 @@ export class CelebrationAIService {
     const limitedSentences = sentences.slice(0, 4);
     let result = limitedSentences.join('. ') + '.';
     
-    // If still over 280 characters, trim and add short ending
-    if (result.length > 280) {
-      const trimmed = result.substring(0, 240).trim();
+    // If still over 255 characters, trim and add short ending
+    if (result.length > 255) {
+      const trimmed = result.substring(0, 215).trim();
       result = trimmed + '... You\'re building something amazing! 🌟';
     }
     
@@ -75,9 +75,7 @@ export class CelebrationAIService {
 
     let context = `just ${impactMap[impactAction as keyof typeof impactMap] || 'created positive impact'}`;
     
-    if (projectInfo?.name && projectInfo?.location) {
-      context += ` through the "${projectInfo.name}" project in ${projectInfo.location}`;
-    }
+    // Remove project location details for cleaner message
 
     return context;
   }
@@ -104,21 +102,21 @@ Return JSON with ONE field only:
 }
 
 CRITICAL REQUIREMENTS:
-- MOBILE-FRIENDLY: Keep message to exactly 3-4 sentences and under 280 characters total
-- Use 3-5 emojis naturally throughout the message 🎉✨🌟
+- MOBILE-FRIENDLY: Keep message to exactly 3-4 sentences and under 255 characters total
+- Use 2-3 emojis naturally throughout the message 🎉✨
 - LEAD with their aspiration: "Your journey toward [ASPIRATION] is getting stronger!" 
 - Vary motivational endings - NEVER use "Keep this positive momentum going!" 
 - Connect habit → aspiration → environmental impact in that order
-- Use varied celebration starters: "Incredible!", "You're crushing it!", "This is amazing!", "So proud of you!", "Wow!"
-- Use diverse motivational endings: "You're unstoppable!", "This is your path to greatness!", "Every step matters!", "Your future self is cheering!", "You're building something beautiful!"
+- Use professional celebration starters: "Excellent!", "Outstanding!", "Well done!", "Great progress!", "Impressive!"
+- Use concise motivational endings: "Keep building!", "You're on track!", "Every step counts!", "Progress made!", "Well earned!"
 
 Varied opening patterns (keep concise):
 1. "[NAME]! 🎉 Your [ASPIRATION] journey just got stronger with [HABIT]!"
-2. "Incredible work, [NAME]! ✨ Every [HABIT] brings you closer to [ASPIRATION]!"
-3. "You're crushing it, [NAME]! 🌟 This [HABIT] is building the [ASPIRATION] you dream of!"
+2. "Excellent work, [NAME]! ✨ Every [HABIT] brings you closer to [ASPIRATION]!"
+3. "Well done, [NAME]! This [HABIT] is building the [ASPIRATION] you're working toward!"
 
 Personalization priority: ASPIRATION > NAME > HABIT > IMPACT > VARIED MOTIVATION
-IMPORTANT: Keep total message under 280 characters for mobile readability.`;
+IMPORTANT: Keep total message under 255 characters for mobile readability.`;
 
     const contextPrompt = `Create a celebration for:
 
@@ -131,7 +129,7 @@ IMPORTANT: Keep total message under 280 characters for mobile readability.`;
 INSTRUCTIONS:
 1. START by connecting this habit to their aspiration 
 2. Show excitement about their environmental contribution
-3. Use 3-5 emojis throughout
+3. Use 2-3 emojis throughout
 4. End with fresh, varied motivational language (never \"keep this positive momentum going\")
 5. Make it feel like a personal coach celebrating their success
 

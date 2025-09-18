@@ -338,12 +338,23 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             {config.emoji}
           </div>
 
+          {/* Simple impact summary - moved to top */}
+          <div className="flex items-center justify-center space-x-4 mb-6 text-center">
+            <div>
+              <p className={`text-lg font-bold ${config.color}`} data-testid="text-impact-amount">
+                {impactValue} {config.unit}
+              </p>
+            </div>
+            <div className="text-muted-foreground">•</div>
+            <div>
+              <p className="text-lg font-bold text-primary" data-testid="text-streak-count">
+                {data.streak} day streak! 🔥
+              </p>
+            </div>
+          </div>
+
           {/* Simplified AI message */}
           <div className="mb-6">
-            <h2 className={`text-xl font-bold ${config.color} mb-3`} data-testid="text-celebration-title">
-              Great Work! 🎉
-            </h2>
-            
             {/* Single personalized message from John Ellison */}
             <div className="bg-secondary/20 rounded-2xl p-6 border border-border text-left">
               <div className="flex items-start space-x-4">
@@ -356,7 +367,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
                   />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold text-primary mb-2">John Ellison, your habit coach:</p>
+                  <p className="text-sm font-semibold text-primary mb-2">John:</p>
                   {isAiLoading || showTypingDots ? (
                     <div className="flex items-center space-x-1" data-testid="status-ai-loading">
                       <span className="text-base text-foreground">John is writing...</span>
@@ -377,20 +388,6 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
             </div>
           </div>
 
-          {/* Simple impact summary */}
-          <div className="flex items-center justify-center space-x-4 mb-6 text-center">
-            <div>
-              <p className={`text-lg font-bold ${config.color}`} data-testid="text-impact-amount">
-                {impactValue} {config.unit}
-              </p>
-            </div>
-            <div className="text-muted-foreground">•</div>
-            <div>
-              <p className="text-lg font-bold text-primary" data-testid="text-streak-count">
-                {data.streak} day streak! 🔥
-              </p>
-            </div>
-          </div>
 
           {/* Emotion feedback section */}
           {showEmotionFeedback && (
