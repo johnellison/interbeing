@@ -182,8 +182,8 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
                       onClick={() => setLocation(item.path)}
                       className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors hover:bg-transparent ${
                         active 
-                          ? 'text-[#D9FF00]' 
-                          : 'text-gray-400 hover:!text-[#D9FF00]'
+                          ? 'text-primary !text-primary' 
+                          : 'text-gray-400 hover:!text-primary'
                       }`}
                       data-testid={item.testId}
                     >
@@ -213,8 +213,8 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
                       onClick={() => setLocation(item.path)}
                       className={`flex flex-col items-center justify-center p-2 min-h-[48px] transition-colors hover:bg-transparent ${
                         active 
-                          ? 'text-[#D9FF00]' 
-                          : 'text-gray-400 hover:!text-[#D9FF00]'
+                          ? 'text-primary !text-primary' 
+                          : 'text-gray-400 hover:!text-primary'
                       }`}
                       data-testid={item.testId}
                     >
