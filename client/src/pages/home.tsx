@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { startOfDay } from "date-fns";
 import { Sprout } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ImpactDashboard from "@/components/impact-dashboard";
@@ -54,6 +55,7 @@ interface DashboardData {
 }
 
 export default function Home() {
+  const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
   const [isAddHabitModalOpen, setIsAddHabitModalOpen] = useState(false);
   const [isEditHabitModalOpen, setIsEditHabitModalOpen] = useState(false);
   const [editingHabit, setEditingHabit] = useState<any>(null);
@@ -164,7 +166,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <Navigation currentPage="/" onAddHabitClick={() => setIsAddHabitModalOpen(true)} />
+      <Navigation 
+        currentPage="/" 
+        onAddHabitClick={() => setIsAddHabitModalOpen(true)}
+        selectedDate={selectedDate}
+        onDateSelect={setSelectedDate}
+      />
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:pb-6" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
         {/* Mobile-First: Today's Habits Section */}

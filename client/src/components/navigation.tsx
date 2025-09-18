@@ -1,20 +1,25 @@
 import { useState } from "react";
 import { useLocation, Link } from "wouter";
+import { startOfDay } from "date-fns";
 import { Sprout, Home as HomeIcon, BarChart, Globe, Clock, Settings, Plus, LogOut, ChevronDown } from "lucide-react";
 import interbeingLogo from "@assets/interbeing-app-logo-color-bg_1758122829010.png";
 import interbeingWordmark from "@assets/interbeing-logo-wordmark-no-bg_1758123725926.png";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import DatePicker, { useDateTitle } from "@/components/date-picker";
 
 interface NavigationProps {
   currentPage?: string;
   onAddHabitClick?: () => void;
+  selectedDate?: Date;
+  onDateSelect?: (date: Date) => void;
 }
 
-export default function Navigation({ currentPage, onAddHabitClick }: NavigationProps) {
+export default function Navigation({ currentPage, onAddHabitClick, selectedDate = startOfDay(new Date()), onDateSelect }: NavigationProps) {
   const [location, setLocation] = useLocation();
   const { logout } = useAuth();
+  const dateTitle = useDateTitle(selectedDate);
 
   const handleLogout = async () => {
     await logout();
@@ -40,8 +45,12 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
         <div className="flex justify-between items-center px-4 py-3">
           <Link href="/" aria-label="Interbeing" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <img src={interbeingLogo} alt="" aria-hidden="true" className="h-6 w-6" />
-            <img src={interbeingWordmark} alt="Interbeing" className="h-5" data-testid="app-title" />
           </Link>
+          
+          {/* Date Title - Center */}
+          <h1 className="text-lg font-semibold text-white" data-testid="date-title">
+            {dateTitle}
+          </h1>
           
           {/* Settings Dropdown */}
           <DropdownMenu>
@@ -63,6 +72,15 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+        
+        {/* Date Picker Row - Mobile Only */}
+        {onDateSelect && (
+          <DatePicker 
+            selectedDate={selectedDate} 
+            onDateSelect={onDateSelect} 
+            className="border-t border-white/10"
+          />
+        )}
       </nav>
 
       {/* Desktop Navigation - Traditional Top Nav */}
@@ -124,6 +142,17 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
             </div>
           </div>
         </div>
+        
+        {/* Date Picker Row - Desktop */}
+        {onDateSelect && (
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <DatePicker 
+              selectedDate={selectedDate} 
+              onDateSelect={onDateSelect} 
+              className="border-t border-white/10"
+            />
+          </div>
+        )}
       </nav>
 
       {/* Mobile Bottom Navigation - Curved with Floating Add Button */}
