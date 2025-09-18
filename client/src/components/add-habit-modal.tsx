@@ -85,7 +85,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
       setFormData(prev => {
         const newData = { 
           ...prev, 
-          [field]: field === 'impactAmount' ? parseInt(value) || 1 : value 
+          [field]: field === 'impactAmount' ? Math.max(1, parseInt(value.replace(/\D+/g, "")) || 1) : value 
         };
         
         // When impact action changes to bees, suggest 20 as default amount
@@ -210,10 +210,11 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
               Impact Amount Per Completion
             </label>
             <Input
-              type="number"
-              min="1"
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               value={formData.impactAmount}
-              onChange={(e) => handleInputChange("impactAmount", String(e.currentTarget?.valueAsNumber || 1))}
+              onChange={(e) => handleInputChange("impactAmount", e.currentTarget.value)}
               placeholder="1"
               className="rounded-xl"
               data-testid="input-impact-amount"
