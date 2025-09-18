@@ -185,7 +185,7 @@ export default function HabitCard({ habit, onComplete, onRefresh, onEdit }: Habi
               onClick={() => onEdit(habit)}
               variant="outline"
               size="sm"
-              className="p-2"
+              className="md:p-2 p-3 min-h-[44px] min-w-[44px]"
               data-testid={`button-edit-${habit.id}`}
             >
               <Edit3 className="h-4 w-4" />

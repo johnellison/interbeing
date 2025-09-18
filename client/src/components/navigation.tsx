@@ -49,14 +49,14 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
               <Button
                 variant="ghost"
                 size="sm"
-                className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                className="p-3 rounded-full hover:bg-white/10 transition-colors min-h-[44px] min-w-[44px]"
                 data-testid="button-settings-dropdown"
               >
                 <Settings className="h-5 w-5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive min-h-[44px] py-3">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Logout</span>
               </DropdownMenuItem>

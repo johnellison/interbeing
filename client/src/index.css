@@ -145,7 +145,7 @@
   }
 
   .habit-checkbox {
-    @apply w-8 h-8 border-2 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer;
+    @apply md:w-8 md:h-8 w-12 h-12 border-2 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer;
   }
 
   .gradient-text {
@@ -250,6 +250,11 @@
   @keyframes treeBounce {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.1); }
+  }
+
+  /* Mobile-friendly touch targets */
+  .touch-target-44 {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
   }
 }
 
