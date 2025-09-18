@@ -83,7 +83,17 @@ export default function Home() {
   } | null>(null);
 
   const { data: dashboardData, isLoading, refetch } = useQuery<DashboardData>({
-    queryKey: ["/api/dashboard"],
+    queryKey: ["/api/dashboard", selectedDate.toISOString()],
+    queryFn: async () => {
+      const dateParam = selectedDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      const response = await fetch(`/api/dashboard?date=${dateParam}`, {
+        credentials: 'include'
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch dashboard data');
+      }
+      return response.json();
+    }
   });
 
   // Pre-load celebration messages for instant celebrations

@@ -164,6 +164,21 @@ export class DatabaseStorage implements IStorage {
     );
   }
 
+  async getCompletionsByDate(userId: string, date: Date): Promise<HabitCompletion[]> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    return await db.select().from(habitCompletions).where(
+      and(
+        eq(habitCompletions.userId, userId),
+        gte(habitCompletions.completedAt, startOfDay),
+        lte(habitCompletions.completedAt, endOfDay)
+      )
+    );
+  }
+
   async getCompletionsByDateRange(userId: string, startDate: Date, endDate: Date): Promise<HabitCompletion[]> {
     return await db.select().from(habitCompletions).where(
       and(

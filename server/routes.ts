@@ -118,7 +118,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const habits = await storage.getHabitsByUserId(userId);
-      const todayCompletions = await storage.getTodayCompletions(userId);
+      
+      // Get date from query parameter, default to today
+      const dateParam = req.query.date as string;
+      const selectedDate = dateParam ? new Date(dateParam) : new Date();
+      
+      // Use specific date completions if date provided, otherwise today's completions
+      const dayCompletions = await storage.getCompletionsByDate(userId, selectedDate);
       
       // Calculate weekly progress
       const weekStart = new Date();
@@ -206,9 +212,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         },
         habits: habits.map(habit => ({
           ...habit,
-          completedToday: todayCompletions.some(c => c.habitId === habit.id),
+          completedToday: dayCompletions.some((c: any) => c.habitId === habit.id),
         })),
-        todayCompletions: todayCompletions.length,
+        todayCompletions: dayCompletions.length,
         totalHabits: habits.length,
         weeklyProgress,
         monthlyTrees: Math.floor(totalImpact.treesPlanted * 0.3),
