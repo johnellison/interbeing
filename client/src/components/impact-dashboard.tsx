@@ -83,7 +83,7 @@ export default function ImpactDashboard({
     <section className="mb-8">
       {/* Mobile Carousel */}
       <div className="md:hidden">
-        <Carousel className="w-full max-w-sm mx-auto" opts={{ align: "center", loop: true }}>
+        <Carousel className="w-full max-w-sm sm:max-w-md mx-auto" opts={{ align: "center", loop: true }}>
           <CarouselContent>
             {/* Slide 1: Today's Progress */}
             <CarouselItem>
