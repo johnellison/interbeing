@@ -1,5 +1,7 @@
-import { TreePine, Flame, CheckCircle, Leaf, BookOpen, Dumbbell, Heart, Droplets, PaintbrushVertical, Users } from "lucide-react";
+import { TreePine, Flame, CheckCircle, Leaf, BookOpen, Dumbbell, Heart, Droplets, PaintbrushVertical, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { useState } from "react";
 
 const iconMap = {
   leaf: Leaf,
@@ -79,157 +81,339 @@ export default function ImpactDashboard({
 
   return (
     <section className="mb-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Environmental Impact Summary */}
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-environmental-impact">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-success/20 rounded-lg">
-                <TreePine className="h-8 w-8 text-success" />
+      {/* Mobile Carousel */}
+      <div className="md:hidden">
+        <Carousel className="w-full max-w-sm mx-auto" opts={{ align: "center", loop: true }}>
+          <CarouselContent>
+            {/* Slide 1: Today's Progress */}
+            <CarouselItem>
+              <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-today-progress">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-primary/20 rounded-lg">
+                      <CheckCircle className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Today's Progress</h3>
+                      <p className="text-sm text-muted-foreground">Completed Habits</p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Progress Summary */}
+                <div className="text-center mb-6">
+                  <p className="text-sm text-muted-foreground" data-testid="text-habits-completed-summary">
+                    {todayCompletions} of {totalHabits} habits completed
+                  </p>
+                </div>
+                
+                {/* Centered Donut Chart */}
+                <div className="flex justify-center">
+                  <div className="w-40 h-40 relative">
+                    {totalHabits > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={chartData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={50}
+                            outerRadius={75}
+                            paddingAngle={chartData.length > 1 ? 2 : 0}
+                            dataKey="value"
+                            startAngle={90}
+                            endAngle={450}
+                          >
+                            {chartData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                        </PieChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="w-full h-full rounded-full bg-muted flex items-center justify-center">
+                        <span className="text-sm text-muted-foreground">No habits</span>
+                      </div>
+                    )}
+                    
+                    {/* Center completion percentage */}
+                    {totalHabits > 0 && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-2xl font-bold text-foreground">
+                          {Math.round(progressPercentage)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-foreground">Environmental Impact</h3>
-                <p className="text-sm text-muted-foreground">Greenspark Actions</p>
-              </div>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
-              <span className="text-lg flex-shrink-0">🌳</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold text-success" data-testid="text-total-trees">
-                  {totalImpact.treesPlanted}
-                </p>
-                <p className="text-xs text-muted-foreground">trees planted</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
-              <span className="text-lg flex-shrink-0">🐋</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold text-blue-500" data-testid="text-total-plastic">
-                  {totalImpact.plasticRescued}
-                </p>
-                <p className="text-xs text-muted-foreground">bottles rescued</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
-              <span className="text-lg flex-shrink-0">☁️</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold text-muted-foreground" data-testid="text-total-carbon">
-                  {totalImpact.carbonOffset}kg
-                </p>
-                <p className="text-xs text-muted-foreground">CO₂ offset</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
-              <span className="text-lg flex-shrink-0">🌿</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold text-emerald-500" data-testid="text-total-kelp">
-                  {totalImpact.kelpPlanted}
-                </p>
-                <p className="text-xs text-muted-foreground">kelp planted</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
-              <span className="text-lg flex-shrink-0">💧</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold text-cyan-500" data-testid="text-total-water">
-                  {totalImpact.waterProvided}L
-                </p>
-                <p className="text-xs text-muted-foreground">water</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
-              <span className="text-lg flex-shrink-0">🐝</span>
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-bold text-primary" data-testid="text-total-bees">
-                  {totalImpact.beesSponsored}
-                </p>
-                <p className="text-xs text-muted-foreground">bees</p>
-              </div>
-            </div>
-          </div>
-        </div>
+            </CarouselItem>
 
-        {/* Habit Streak */}
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-current-streak">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-primary/20 rounded-lg">
-                <Flame className="h-8 w-8 text-primary" />
+            {/* Slide 2: Current Streak */}
+            <CarouselItem>
+              <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-current-streak">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-primary/20 rounded-lg">
+                      <Flame className="h-8 w-8 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Current Streak</h3>
+                      <p className="text-sm text-muted-foreground">Consecutive Days</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-center py-8">
+                  <p className="text-6xl font-bold text-primary mb-2" data-testid="text-current-streak">
+                    {currentStreak}
+                  </p>
+                  <p className="text-lg text-muted-foreground">
+                    day{currentStreak !== 1 ? 's' : ''} in a row
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-4">
+                    Personal best: {longestStreak} days
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-foreground">Current Streak</h3>
-                <p className="text-sm text-muted-foreground">Consecutive Days</p>
-              </div>
-            </div>
-          </div>
-          <p className="text-3xl font-bold text-primary" data-testid="text-current-streak">
-            {currentStreak}
-          </p>
-          <p className="text-sm text-muted-foreground mt-2">
-            Personal best: {longestStreak} days
-          </p>
-        </div>
+            </CarouselItem>
 
-        {/* Habits Completed Today - Donut Chart */}
-        <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-today-progress">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="p-3 bg-primary/20 rounded-lg">
-                <CheckCircle className="h-8 w-8 text-primary" />
+            {/* Slide 3: Environmental Impact */}
+            <CarouselItem>
+              <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-environmental-impact">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-3 bg-success/20 rounded-lg">
+                      <TreePine className="h-8 w-8 text-success" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-foreground">Environmental Impact</h3>
+                      <p className="text-sm text-muted-foreground">Greenspark Actions</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                    <span className="text-lg flex-shrink-0">🌳</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-lg font-bold text-success" data-testid="text-total-trees">
+                        {totalImpact.treesPlanted}
+                      </p>
+                      <p className="text-xs text-muted-foreground">trees planted</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                    <span className="text-lg flex-shrink-0">🐋</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-lg font-bold text-blue-500" data-testid="text-total-plastic">
+                        {totalImpact.plasticRescued}
+                      </p>
+                      <p className="text-xs text-muted-foreground">bottles rescued</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                    <span className="text-lg flex-shrink-0">☁️</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-lg font-bold text-muted-foreground" data-testid="text-total-carbon">
+                        {totalImpact.carbonOffset}kg
+                      </p>
+                      <p className="text-xs text-muted-foreground">CO₂ offset</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                    <span className="text-lg flex-shrink-0">🌿</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-lg font-bold text-emerald-500" data-testid="text-total-kelp">
+                        {totalImpact.kelpPlanted}
+                      </p>
+                      <p className="text-xs text-muted-foreground">kelp planted</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                    <span className="text-lg flex-shrink-0">💧</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-lg font-bold text-cyan-500" data-testid="text-total-water">
+                        {totalImpact.waterProvided}L
+                      </p>
+                      <p className="text-xs text-muted-foreground">water</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                    <span className="text-lg flex-shrink-0">🐝</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-lg font-bold text-primary" data-testid="text-total-bees">
+                        {totalImpact.beesSponsored}
+                      </p>
+                      <p className="text-xs text-muted-foreground">bees</p>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="font-semibold text-foreground">Today's Progress</h3>
-                <p className="text-sm text-muted-foreground">Completed Habits</p>
-              </div>
-            </div>
-          </div>
+            </CarouselItem>
+          </CarouselContent>
           
-          {/* Progress Summary */}
-          <div className="text-center mb-6">
-            <p className="text-sm text-muted-foreground" data-testid="text-habits-completed-summary">
-              {todayCompletions} of {totalHabits} habits completed
+          {/* Custom navigation indicators */}
+          <div className="flex justify-center mt-4 space-x-2">
+            <div className="w-2 h-2 rounded-full bg-primary"></div>
+            <div className="w-2 h-2 rounded-full bg-muted"></div>
+            <div className="w-2 h-2 rounded-full bg-muted"></div>
+          </div>
+        </Carousel>
+      </div>
+
+      {/* Desktop Grid - Hidden on Mobile */}
+      <div className="hidden md:block">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Environmental Impact Summary */}
+          <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-environmental-impact">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-success/20 rounded-lg">
+                  <TreePine className="h-8 w-8 text-success" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">Environmental Impact</h3>
+                  <p className="text-sm text-muted-foreground">Greenspark Actions</p>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                <span className="text-lg flex-shrink-0">🌳</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg font-bold text-success" data-testid="text-total-trees">
+                    {totalImpact.treesPlanted}
+                  </p>
+                  <p className="text-xs text-muted-foreground">trees planted</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                <span className="text-lg flex-shrink-0">🐋</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg font-bold text-blue-500" data-testid="text-total-plastic">
+                    {totalImpact.plasticRescued}
+                  </p>
+                  <p className="text-xs text-muted-foreground">bottles rescued</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                <span className="text-lg flex-shrink-0">☁️</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg font-bold text-muted-foreground" data-testid="text-total-carbon">
+                    {totalImpact.carbonOffset}kg
+                  </p>
+                  <p className="text-xs text-muted-foreground">CO₂ offset</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                <span className="text-lg flex-shrink-0">🌿</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg font-bold text-emerald-500" data-testid="text-total-kelp">
+                    {totalImpact.kelpPlanted}
+                  </p>
+                  <p className="text-xs text-muted-foreground">kelp planted</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                <span className="text-lg flex-shrink-0">💧</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg font-bold text-cyan-500" data-testid="text-total-water">
+                    {totalImpact.waterProvided}L
+                  </p>
+                  <p className="text-xs text-muted-foreground">water</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2 p-3 bg-secondary/30 rounded-lg border border-border min-w-0">
+                <span className="text-lg flex-shrink-0">🐝</span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg font-bold text-primary" data-testid="text-total-bees">
+                    {totalImpact.beesSponsored}
+                  </p>
+                  <p className="text-xs text-muted-foreground">bees</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Habit Streak */}
+          <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-current-streak">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-primary/20 rounded-lg">
+                  <Flame className="h-8 w-8 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground">Current Streak</h3>
+                  <p className="text-sm text-muted-foreground">Consecutive Days</p>
+                </div>
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-primary" data-testid="text-current-streak">
+              {currentStreak}
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Personal best: {longestStreak} days
             </p>
           </div>
-          
-          {/* Centered Donut Chart */}
-          <div className="flex justify-center">
-            <div className="w-32 h-32 relative">
-              {totalHabits > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={chartData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={40}
-                      outerRadius={60}
-                      paddingAngle={chartData.length > 1 ? 2 : 0}
-                      dataKey="value"
-                      startAngle={90}
-                      endAngle={450}
-                    >
-                      {chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="w-full h-full rounded-full bg-muted flex items-center justify-center">
-                  <span className="text-sm text-muted-foreground">No habits</span>
+
+          {/* Habits Completed Today - Donut Chart */}
+          <div className="bg-card border border-border rounded-xl p-6 shadow-sm" data-testid="card-today-progress">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-primary/20 rounded-lg">
+                  <CheckCircle className="h-8 w-8 text-primary" />
                 </div>
-              )}
-              
-              {/* Center completion percentage */}
-              {totalHabits > 0 && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-lg font-bold text-foreground">
-                    {Math.round(progressPercentage)}%
-                  </span>
+                <div>
+                  <h3 className="font-semibold text-foreground">Today's Progress</h3>
+                  <p className="text-sm text-muted-foreground">Completed Habits</p>
                 </div>
-              )}
+              </div>
+            </div>
+            
+            {/* Progress Summary */}
+            <div className="text-center mb-6">
+              <p className="text-sm text-muted-foreground" data-testid="text-habits-completed-summary">
+                {todayCompletions} of {totalHabits} habits completed
+              </p>
+            </div>
+            
+            {/* Centered Donut Chart */}
+            <div className="flex justify-center">
+              <div className="w-32 h-32 relative">
+                {totalHabits > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={60}
+                        paddingAngle={chartData.length > 1 ? 2 : 0}
+                        dataKey="value"
+                        startAngle={90}
+                        endAngle={450}
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="w-full h-full rounded-full bg-muted flex items-center justify-center">
+                    <span className="text-sm text-muted-foreground">No habits</span>
+                  </div>
+                )}
+                
+                {/* Center completion percentage */}
+                {totalHabits > 0 && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="text-lg font-bold text-foreground">
+                      {Math.round(progressPercentage)}%
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
