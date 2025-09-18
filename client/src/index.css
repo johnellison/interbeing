@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --background: transparent;
+  --background: hsl(253 41% 11%);
   --foreground: hsl(0 0% 98%);
-  --card: hsla(260, 20%, 15%, 0.4);
+  --card: hsl(260 30% 20%);
   --card-foreground: hsl(0 0% 98%);
   --popover: hsla(260, 20%, 15%, 0.8);
   --popover-foreground: hsl(0 0% 98%);
@@ -37,9 +37,9 @@
 }
 
 .dark {
-  --background: transparent;
+  --background: hsl(253 41% 11%);
   --foreground: hsl(0 0% 98%);
-  --card: hsla(260, 20%, 15%, 0.4);
+  --card: hsl(260 30% 20%);
   --card-foreground: hsl(0 0% 98%);
   --popover: hsla(260, 20%, 15%, 0.8);
   --popover-foreground: hsl(0 0% 98%);

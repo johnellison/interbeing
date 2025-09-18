@@ -132,10 +132,10 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
         <div className="absolute left-1/2 transform -translate-x-1/2 -top-8 z-10">
           <Button
             onClick={onAddHabitClick}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-16 h-16 p-0 shadow-xl transition-all duration-200 hover:scale-105"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full w-20 h-20 p-0 shadow-xl transition-all duration-200 hover:scale-105"
             data-testid="button-add-habit-mobile"
           >
-            <Plus className="h-8 w-8" />
+            <Plus className="h-10 w-10 font-bold stroke-[3]" />
           </Button>
         </div>
 
@@ -146,14 +146,14 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
             className="mx-3 mb-2 rounded-t-3xl shadow-2xl relative overflow-hidden"
             style={{
               height: '80px',
-              background: '#1C1C1E',
+              background: 'hsl(260 30% 20%)',
             }}
           >
             {/* Curved Notch for Button */}
             <div 
               className="absolute top-0 left-1/2 transform -translate-x-1/2 w-20 h-10 rounded-b-full"
               style={{
-                background: '#121212',
+                background: 'hsl(253 41% 11%)',
                 clipPath: 'ellipse(40px 20px at 50% 0%)'
               }}
             ></div>

@@ -169,8 +169,8 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
       }
       setParticles(initialParticles);
 
-      // Animation sequence
-      setTimeout(() => setAnimationPhase('celebrate'), 300);
+      // Animation sequence - instant
+      setAnimationPhase('celebrate');
       
       // Auto-close cleanup on unmount
       return () => {
@@ -224,15 +224,13 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
         typingTimeoutRef.current = setTimeout(typeNextCharacter, 8); // 8ms per character - very snappy
       } else {
         setIsTyping(false);
-        // Show emotion feedback after typing finishes
-        setTimeout(() => {
-          setShowEmotionFeedback(true);
-        }, 500);
+        // Show emotion feedback immediately after typing finishes
+        setShowEmotionFeedback(true);
       }
     };
 
-    // Start typing after a brief delay
-    typingTimeoutRef.current = setTimeout(typeNextCharacter, 500);
+    // Start typing immediately
+    typingTimeoutRef.current = setTimeout(typeNextCharacter, 100);
 
     return () => {
       if (typingTimeoutRef.current) {
@@ -274,6 +272,9 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
     } catch (error) {
       console.error('Failed to store emotion feedback:', error);
     }
+    
+    // Close modal after emotion selection
+    setTimeout(() => handleClose(), 500);
   };
 
   if (!isOpen || !data) return null;
@@ -313,7 +314,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
 
       {/* Main modal */}
       <div 
-        className={`relative max-w-lg w-full mx-4 ${config.bgColor} rounded-3xl shadow-2xl border-2 border-border transform transition-all duration-500 ${
+        className={`relative max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto ${config.bgColor} rounded-3xl shadow-2xl border-2 border-border transform transition-all duration-500 ${
           animationPhase === 'enter' ? 'scale-50 opacity-0 rotate-12' :
           animationPhase === 'celebrate' ? 'scale-100 opacity-100 rotate-0' :
           'scale-75 opacity-0 -rotate-6'
@@ -331,9 +332,9 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
           <X className="h-4 w-4" />
         </Button>
 
-        <div className="p-8">
-          {/* Large emoji with bounce animation */}
-          <div className={`text-8xl mb-6 animate-bounce`} style={{ animationDuration: '1s' }}>
+        <div className="p-6">
+          {/* Smaller emoji with bounce animation */}
+          <div className={`text-5xl mb-4 animate-bounce`} style={{ animationDuration: '1s' }}>
             {config.emoji}
           </div>
 
