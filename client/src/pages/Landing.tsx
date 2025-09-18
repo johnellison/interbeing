@@ -4,8 +4,9 @@ import { Leaf, Target, TreePine, Users, Brain, Sparkles, Bot, GraduationCap, Boo
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "wouter";
-import interbeingWordmark from "@assets/interbeing-logo-wordmark-no-bg_1758123725926.png";
+import interbeingWordmark from "@assets/interbeing-logo-wordmark-no-bg_1758194555072.png";
 import interbeingLogo from "@assets/interbeing-app-logo-color-bg_1758122829010.png";
+import johnEllisonPhoto from "@assets/john-ellison-health-hacked-flipchart-vertical-cut_1758194425524.webp";
 
 interface FeaturedProject {
   id: string;
@@ -41,13 +42,12 @@ export default function Landing() {
       <div className="container mx-auto px-4 py-12 max-w-6xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-20">
-          <Link href="/" aria-label="Interbeing" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
-            <img src={interbeingLogo} alt="" aria-hidden="true" className="h-8 w-8" />
-            <img src={interbeingWordmark} alt="Interbeing" className="h-6" />
+          <Link href="/" aria-label="Interbeing" className="flex items-center hover:opacity-80 transition-opacity">
+            <img src={interbeingWordmark} alt="Interbeing" className="h-8" />
           </Link>
           <Button 
             onClick={handleLogin}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-6 py-2.5 rounded-lg transition-all duration-200"
+            className="gradient-button font-medium px-6 py-2.5 rounded-lg transition-all duration-200"
             data-testid="button-login"
           >
             Sign In
@@ -68,7 +68,7 @@ export default function Landing() {
           </p>
           <Button 
             onClick={handleLogin}
-            className="bg-primary text-primary-foreground hover:bg-primary/90 text-lg px-12 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+            className="gradient-button text-lg px-12 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
             data-testid="button-get-started"
           >
             Get Started
@@ -237,14 +237,9 @@ export default function Landing() {
         <div className="bg-secondary/30 rounded-3xl p-12 mb-24 border border-border">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
-                  <Users className="h-8 w-8 text-primary-foreground" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Your AI Coach</h4>
-                  <h3 className="text-3xl font-bold text-foreground">Meet John Ellison</h3>
-                </div>
+              <div className="mb-6">
+                <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-2">Your AI Coach</h4>
+                <h3 className="text-3xl font-bold text-foreground">Meet John Ellison</h3>
               </div>
               
               <div className="space-y-4 mb-8">
@@ -279,11 +274,12 @@ export default function Landing() {
             
             <div className="text-center">
               <div className="relative">
-                <div className="w-80 h-80 mx-auto mb-8 rounded-3xl bg-gradient-to-br from-primary/20 to-secondary/20 border border-border flex items-center justify-center">
-                  <div className="text-8xl">👨‍🏫</div>
-                </div>
-                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-success rounded-full flex items-center justify-center border-4 border-background">
-                  <GraduationCap className="h-12 w-12 text-background" />
+                <div className="w-80 h-80 mx-auto mb-8 rounded-3xl border border-border overflow-hidden">
+                  <img 
+                    src={johnEllisonPhoto} 
+                    alt="John Ellison, Behavior Design Coach" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
             </div>
@@ -501,7 +497,7 @@ export default function Landing() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Button 
               onClick={handleLogin}
-              className="bg-primary text-primary-foreground hover:bg-primary/90 text-xl px-12 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
+              className="gradient-button text-xl px-12 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl"
               data-testid="button-join-now"
             >
               Start Creating Impact
