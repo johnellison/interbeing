@@ -125,8 +125,21 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
   });
 
   const impactTypeConfig = data ? impactConfig[data.impactAction] : null;
-  const fallbackMessage = data ? `Excellent work! Your "${data.habitName}" habit just helped ${impactTypeConfig?.title.toLowerCase().replace('!', '')} - that's ${data.impactAmount} ${impactTypeConfig?.unit} while building your ${data.streak}-day streak. Keep this positive momentum going! How are you feeling now?` : "Great job! How are you feeling now?";
-  const aiMessage = (aiData?.message ?? fallbackMessage) + (aiData?.message && !aiData.message.includes("How are you feeling now?") ? " How are you feeling now?" : "");
+  // Create proper fallback message with correct grammar
+  const getImpactText = (action: string, amount: number) => {
+    const actionMap = {
+      plant_tree: `planted ${amount} tree${amount > 1 ? 's' : ''}`,
+      rescue_plastic: `rescued ${amount} plastic bottle${amount > 1 ? 's' : ''}`,
+      offset_carbon: `offset ${amount}kg of CO₂`,
+      plant_kelp: `planted some kelp (${amount} plant${amount > 1 ? 's' : ''})`,
+      provide_water: `provided ${amount} liter${amount > 1 ? 's' : ''} of clean water`,
+      sponsor_bees: `protected ${amount} bee${amount > 1 ? 's' : ''}`
+    };
+    return actionMap[action as keyof typeof actionMap] || 'created positive impact';
+  };
+  
+  const fallbackMessage = data ? `Excellent work! Your "${data.habitName}" habit just ${getImpactText(data.impactAction, data.impactAmount)} while building your ${data.streak}-day streak. Keep this positive momentum going!\n\nHow are you feeling now?` : "Great job!\n\nHow are you feeling now?";
+  const aiMessage = (aiData?.message ?? fallbackMessage) + (aiData?.message && !aiData.message.includes("How are you feeling now?") ? "\n\nHow are you feeling now?" : "");
 
   useEffect(() => {
     if (isOpen && data) {
@@ -203,7 +216,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
       if (currentIndex < aiMessage.length) {
         setTypedText(aiMessage.slice(0, currentIndex + 1));
         currentIndex++;
-        typingTimeoutRef.current = setTimeout(typeNextCharacter, 15); // 15ms per character - much faster
+        typingTimeoutRef.current = setTimeout(typeNextCharacter, 8); // 8ms per character - very snappy
       } else {
         setIsTyping(false);
         // Show emotion feedback after typing finishes
@@ -340,7 +353,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
                   <p className="text-sm font-semibold text-primary mb-2">John Ellison, your habit coach:</p>
                   {isAiLoading || showTypingDots ? (
                     <div className="flex items-center space-x-1" data-testid="status-ai-loading">
-                      <span className="text-base text-foreground">John is thinking</span>
+                      <span className="text-base text-foreground">John is writing...</span>
                       <div className="flex space-x-1">
                         <div className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                         <div className="w-1 h-1 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
@@ -348,7 +361,7 @@ export default function ImpactCelebration({ isOpen, onClose, data }: ImpactCeleb
                       </div>
                     </div>
                   ) : (
-                    <div className="text-base text-foreground leading-relaxed text-left" data-testid="text-ai-celebration-message">
+                    <div className="text-base text-foreground leading-relaxed text-left whitespace-pre-line" data-testid="text-ai-celebration-message">
                       <span>{typedText}</span>
                       {isTyping && <span className="animate-pulse">|</span>}
                     </div>

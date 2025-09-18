@@ -52,12 +52,12 @@ export class CelebrationAIService {
       plant_tree: `planted ${impactAmount} tree${impactAmount > 1 ? 's' : ''}`,
       rescue_plastic: `rescued ${impactAmount} plastic bottle${impactAmount > 1 ? 's' : ''}`,
       offset_carbon: `offset ${impactAmount}kg of CO₂`,
-      plant_kelp: `planted ${impactAmount} kelp plant${impactAmount > 1 ? 's' : ''}`,
+      plant_kelp: `planted some kelp (${impactAmount} plant${impactAmount > 1 ? 's' : ''})`,
       provide_water: `provided ${impactAmount} liter${impactAmount > 1 ? 's' : ''} of clean water`,
       sponsor_bees: `protected ${impactAmount} bee${impactAmount > 1 ? 's' : ''}`
     };
 
-    let context = `Just ${impactMap[impactAction as keyof typeof impactMap] || 'created positive impact'}`;
+    let context = `just ${impactMap[impactAction as keyof typeof impactMap] || 'created positive impact'}`;
     
     if (projectInfo?.name && projectInfo?.location) {
       context += ` through the "${projectInfo.name}" project in ${projectInfo.location}`;
@@ -153,7 +153,7 @@ Make it personal, acknowledge their environmental contribution, and encourage co
     if (context.streak >= 7) title = "Week Streak Champion!";
     if (context.streak >= 30) title = "Monthly Milestone Master!";
 
-    let message = `${context.userName ? `Excellent work, ${context.userName}!` : 'Excellent work!'} Your "${context.habitName}" habit just ${impactText} while building your ${context.streak}-day streak.`;
+    let message = `${context.userName ? `Excellent work, ${context.userName}!` : 'Excellent work!'} Your "${context.habitName}" habit ${impactText} while building your ${context.streak}-day streak.`;
     
     if (context.streak >= 7) {
       message += ` This consistent commitment shows real dedication to both personal growth and environmental impact.`;
