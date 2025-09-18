@@ -93,12 +93,11 @@ export const updateHabitSchema = createInsertSchema(habits).omit({
 
 export const insertHabitCompletionSchema = createInsertSchema(habitCompletions).omit({
   id: true,
-  completedAt: true,
   impactCreated: true,
   impactId: true,
   impactAction: true,
   impactAmount: true,
-});
+}).partial({ completedAt: true });
 
 // Onboarding and celebration schemas
 export const behaviorSchema = z.object({

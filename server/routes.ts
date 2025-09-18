@@ -281,18 +281,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!habit) {
         return res.status(404).json({ message: "Habit not found" });
       }
+      
+      // Authorization check - ensure habit belongs to user
+      if (habit.userId !== userId) {
+        return res.status(404).json({ message: "Habit not found" });
+      }
 
-      // Check if already completed today
-      const todayCompletions = await storage.getTodayCompletions(userId);
-      const existingCompletion = todayCompletions.find(c => c.habitId === habitId);
+      // Get date from query parameter, default to today
+      const dateParam = req.query.date as string;
+      let selectedDate: Date;
+      
+      if (dateParam) {
+        selectedDate = new Date(dateParam);
+        if (isNaN(selectedDate.getTime())) {
+          return res.status(400).json({ message: "Invalid date parameter" });
+        }
+      } else {
+        selectedDate = new Date();
+      }
+      
+      // Normalize to start of day
+      selectedDate.setHours(0, 0, 0, 0);
+      
+      // Check if already completed on selected date
+      const dayCompletions = await storage.getCompletionsByDate(userId, selectedDate);
+      const existingCompletion = dayCompletions.find(c => c.habitId === habitId);
 
       if (existingCompletion) {
         // Uncomplete the habit
         await storage.deleteHabitCompletion(existingCompletion.id);
         
-        // Update habit streak (decrement)
-        const newStreak = Math.max(0, habit.streak - 1);
-        await storage.updateHabit(habitId, { streak: newStreak });
+        // Update habit streak (decrement) - only for today's completions
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const isToday = selectedDate.getTime() === today.getTime();
+        
+        if (isToday) {
+          const newStreak = Math.max(0, habit.streak - 1);
+          await storage.updateHabit(habitId, { streak: newStreak });
+        }
         
         res.json({ completed: false, message: "Habit uncompleted" });
       } else {
@@ -300,21 +327,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const completion = await storage.createHabitCompletion({
           habitId,
           userId,
+          completedAt: selectedDate,
         });
 
-        // Update habit streak and impact earned
-        const newStreak = habit.streak + 1;
-        const newTotalImpactEarned = habit.totalImpactEarned + habit.impactAmount;
-        await storage.updateHabit(habitId, { 
-          streak: newStreak, 
-          totalImpactEarned: newTotalImpactEarned 
-        });
+        // Update habit streak and impact earned (only for today's completions)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const isToday = selectedDate.getTime() === today.getTime();
+        
+        let newStreak = habit.streak;
+        let newTotalImpactEarned = habit.totalImpactEarned;
+        
+        if (isToday) {
+          newStreak = habit.streak + 1;
+          newTotalImpactEarned = habit.totalImpactEarned + habit.impactAmount;
+          await storage.updateHabit(habitId, { 
+            streak: newStreak, 
+            totalImpactEarned: newTotalImpactEarned 
+          });
+        } else {
+          // For historical dates, still add to total impact but don't update streak
+          newTotalImpactEarned = habit.totalImpactEarned + habit.impactAmount;
+          await storage.updateHabit(habitId, { 
+            totalImpactEarned: newTotalImpactEarned 
+          });
+        }
 
-        // Create impact via 1ClickImpact API
+        // Create impact via Greenspark API (only for today's completions)
         let impactCreated = false;
         let impactId = null;
         
-        try {
+        if (isToday) {
+          try {
           const impactResult = await greensparkService.createImpact({
             action: habit.impactAction as any,
             amount: habit.impactAmount,
@@ -343,9 +387,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
               );
             }
           }
-        } catch (impactError) {
-          console.error("Failed to create impact:", impactError);
-          // Continue without failing the habit completion
+          } catch (impactError) {
+            console.error("Failed to create impact:", impactError);
+            // Continue without failing the habit completion
+          }
         }
 
         // Fetch project information for the celebration modal
