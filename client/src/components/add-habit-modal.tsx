@@ -81,19 +81,23 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => {
-      const newData = { 
-        ...prev, 
-        [field]: field === 'impactAmount' ? parseInt(value) || 1 : value 
-      };
-      
-      // When impact action changes to bees, suggest 20 as default amount
-      if (field === 'impactAction' && value === 'sponsor_bees' && prev.impactAmount === 1) {
-        newData.impactAmount = 20;
-      }
-      
-      return newData;
-    });
+    try {
+      setFormData(prev => {
+        const newData = { 
+          ...prev, 
+          [field]: field === 'impactAmount' ? parseInt(value) || 1 : value 
+        };
+        
+        // When impact action changes to bees, suggest 20 as default amount
+        if (field === 'impactAction' && value === 'sponsor_bees' && prev.impactAmount === 1) {
+          newData.impactAmount = 20;
+        }
+        
+        return newData;
+      });
+    } catch (error) {
+      console.error('Error in handleInputChange:', error);
+    }
   };
 
   if (!isOpen) return null;
@@ -122,7 +126,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
             <Input
               type="text"
               value={formData.name}
-              onChange={(e) => handleInputChange("name", e.target.value)}
+              onChange={(e) => handleInputChange("name", e.currentTarget?.value || "")}
               placeholder="e.g., Morning Meditation"
               className="rounded-xl"
               data-testid="input-habit-name"
@@ -135,7 +139,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
             </label>
             <Textarea
               value={formData.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
+              onChange={(e) => handleInputChange("description", e.currentTarget?.value || "")}
               placeholder="Brief description of your habit..."
               rows={3}
               className="rounded-xl"
@@ -209,7 +213,7 @@ export default function AddHabitModal({ isOpen, onClose, onHabitAdded }: AddHabi
               type="number"
               min="1"
               value={formData.impactAmount}
-              onChange={(e) => handleInputChange("impactAmount", e.target.value)}
+              onChange={(e) => handleInputChange("impactAmount", String(e.currentTarget?.valueAsNumber || 1))}
               placeholder="1"
               className="rounded-xl"
               data-testid="input-impact-amount"
