@@ -195,10 +195,6 @@ export default function Home() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:pb-6" style={{ paddingBottom: 'calc(7rem + env(safe-area-inset-bottom))' }}>
         {/* Mobile-First: Today's Habits Section */}
         <div className="block lg:hidden mb-6">
-          <div className="mb-4">
-            <h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight">Today's Habits</h2>
-          </div>
-
           {/* Habit Cards - Optimized spacing for thumb interaction */}
           <div className="space-y-3 md:space-y-4">
             {dashboardData.habits.map((habit) => (
