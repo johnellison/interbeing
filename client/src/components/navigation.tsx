@@ -39,7 +39,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
   return (
     <>
       {/* Top Navigation - Mobile Settings Bar */}
-      <nav className="bg-[hsl(260_30%_20%)] text-white shadow-sm sticky top-0 z-40 md:hidden">
+      <nav className="bg-transparent text-white md:hidden">
         <div className="flex justify-between items-center px-4 py-3">
           <Link href="/" aria-label="Interbeing" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <img src={interbeingLogo} alt="" aria-hidden="true" className="h-6 w-6" />
@@ -74,7 +74,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
       </nav>
 
       {/* Desktop Navigation - Traditional Top Nav */}
-      <nav className="hidden md:block bg-[hsl(260_30%_20%)] text-white shadow-lg sticky top-0 z-40">
+      <nav className="hidden md:block bg-transparent text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link href="/" aria-label="Interbeing" className="flex items-center space-x-4 hover:opacity-80 transition-opacity">
@@ -99,7 +99,7 @@ export default function Navigation({ currentPage, onAddHabitClick }: NavigationP
                     className={`flex items-center space-x-2 px-3 py-2 rounded-organic transition-colors ${
                       active 
                         ? 'bg-primary/20 text-primary' 
-                        : 'text-white hover:bg-primary/10'
+                        : 'text-white hover:text-lime-400'
                     }`}
                     data-testid={item.testId}
                   >

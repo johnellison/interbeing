@@ -72,7 +72,7 @@ export default function DatePicker({ selectedDate, onDateSelect, className = "" 
                 flex-shrink-0 w-16 h-16 flex flex-col items-center justify-center
                 rounded-2xl transition-all duration-200 relative
                 ${todayDate && !selected 
-                  ? 'bg-gray-700 text-white' 
+                  ? 'bg-transparent text-white border border-gray-500' 
                   : selected 
                     ? 'bg-transparent text-white'
                     : 'bg-transparent text-gray-400 hover:text-white hover:bg-white/5'

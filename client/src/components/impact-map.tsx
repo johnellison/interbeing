@@ -45,12 +45,12 @@ const impactIcons = {
 };
 
 const impactColors = {
-  plant_tree: "text-green-600 bg-green-50",
-  rescue_plastic: "text-blue-600 bg-blue-50",
-  offset_carbon: "text-gray-600 bg-gray-50",
-  plant_kelp: "text-green-500 bg-green-50",
-  provide_water: "text-blue-500 bg-blue-50",
-  sponsor_bees: "text-yellow-600 bg-yellow-50",
+  plant_tree: "text-green-400 bg-green-900/20",
+  rescue_plastic: "text-blue-400 bg-blue-900/20",
+  offset_carbon: "text-gray-400 bg-gray-900/20",
+  plant_kelp: "text-green-300 bg-green-900/20",
+  provide_water: "text-blue-300 bg-blue-900/20",
+  sponsor_bees: "text-yellow-400 bg-yellow-900/20",
 };
 
 const impactEmojis = {
@@ -268,7 +268,7 @@ export default function ImpactMap() {
                   key={type} 
                   className={cn(
                     "cursor-pointer transition-all hover:shadow-md border-2",
-                    filterType === type ? "border-green-500 bg-green-50" : "border-transparent hover:border-green-200"
+                    filterType === type ? "border-green-500 bg-green-900/20" : "border-transparent hover:border-green-200"
                   )}
                   onClick={() => setFilterType(filterType === type ? "all" : type)}
                   data-testid={`card-impact-${type}`}
