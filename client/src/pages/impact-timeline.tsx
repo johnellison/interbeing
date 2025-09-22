@@ -114,7 +114,7 @@ export default function ImpactTimeline() {
         </div>
 
         {/* Timeline */}
-        <div className="space-y-6" data-testid="impact-timeline">
+        <div className="space-y-6 md:space-y-6" data-testid="impact-timeline">
           {timelineData && timelineData.length > 0 ? (
             timelineData.map((entry, index) => {
               const config = impactConfig[entry.impactAction as keyof typeof impactConfig];
@@ -131,30 +131,50 @@ export default function ImpactTimeline() {
                   className="relative"
                   data-testid={`timeline-entry-${entry.id}`}
                 >
-                  {/* Timeline line */}
+                  {/* Desktop Timeline line */}
                   {index < timelineData.length - 1 && (
-                    <div className="absolute left-6 top-16 w-0.5 h-16 bg-gradient-to-b from-border to-border/30" />
+                    <div className="hidden md:block absolute left-6 top-16 w-0.5 h-16 bg-gradient-to-b from-border to-border/30" />
                   )}
                   
+                  {/* Mobile vertical line between cards */}
+                  {index < timelineData.length - 1 && (
+                    <div className="md:hidden absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-3 w-0.5 h-3 bg-border/40" />
+                  )}
+                  
+                  {/* Mobile: Date above card */}
+                  <div className="md:hidden mb-2 text-center">
+                    <p className="text-sm text-muted-foreground flex items-center justify-center">
+                      <Calendar className="h-4 w-4 mr-1" />
+                      {formatDate(entry.completedAt)}
+                    </p>
+                  </div>
+                  
                   {/* Timeline entry */}
-                  <div className="flex items-start space-x-4">
-                    {/* Timeline dot */}
-                    <div className="flex-shrink-0 w-12 h-12 bg-secondary/30 rounded-full flex items-center justify-center border-2 border-background shadow-lg">
+                  <div className="flex items-start md:space-x-4">
+                    {/* Desktop Timeline dot */}
+                    <div className="hidden md:flex flex-shrink-0 w-12 h-12 bg-secondary/30 rounded-full items-center justify-center border-2 border-background shadow-lg">
                       <span className="text-2xl">{config.emoji}</span>
                     </div>
                     
                     {/* Content */}
-                    <div className="flex-1 bg-card border border-border rounded-xl p-6 shadow-sm">
+                    <div className="flex-1 bg-card border border-border rounded-xl p-4 md:p-6 shadow-sm">
                       <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <h3 className="text-lg font-semibold text-foreground" data-testid={`text-habit-name-${entry.id}`}>
-                            {entry.habitName}
-                          </h3>
-                          <p className="text-sm font-medium text-primary" data-testid={`text-impact-type-${entry.id}`}>
-                            {config.title}
-                          </p>
+                        <div className="flex items-start space-x-3">
+                          {/* Mobile emoji inside card */}
+                          <div className="md:hidden flex-shrink-0 w-8 h-8 flex items-center justify-center">
+                            <span className="text-lg">{config.emoji}</span>
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-foreground" data-testid={`text-habit-name-${entry.id}`}>
+                              {entry.habitName}
+                            </h3>
+                            <p className="text-sm font-medium text-primary" data-testid={`text-impact-type-${entry.id}`}>
+                              {config.title}
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-right">
+                        {/* Desktop: Date on the right */}
+                        <div className="hidden md:block text-right">
                           <p className="text-sm text-muted-foreground flex items-center">
                             <Calendar className="h-4 w-4 mr-1" />
                             {formatDate(entry.completedAt)}
@@ -162,9 +182,10 @@ export default function ImpactTimeline() {
                         </div>
                       </div>
                       
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center space-x-4">
-                          <div className="px-3 py-1 bg-secondary/30 rounded-lg border border-border">
+                      <div className="flex flex-col md:flex-row md:justify-between md:items-center space-y-3 md:space-y-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                          {/* Mobile: Remove border, Desktop: Keep border */}
+                          <div className="px-3 py-1 bg-secondary/30 rounded-lg md:border md:border-border">
                             <span className="text-sm font-semibold text-foreground" data-testid={`text-impact-amount-${entry.id}`}>
                               {formatImpactValue(entry.impactAction, entry.impactAmount)} {config.unit}
                             </span>
