@@ -19,14 +19,24 @@ function Router() {
   return (
     <Switch>
       {isLoading ? (
-        <Route path="/" component={Landing} />
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/onboarding" component={OnboardingPage} />
+        </>
       ) : !isAuthenticated ? (
-        <Route path="/" component={Landing} />
+        <>
+          <Route path="/" component={Landing} />
+          <Route path="/onboarding" component={OnboardingPage} />
+        </>
       ) : !user?.onboardingCompleted ? (
-        <Route path="/" component={OnboardingPage} />
+        <>
+          <Route path="/" component={OnboardingPage} />
+          <Route path="/onboarding" component={OnboardingPage} />
+        </>
       ) : (
         <>
           <Route path="/" component={Home} />
+          <Route path="/onboarding" component={OnboardingPage} />
           <Route path="/impact-timeline" component={ImpactTimeline} />
           <Route path="/analytics" component={Analytics} />
           <Route path="/impact-map" component={ImpactMap} />

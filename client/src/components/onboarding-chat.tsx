@@ -303,7 +303,17 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
 
       {/* Behavior Choice Buttons */}
       {conversationState.phase === 'recommend_behaviors' && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card p-4 pointer-events-auto">
+        <div 
+          className="fixed bottom-0 left-0 right-0 z-50 border-t border-border p-4 pointer-events-auto"
+          style={{
+            background: `linear-gradient(135deg, 
+              hsl(253 50% 15%) 0%, 
+              hsl(260 45% 10%) 25%, 
+              hsl(270 55% 8%) 50%, 
+              hsl(280 60% 6%) 75%, 
+              hsl(290 45% 8%) 100%)`
+          }}
+        >
           <div className="max-w-4xl mx-auto">
             <p className="text-sm text-muted-foreground mb-4 text-center">
               Choose how you'd like to proceed:
