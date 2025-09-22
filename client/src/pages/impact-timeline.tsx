@@ -177,12 +177,12 @@ export default function ImpactTimeline() {
                           </div>
                           {/* Emotion feedback badge */}
                           {entry.emotionalFeedback && entry.emotionalFeedback >= 1 && entry.emotionalFeedback <= 5 && (
-                            <div className="flex items-center px-2 py-1 bg-primary/10 rounded-lg border border-primary/20">
-                              <span className="text-lg mr-1" title={emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.label}>
-                                {emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.emoji}
+                            <div className="flex items-center text-primary">
+                              <span className="text-sm font-medium mr-1" data-testid={`text-emotion-${entry.id}`}>
+                                Feeling
                               </span>
-                              <span className="text-xs font-medium text-primary" data-testid={`text-emotion-${entry.id}`}>
-                                Feeling {emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.emoji}
+                              <span className="text-lg" title={emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.label}>
+                                {emotionConfig[entry.emotionalFeedback as keyof typeof emotionConfig]?.emoji}
                               </span>
                             </div>
                           )}
