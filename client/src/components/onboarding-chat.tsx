@@ -172,26 +172,34 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
   });
 
   const handleSend = () => {
-    if (!input.trim() || sendMessageMutation.isPending) return;
+    try {
+      if (!input.trim() || sendMessageMutation.isPending) return;
 
-    const userMessage = input.trim();
-    setInput("");
-    setSuggestions([]);
+      const userMessage = input.trim();
+      setInput("");
+      setSuggestions([]);
 
-    // Add user message
-    setMessages(prev => [...prev, {
-      id: Date.now().toString(),
-      role: 'user',
-      content: userMessage,
-      timestamp: new Date()
-    }]);
+      // Add user message
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: 'user',
+        content: userMessage,
+        timestamp: new Date()
+      }]);
 
-    // Send to AI
-    sendMessageMutation.mutate(userMessage);
+      // Send to AI
+      sendMessageMutation.mutate(userMessage);
+    } catch (error) {
+      console.warn('Send message error (mobile):', error);
+    }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
-    setInput(suggestion);
+    try {
+      setInput(suggestion || '');
+    } catch (error) {
+      console.warn('Suggestion click error (mobile):', error);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -390,12 +398,37 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
               value={input}
               onChange={(e) => {
                 try {
-                  setInput(e.target.value || '');
+                  const value = e?.target?.value;
+                  if (typeof value === 'string') {
+                    setInput(value);
+                  }
                 } catch (error) {
                   console.warn('Input change error (mobile):', error);
                 }
               }}
               onKeyPress={handleKeyPress}
+              onFocus={(e) => {
+                try {
+                  // Prevent mobile viewport jumping
+                  if (window.innerWidth < 768) {
+                    setTimeout(() => {
+                      e.target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                  }
+                } catch (error) {
+                  console.warn('Input focus error (mobile):', error);
+                }
+              }}
+              onBlur={(e) => {
+                try {
+                  // Additional mobile handling on blur
+                  if (window.innerWidth < 768) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                } catch (error) {
+                  console.warn('Input blur error (mobile):', error);
+                }
+              }}
               placeholder="Type your response..."
               disabled={sendMessageMutation.isPending}
               className="flex-1"
@@ -403,6 +436,7 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck="false"
+              inputMode="text"
               data-testid="input-message"
             />
             <Button
