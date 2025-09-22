@@ -1167,6 +1167,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Save emotional feedback for habit completion (protected route)
+  app.post("/api/habits/:habitId/emotion-feedback", isAuthenticated, async (req, res) => {
+    try {
+      const { habitId } = req.params;
+      const { emotionalFeedback } = req.body;
+      const userId = (req.user as any)?.claims?.sub;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User not authenticated" });
+      }
+
+      // Verify habit belongs to user
+      const habit = await storage.getHabit(habitId);
+      if (!habit || habit.userId !== userId) {
+        return res.status(404).json({ message: "Habit not found" });
+      }
+
+      // Get the most recent completion for this habit
+      const completions = await storage.getHabitCompletions(habitId);
+      if (completions.length === 0) {
+        return res.status(404).json({ message: "No completions found for this habit" });
+      }
+
+      // Update the most recent completion with emotional feedback
+      const mostRecentCompletion = completions[0]; // Completions are ordered by date desc
+      await storage.updateHabitCompletion(mostRecentCompletion.id, { 
+        emotionalFeedback: emotionalFeedback 
+      });
+
+      console.log(`Emotional feedback ${emotionalFeedback} saved for completion ${mostRecentCompletion.id}`);
+      res.json({ success: true, message: "Emotional feedback saved" });
+    } catch (error) {
+      console.error("Save emotion feedback error:", error);
+      res.status(500).json({ message: "Failed to save emotional feedback" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
