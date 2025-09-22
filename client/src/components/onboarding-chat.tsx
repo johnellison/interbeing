@@ -394,44 +394,22 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
       {conversationState.phase !== 'recommend_behaviors' && (
         <div className="fixed bottom-0 left-0 right-0 md:relative md:bottom-auto border-t border-border bg-card p-4">
           <div className="max-w-4xl mx-auto flex space-x-2">
-            <Input
+            <input
+              type="text"
               value={input}
               onChange={(e) => {
-                try {
-                  const value = e?.target?.value;
-                  if (typeof value === 'string') {
-                    setInput(value);
-                  }
-                } catch (error) {
-                  console.warn('Input change error (mobile):', error);
-                }
+                const value = e.currentTarget.value;
+                setInput(value);
               }}
-              onKeyPress={handleKeyPress}
-              onFocus={(e) => {
-                try {
-                  // Prevent mobile viewport jumping
-                  if (window.innerWidth < 768) {
-                    setTimeout(() => {
-                      e.target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }, 100);
-                  }
-                } catch (error) {
-                  console.warn('Input focus error (mobile):', error);
-                }
-              }}
-              onBlur={(e) => {
-                try {
-                  // Additional mobile handling on blur
-                  if (window.innerWidth < 768) {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }
-                } catch (error) {
-                  console.warn('Input blur error (mobile):', error);
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
                 }
               }}
               placeholder="Type your response..."
               disabled={sendMessageMutation.isPending}
-              className="flex-1"
+              className="flex-1 h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="off"
