@@ -195,9 +195,13 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+    try {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSend();
+      }
+    } catch (error) {
+      console.warn('Keyboard event error (mobile):', error);
     }
   };
 
@@ -374,11 +378,21 @@ export default function OnboardingChat({ onComplete }: OnboardingChatProps) {
           <div className="max-w-4xl mx-auto flex space-x-2">
             <Input
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                try {
+                  setInput(e.target.value || '');
+                } catch (error) {
+                  console.warn('Input change error (mobile):', error);
+                }
+              }}
               onKeyPress={handleKeyPress}
               placeholder="Type your response..."
               disabled={sendMessageMutation.isPending}
               className="flex-1"
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
               data-testid="input-message"
             />
             <Button

@@ -170,7 +170,7 @@ export default function OnboardingPage() {
             <h3 className="text-lg font-semibold text-foreground mb-4">How It Works</h3>
             <div className="space-y-4">
               <div className="flex items-center space-x-4">
-                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
+                <div className="w-10 h-10 min-w-[2.5rem] bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">
                   1
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -178,7 +178,7 @@ export default function OnboardingPage() {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
+                <div className="w-10 h-10 min-w-[2.5rem] bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">
                   2
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -186,7 +186,7 @@ export default function OnboardingPage() {
                 </p>
               </div>
               <div className="flex items-center space-x-4">
-                <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold">
+                <div className="w-10 h-10 min-w-[2.5rem] bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">
                   3
                 </div>
                 <p className="text-sm text-muted-foreground">
@@ -205,7 +205,7 @@ export default function OnboardingPage() {
               <Button
                 onClick={() => setShowChat(true)}
                 size="lg"
-                className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
+                className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 font-medium h-12 py-3 px-6"
                 data-testid="button-start-onboarding"
               >
                 Start Conversation with John
@@ -214,7 +214,7 @@ export default function OnboardingPage() {
                 onClick={() => skipOnboardingMutation.mutate()}
                 size="lg"
                 variant="outline"
-                className="flex-1 border-border hover:bg-muted"
+                className="flex-1 border-border hover:bg-muted h-12 py-3 px-6"
                 disabled={skipOnboardingMutation.isPending}
                 data-testid="button-skip-onboarding"
               >
