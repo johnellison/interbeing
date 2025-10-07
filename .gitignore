@@ -4,3 +4,15 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+# Ignore all assets by default
+attached_assets/*
+
+# But keep brand and headshot
+!attached_assets/interbeing*
+!attached_assets/index*
+!attached_assets/john-ellison*
+
+# Ignore Replit/local junk
+.local/
+replit.*
+*.DS_Store
